@@ -40,14 +40,13 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   margin-top:6%;
   margin-bottom:6%;
 }
-/* shrink viewer when panel is open — snap to top, fixed height */
+/* when panel open: hide bottom bar, shrink viewer */
+.panel-half-open .bottom-bar{display:none;}
 .panel-half-open #mv-zone{
   flex:none;
-  height:36vh;
+  height:34vh;
   margin-top:0;
   margin-bottom:0;
-  align-self:flex-start;
-  width:100%;
 }
 
 /* Top bar */
@@ -333,21 +332,12 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <button class="ar-photo-btn" onclick="openAR()">📷 Foto con la mascota</button>
   </div>
 
-  <!-- 3D Model + logo background -->
-  <div style="flex:1;position:relative;min-height:0;">
-    <!-- Logo as scene background -->
-    <div style="
-      position:absolute;inset:0;
-      display:flex;align-items:center;justify-content:center;
-      pointer-events:none;z-index:0;
-    ">
-      <img src="logo.png" id="logo-bg" alt="" style="
-        width:92%;max-width:420px;
-        opacity:0.18;
-        filter:brightness(2) saturate(0.4);
-      ">
+  <!-- 3D viewer -->
+  <div id="mv-zone">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
+      <img src="logo.png" id="logo-bg" alt="" style="width:88%;max-width:380px;opacity:0.18;filter:brightness(2) saturate(0.4);">
     </div>
-    <model-viewer id="mv-main"
+    <model-viewer id="mv-idle"
       src="PunAntuMascot.glb"
       auto-rotate rotation-per-second="18deg"
       camera-controls touch-action="pan-y"
@@ -355,15 +345,22 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       camera-orbit="180deg 75deg 4.2m"
       camera-target="0m 0.6m 0m"
       field-of-view="46deg"
-      style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;">
+      style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
+    </model-viewer>
+    <model-viewer id="mv-focus"
+      src="PunAntuMascot.glb"
+      shadow-intensity="1.2" exposure="1.2"
+      camera-orbit="180deg 75deg 8.0m"
+      camera-target="0m 0.5m 0m"
+      field-of-view="46deg"
+      style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
     </model-viewer>
   </div>
 
-  <!-- Speech bubble — fixed above bottom bar -->
-  <!-- Speech bubbles — top-right of 3D viewer -->
+  <!-- Speech bubbles -->
   <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);animation:fadeUp .35s ease;text-align:center;width:100%;"></div>
-    <div id="trophy-bubble" style="background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));border:1.5px solid rgba(240,192,112,.7);border-radius:22px;padding:12px 18px;color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 24px rgba(200,132,30,.35);animation:fadeUp .5s ease;text-align:center;width:100%;"><div style="font-size:22px;margin-bottom:4px;">🏆</div><div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div><div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div></div>
+    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+    <div id="trophy-bubble" style="background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));border:1.5px solid rgba(240,192,112,.7);border-radius:22px;padding:12px 18px;color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 24px rgba(200,132,30,.35);text-align:center;width:100%;"><div style="font-size:22px;margin-bottom:4px;">🏆</div><div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div><div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div></div>
   </div>
 
   <!-- Bottom pills -->
@@ -568,32 +565,18 @@ const panels={
 let activeBtn=null;
 
 function mascotFocus(){
-  const mv=document.getElementById('mv-main');
-  if(!mv)return;
-  clearInterval(mv._swayTimer);
-  mv.removeAttribute('auto-rotate');
-  mv.removeAttribute('camera-controls');
-  // 180deg = front (same as initial). Distance doubled = ~50% smaller.
-  mv.setAttribute('camera-orbit','180deg 75deg 7.0m');
-  mv.setAttribute('camera-target','0m 0.6m 0m');
-  mv.setAttribute('field-of-view','46deg');
-  let swayDir=1,swayAngle=180;
-  mv._swayTimer=setInterval(()=>{
-    swayAngle+=swayDir*0.4;
-    if(swayAngle>=185)swayDir=-1;
-    if(swayAngle<=175)swayDir=1;
-    mv.setAttribute('camera-orbit',swayAngle+'deg 75deg 7.0m');
-  },50);
+  // Swap to focus instance (small, non-interactive)
+  const idle  = document.getElementById('mv-idle');
+  const focus = document.getElementById('mv-focus');
+  if(idle)  { idle.style.opacity='0';  idle.style.pointerEvents='none'; }
+  if(focus) { focus.style.opacity='1'; focus.style.pointerEvents='none'; }
 }
 function mascotRelax(){
-  const mv=document.getElementById('mv-main');
-  if(!mv)return;
-  clearInterval(mv._swayTimer);
-  mv.setAttribute('camera-controls','');
-  mv.setAttribute('auto-rotate','');
-  mv.setAttribute('camera-orbit','180deg 75deg 4.2m');
-  mv.setAttribute('camera-target','0m 0.6m 0m');
-  mv.setAttribute('field-of-view','46deg');
+  // Swap back to idle instance (full size, interactive)
+  const idle  = document.getElementById('mv-idle');
+  const focus = document.getElementById('mv-focus');
+  if(idle)  { idle.style.opacity='1';  idle.style.pointerEvents='auto'; }
+  if(focus) { focus.style.opacity='0'; focus.style.pointerEvents='none'; }
 }
 
 function showSpeechBubble(txt){
