@@ -40,10 +40,14 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   margin-top:6%;
   margin-bottom:6%;
 }
-/* shrink viewer when panel is open */
+/* shrink viewer when panel is open — snap to top, fixed height */
 .panel-half-open #mv-zone{
   flex:none;
-  height:32vh;
+  height:36vh;
+  margin-top:0;
+  margin-bottom:0;
+  align-self:flex-start;
+  width:100%;
 }
 
 /* Top bar */
