@@ -342,17 +342,17 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       auto-rotate rotation-per-second="18deg"
       camera-controls touch-action="pan-y"
       shadow-intensity="1.2" exposure="1.2"
-      camera-orbit="180deg 75deg 4.2m"
-      camera-target="0m 0.6m 0m"
-      field-of-view="46deg"
+      camera-orbit="180deg 82deg 5.5m"
+      camera-target="0m 0.1m 0m"
+      field-of-view="40deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
     </model-viewer>
     <model-viewer id="mv-focus"
       src="PunAntuMascot.glb"
       shadow-intensity="1.2" exposure="1.2"
-      camera-orbit="180deg 75deg 8.0m"
-      camera-target="0m 0.5m 0m"
-      field-of-view="46deg"
+      camera-orbit="180deg 62deg 10.0m"
+      camera-target="0m 0.1m 0m"
+      field-of-view="40deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
     </model-viewer>
   </div>
@@ -564,15 +564,25 @@ const panels={
 };
 let activeBtn=null;
 
+let _swayTimer = null;
 function mascotFocus(){
-  // Swap to focus instance (small, non-interactive)
   const idle  = document.getElementById('mv-idle');
   const focus = document.getElementById('mv-focus');
   if(idle)  { idle.style.opacity='0';  idle.style.pointerEvents='none'; }
   if(focus) { focus.style.opacity='1'; focus.style.pointerEvents='none'; }
+  // Gentle sway ±5deg on focus instance
+  clearInterval(_swayTimer);
+  let angle = 180, dir = 1;
+  _swayTimer = setInterval(()=>{
+    angle += dir * 0.35;
+    if(angle >= 185) dir = -1;
+    if(angle <= 175) dir = 1;
+    const f = document.getElementById('mv-focus');
+    if(f) f.setAttribute('camera-orbit', angle+'deg 62deg 10.0m');
+  }, 50);
 }
 function mascotRelax(){
-  // Swap back to idle instance (full size, interactive)
+  clearInterval(_swayTimer);
   const idle  = document.getElementById('mv-idle');
   const focus = document.getElementById('mv-focus');
   if(idle)  { idle.style.opacity='1';  idle.style.pointerEvents='auto'; }
@@ -658,7 +668,8 @@ function closePanel(){
    EDAD HALF-PANEL
 ════════════ */
 const HITOS=[
-  {ma:66,   txt:'🦕 Se extinguieron los dinosaurios'},
+  {ma:0.3,  txt:'🧑 Aparece el Homo sapiens'},
+  {ma:66,   txt:'🦕 Se extinguieron los dinosaurios',  maxMa:130},
   {ma:252,  txt:'💀 La mayor extinción masiva de la historia'},
   {ma:541,  txt:'🐚 Aparecen los primeros animales con esqueleto'},
   {ma:2200, txt:'🪨 ¡Aquí se formaron las rocas del Cerro El Triunfo!'},
@@ -684,10 +695,14 @@ function updateEdad(ma){
   document.getElementById('decay-u-pct').textContent=u;
   document.getElementById('decay-pb-pct').textContent=pb;
   document.getElementById('decay-age').textContent=ma.toLocaleString('es-AR');
-  let best=HITOS[0],dist=Infinity;
-  HITOS.forEach(h=>{const d=Math.abs(h.ma-ma);if(d<dist){dist=d;best=h;}});
+  let best=null,dist=Infinity;
+  HITOS.forEach(h=>{
+    if(h.maxMa && ma > h.maxMa) return; // hide after maxMa
+    const d=Math.abs(h.ma-ma);
+    if(d<dist){dist=d;best=h;}
+  });
   const evt=document.getElementById('decay-event');
-  if(evt)evt.textContent=dist<160?best.txt:'';
+  if(evt)evt.textContent=(best&&dist<160)?best.txt:'';
   const tb=document.getElementById('trophy-bubble');
   const sb=document.getElementById('speech-bubble');
   if(Math.abs(ma-2200)<120){
