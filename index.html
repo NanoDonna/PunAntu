@@ -40,8 +40,11 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   margin-top:6%;
   margin-bottom:6%;
 }
-/* when panel open: hide bottom bar, shrink viewer */
+/* when panel open */
 .panel-half-open .bottom-bar{display:none;}
+.panel-half-open #ar-photo-btn{display:none!important;}
+.panel-half-open #geo-tag{display:flex!important;}
+.panel-half-open #geo-title{display:none;}
 .panel-half-open #mv-zone{
   flex:none;
   height:34vh;
@@ -331,15 +334,24 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
         <div class="l3">Balcarce</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;padding:0 8px;">
+    <!-- photo btn: visible at start, hidden when panel open -->
+    <button class="ar-photo-btn" id="ar-photo-btn" onclick="openAR()">📷 Foto con la mascota</button>
+    <!-- geositio tag: hidden at start, visible when panel open -->
+    <div id="geo-tag" style="display:none;flex-direction:column;align-items:flex-end;gap:1px;">
       <span style="background:#7A1A0A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;">Geositio 1</span>
-      <span style="color:rgba(255,255,255,.85);font-size:12px;font-weight:600;">Cerro El Triunfo</span>
+      <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:600;">Cerro El Triunfo</span>
     </div>
-    <button class="ar-photo-btn" onclick="openAR()">📷 Foto con la mascota</button>
   </div>
 
   <!-- 3D viewer -->
   <div id="mv-zone">
+    <!-- geositio title: centered above frog, shown at start, hidden when panel open -->
+    <div id="geo-title" style="
+      position:absolute;top:10px;left:0;right:0;z-index:10;
+      text-align:center;pointer-events:none;">
+      <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Geositio 1</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">Cerro El Triunfo</div>
+    </div>
     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
       <img src="logo.png" id="logo-bg" alt="" style="width:88%;max-width:380px;opacity:0.18;filter:brightness(2) saturate(0.4);">
     </div>
@@ -436,8 +448,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     camera-controls touch-action="none"
     shadow-intensity="0.6"
     exposure="1.4"
-    camera-orbit="180deg 82deg 2.2m"
-    camera-target="0m 0m 0m"
+    camera-orbit="180deg 82deg 2.8m"
+    camera-target="0m 0.5m 0m"
     style="position:absolute;inset:0;width:100%;height:100%;
            z-index:5;background:transparent;--poster-color:transparent;">
   </model-viewer>
@@ -485,6 +497,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
         color:#FDF8EE;line-height:1.4;margin-bottom:2px;">¡Gracias por<br>visitar!</div>
       <div style="font-size:9px;color:#C8841E;font-weight:700;letter-spacing:1px;">
         PUNANTUGEOPARQUE.COM.AR</div>
+      <div style="font-size:10px;color:#F0C070;font-weight:700;letter-spacing:.5px;margin-top:3px;">@Pun_Antu</div>
     </div>
 
   </div>
@@ -960,6 +973,10 @@ function ansQ(i){
 let camStream=null;
 async function openAR(){
   document.getElementById('ar-screen').classList.add('open');
+  // Request fullscreen
+  const el = document.getElementById('ar-screen');
+  if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
   const video=document.getElementById('cam-video');
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
   try{
@@ -971,6 +988,8 @@ async function openAR(){
 }
 function closeAR(){
   document.getElementById('ar-screen').classList.remove('open');
+  if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   const video=document.getElementById('cam-video');
   if(video)video.srcObject=null;
