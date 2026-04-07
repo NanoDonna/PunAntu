@@ -342,17 +342,17 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       auto-rotate rotation-per-second="18deg"
       camera-controls touch-action="pan-y"
       shadow-intensity="1.2" exposure="1.2"
-      camera-orbit="180deg 82deg 5.5m"
-      camera-target="0m 0.1m 0m"
-      field-of-view="40deg"
+      camera-orbit="180deg 82deg 7.5m"
+      camera-target="0m 0.0m 0m"
+      field-of-view="36deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
     </model-viewer>
     <model-viewer id="mv-focus"
       src="PunAntuMascot.glb"
       shadow-intensity="1.2" exposure="1.2"
-      camera-orbit="180deg 62deg 10.0m"
-      camera-target="0m 0.1m 0m"
-      field-of-view="40deg"
+      camera-orbit="180deg 85deg 10.0m"
+      camera-target="0m 0.0m 0m"
+      field-of-view="36deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
     </model-viewer>
   </div>
@@ -578,7 +578,7 @@ function mascotFocus(){
     if(angle >= 185) dir = -1;
     if(angle <= 175) dir = 1;
     const f = document.getElementById('mv-focus');
-    if(f) f.setAttribute('camera-orbit', angle+'deg 62deg 10.0m');
+    if(f) f.setAttribute('camera-orbit', angle+'deg 85deg 10.0m');
   }, 50);
 }
 function mascotRelax(){
