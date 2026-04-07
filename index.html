@@ -292,6 +292,11 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   position:fixed;inset:0;z-index:400;
   display:none;background:#000;
 }
+#mapa-screen{
+  position:fixed;inset:0;z-index:400;
+  display:none;background:#1a1a2e;
+}
+#mapa-screen.open{display:block;}
 #ar-screen.open{display:block;}
 
 #cam-video{
@@ -308,6 +313,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 /* photo booth — no camera needed */
 </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 </head>
 <body>
 
@@ -360,7 +366,29 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <!-- Speech bubbles -->
   <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
     <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
-    <div id="trophy-bubble" style="background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));border:1.5px solid rgba(240,192,112,.7);border-radius:22px;padding:12px 18px;color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 24px rgba(200,132,30,.35);text-align:center;width:100%;"><div style="font-size:22px;margin-bottom:4px;">🏆</div><div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div><div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div></div>
+    <div id="trophy-bubble" style="
+  position:relative;
+  background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
+  border:1.5px solid rgba(240,192,112,.7);
+  border-radius:22px;
+  padding:28px 18px 14px;
+  color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;
+  backdrop-filter:blur(12px);display:none;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  text-align:center;width:100%;
+  margin-top:22px;">
+  <!-- trophy icon floating above top border -->
+  <div style="
+    position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(135deg,#C8841E,#F0C070);
+    border:2px solid rgba(240,192,112,.8);
+    box-shadow:0 4px 12px rgba(200,132,30,.6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;">🏆</div>
+  <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
+</div>
   </div>
 
   <!-- Bottom pills -->
@@ -369,6 +397,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <div class="pills">
       <button class="pill" onclick="openPanel('edad',this)"><span class="pi">⏳</span>Su edad</button>
       <button class="pill" onclick="openPanel('meta',this)"><span class="pi">🪨</span>Metamorfismo</button>
+      <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Mapa</button>
       <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🎯</span>Quiz</button>
     </div>
   </div>
@@ -532,10 +561,140 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 <!-- Speech bubbles -->
 <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
   <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
-  <div id="trophy-bubble" style="background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));border:1.5px solid rgba(240,192,112,.7);border-radius:22px;padding:12px 18px;color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 24px rgba(200,132,30,.35);text-align:center;width:100%;"><div style="font-size:22px;margin-bottom:4px;">🏆</div><div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div><div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div></div>
+  <div id="trophy-bubble" style="
+  position:relative;
+  background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
+  border:1.5px solid rgba(240,192,112,.7);
+  border-radius:22px;
+  padding:28px 18px 14px;
+  color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;
+  backdrop-filter:blur(12px);display:none;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  text-align:center;width:100%;
+  margin-top:22px;">
+  <!-- trophy icon floating above top border -->
+  <div style="
+    position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(135deg,#C8841E,#F0C070);
+    border:2px solid rgba(240,192,112,.8);
+    box-shadow:0 4px 12px rgba(200,132,30,.6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;">🏆</div>
+  <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
+</div>
+</div>
+
+<!-- MAPA GEOCIRCUITO -->
+<div id="mapa-screen">
+  <!-- top bar -->
+  <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+    padding:14px 16px 10px;
+    background:linear-gradient(to bottom,rgba(14,4,2,.95) 60%,transparent);
+    display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:9px;letter-spacing:3px;color:#C8841E;text-transform:uppercase;font-weight:800;">Geocircuito</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;line-height:1;">La Barrosa</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button id="mapa-gps-btn" onclick="mapaGPS()" style="
+        background:rgba(200,132,30,.2);border:1.5px solid rgba(200,132,30,.5);
+        color:#FDF8EE;border-radius:50%;width:38px;height:38px;
+        font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        📍
+      </button>
+      <button onclick="closeMapa()" style="
+        background:rgba(255,255,255,.15);border:none;color:#FDF8EE;
+        width:38px;height:38px;border-radius:50%;font-size:17px;
+        cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+  </div>
+
+  <!-- map container -->
+  <div id="mapa-leaflet" style="position:absolute;inset:0;z-index:1;"></div>
+
+  <!-- geositio popup -->
+  <div id="mapa-popup" style="
+    position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+    z-index:20;display:none;
+    background:rgba(14,4,2,.92);border:1.5px solid rgba(200,132,30,.5);
+    border-radius:16px;padding:12px 20px;text-align:center;
+    backdrop-filter:blur(12px);min-width:180px;">
+    <div id="mapa-popup-num" style="font-size:10px;letter-spacing:2px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:3px;"></div>
+    <div id="mapa-popup-name" style="font-family:'Playfair Display',serif;font-size:16px;color:#FDF8EE;"></div>
+  </div>
 </div>
 
 <script>
+
+/* ════════════
+   MAPA GEOCIRCUITO
+════════════ */
+const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Sierra La Barrosa", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
+const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
+let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
+
+function openMapa(){
+  document.getElementById('mapa-screen').classList.add('open');
+  if(typeof L !== 'undefined'){
+    if(!_mapaInited) setTimeout(initMapa,100);
+  } else {
+    // Load Leaflet dynamically
+    const s=document.createElement('script');
+    s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload=()=>{ if(!_mapaInited) initMapa(); };
+    document.head.appendChild(s);
+  }
+}
+function closeMapa(){
+  document.getElementById('mapa-screen').classList.remove('open');
+  document.getElementById('mapa-popup').style.display='none';
+  if(_mapaWatch){ navigator.geolocation.clearWatch(_mapaWatch); _mapaWatch=null; }
+}
+function initMapa(){
+  if(_mapaInited) return;
+  _mapaInited=true;
+  const map=L.map('mapa-leaflet',{center:[-37.869,-58.257],zoom:15,zoomControl:false,attributionControl:true});
+  _mapaMap=map;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+  L.polyline(CIRCUIT_PATH,{color:'#C8841E',weight:4,opacity:.85,dashArray:'6 4'}).addTo(map);
+  GEOSITIOS.forEach(g=>{
+    const active=g.n===1;
+    const icon=L.divIcon({className:'',
+      html:`<div style="width:32px;height:32px;border-radius:50%;background:${active?'#C8841E':'rgba(200,132,30,.35)'};border:2px solid ${active?'#F0C070':'rgba(200,132,30,.6)'};color:${active?'#fff':'#F0C070'};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">${g.n}</div>`,
+      iconSize:[32,32],iconAnchor:[16,16]});
+    L.marker([g.lat,g.lon],{icon}).addTo(map).on('click',()=>{
+      document.getElementById('mapa-popup-num').textContent='Geositio '+g.n;
+      document.getElementById('mapa-popup-name').textContent=g.name;
+      document.getElementById('mapa-popup').style.display='block';
+    });
+  });
+  map.on('click',()=>{document.getElementById('mapa-popup').style.display='none';});
+}
+function mapaGPS(){
+  if(!_mapaMap)return;
+  const btn=document.getElementById('mapa-gps-btn');
+  if(!navigator.geolocation){btn.textContent='❌';return;}
+  if(_mapaWatch){
+    navigator.geolocation.clearWatch(_mapaWatch);_mapaWatch=null;
+    if(_mapaUserMarker){_mapaMap.removeLayer(_mapaUserMarker);_mapaUserMarker=null;}
+    btn.textContent='📍';return;
+  }
+  btn.textContent='⏳';
+  _mapaWatch=navigator.geolocation.watchPosition(pos=>{
+    const ll=[pos.coords.latitude,pos.coords.longitude];
+    btn.textContent='🔵';
+    if(_mapaUserMarker) _mapaUserMarker.setLatLng(ll);
+    else{
+      const ic=L.divIcon({className:'',html:`<div style="width:16px;height:16px;border-radius:50%;background:#3b82f6;border:3px solid #fff;box-shadow:0 0 0 4px rgba(59,130,246,.3);"></div>`,iconSize:[16,16],iconAnchor:[8,8]});
+      _mapaUserMarker=L.marker(ll,{icon:ic}).addTo(_mapaMap);
+      _mapaMap.setView(ll,16);
+    }
+  },()=>{btn.textContent='📍';},{enableHighAccuracy:true});
+}
+
+
 /* ════════════
    LOGO — remove black bg via canvas
 ════════════ */
