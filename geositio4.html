@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1A0A04">
-<title>Geoparque Pun Antü · Cerro El Triunfo</title>
+<title>Geoparque Pun Antü · El Mirador</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <style>
@@ -140,6 +140,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #edad-panel.open{transform:translateY(0);}
 #meta-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
 #meta-panel.open{transform:translateY(0);}
+#paisaje-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
+#paisaje-panel.open{transform:translateY(0);}
+#flora-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
+#flora-panel.open{transform:translateY(0);}
 
 
 
@@ -319,7 +323,19 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
-  <script>
+  
+<div id="paisaje-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head"><h3>El paisaje de Tandilia</h3><button class="ep-close" onclick="closeExtraPanel('paisaje')">✕</button></div>
+  <div class="ep-body" style="padding:8px 18px 12px;"><p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">Desde El Mirador se observa una vista panorámica del eje de Tandilia: <strong>Sierra la Bachicha</strong> (383 msnm), <strong>Cerro Paulino</strong> y <strong>Sierra del Volcán</strong>. El control estructural de tres sistemas de fallas casi verticales da a las sierras un perfil asimétrico — frente abrupto al NE y suave pendiente al SO.</p></div>
+</div>
+
+<div id="flora-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head"><h3>Flora nativa Pun Antü</h3><button class="ep-close" onclick="closeExtraPanel('flora')">✕</button></div>
+  <div class="ep-body" style="padding:8px 18px 12px;"><p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">El <strong>Jardín Botánico Pun Antü</strong> se emplaza en este geositio. Alberga especies nativas en estado de vulnerabilidad como el <strong>sapito de panza roja</strong> (<em>Melanophryniscus aff. montevidensis</em>) — la mascota del geoparque — y la <strong>lagartija de Tandilia</strong> (<em>Liolaemus tandilensis</em>). Proteger estas especies y sus hábitats es parte esencial de la geoconservación.</p></div>
+</div>
+<script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -346,8 +362,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <button class="ar-photo-btn" id="ar-photo-btn" onclick="openAR()">📷 Foto con la mascota</button>
     <!-- geositio tag: hidden at start, visible when panel open -->
     <div id="geo-tag" style="display:none;flex-direction:column;align-items:flex-end;gap:1px;">
-      <span style="background:#7A1A0A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;">Geositio 1</span>
-      <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:600;">Cerro El Triunfo</span>
+      <span style="background:#7A1A0A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;">Geositio 4</span>
+      <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:600;">El Mirador</span>
     </div>
   </div>
 
@@ -357,8 +373,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <div id="geo-title" style="
       position:absolute;top:10px;left:0;right:0;z-index:10;
       text-align:center;pointer-events:none;">
-      <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Geositio 1</div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">Cerro El Triunfo</div>
+      <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Geositio 4</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">El Mirador</div>
     </div>
     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
       <img src="logo.png" id="logo-bg" alt="" style="width:88%;max-width:380px;opacity:0.18;filter:brightness(2) saturate(0.4);">
@@ -407,7 +423,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     display:flex;align-items:center;justify-content:center;
     font-size:22px;">🏆</div>
   <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
-  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del El Mirador es una de las rocas más antiguas de Argentina.</div>
 </div>
   </div>
 
@@ -415,8 +431,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div class="bottom-bar">
     <div class="bar-label">¿Qué querés descubrir?</div>
     <div class="pills">
-      <button class="pill" onclick="openPanel('edad',this)"><span class="pi">⏳</span>Su edad</button>
-      <button class="pill" onclick="openPanel('meta',this)"><span class="pi">🪨</span>Metamorfismo</button>
+      <button class="pill" onclick="openPanel('paisaje',this)"><span class="pi">🏔️</span>El paisaje</button>
+      <button class="pill" onclick="openPanel('flora',this)"><span class="pi">🌿</span>Flora nativa</button>
       <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Mapa</button>
       <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🎯</span>Quiz</button>
     </div>
@@ -493,7 +509,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       <div style="font-family:'Playfair Display',serif;font-size:26px;
         color:#FDF8EE;line-height:1;margin-bottom:4px;">Pun Antü</div>
       <div style="font-size:10px;color:#9B8A6E;letter-spacing:.5px;">
-        Cerro El Triunfo · Balcarce · Argentina</div>
+        El Mirador · Balcarce · Argentina</div>
     </div>
 
     <!-- separador vertical -->
@@ -603,7 +619,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     display:flex;align-items:center;justify-content:center;
     font-size:22px;">🏆</div>
   <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
-  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del El Mirador es una de las rocas más antiguas de Argentina.</div>
 </div>
 </div>
 
@@ -652,7 +668,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 /* ════════════
    MAPA GEOCIRCUITO
 ════════════ */
-const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Sierra La Barrosa", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
+const GEOSITIOS = [{"n": 1, "name": "El Mirador", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Sierra La Barrosa", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
 const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
 let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
 
@@ -682,7 +698,7 @@ function initMapa(){
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
   L.polyline(CIRCUIT_PATH,{color:'#C8841E',weight:4,opacity:.85,dashArray:'6 4'}).addTo(map);
   GEOSITIOS.forEach(g=>{
-    const active=g.n===1;
+    const active=g.n===4;
     const icon=L.divIcon({className:'',
       html:`<div style="width:32px;height:32px;border-radius:50%;background:${active?'#C8841E':'rgba(200,132,30,.35)'};border:2px solid ${active?'#F0C070':'rgba(200,132,30,.6)'};color:${active?'#fff':'#F0C070'};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">${g.n}</div>`,
       iconSize:[32,32],iconAnchor:[16,16]});
@@ -783,6 +799,8 @@ function hideSpeechBubble(){
 
 function openPanel(id,btn){
   document.getElementById('edad-panel').classList.remove('open');
+  document.getElementById('paisaje-panel').classList.remove('open');
+  document.getElementById('flora-panel').classList.remove('open');
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
@@ -810,14 +828,21 @@ function openPanel(id,btn){
     setTimeout(initMetaPanel,80);
     return;
   }
+
+  if(id==='paisaje'){document.getElementById('logo-bg').style.opacity='0';document.getElementById('main').classList.add('panel-half-open');showSpeechBubble('🐸 Desde aquí ves millones de años de geología en el horizonte');document.getElementById('paisaje-panel').classList.add('open');return;}
+  if(id==='flora'){document.getElementById('logo-bg').style.opacity='0';document.getElementById('main').classList.add('panel-half-open');showSpeechBubble('🐸 Aquí funciona el Jardín Botánico de Plantas Nativas del Geoparque');document.getElementById('flora-panel').classList.add('open');return;}
   document.getElementById('panel-title').textContent=panels[id].title;
   document.getElementById('panel-body').innerHTML=panels[id].html;
   document.getElementById('info-panel').classList.add('open');
   if(id==='quiz')initQuiz();
 }
 
+function closeExtraPanel(id){document.getElementById(id+'-panel').classList.remove('open');hideSpeechBubble();document.getElementById('logo-bg').style.opacity='0.18';document.getElementById('main').classList.remove('panel-half-open');document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));activeBtn=null;mascotRelax();}
+
 function closeEdadPanel(){
   document.getElementById('edad-panel').classList.remove('open');
+  document.getElementById('paisaje-panel').classList.remove('open');
+  document.getElementById('flora-panel').classList.remove('open');
   hideSpeechBubble();
   document.getElementById('logo-bg').style.opacity='0.18';
   document.getElementById('main').classList.remove('panel-half-open');
@@ -836,6 +861,8 @@ function closeMetaPanel(){
 }
 function closePanel(){
   document.getElementById('edad-panel').classList.remove('open');
+  document.getElementById('paisaje-panel').classList.remove('open');
+  document.getElementById('flora-panel').classList.remove('open');
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
@@ -854,7 +881,7 @@ const HITOS=[
   {ma:66,   txt:'🦕 Se extinguieron los dinosaurios',  maxMa:130},
   {ma:252,  txt:'💀 La mayor extinción masiva de la historia'},
   {ma:541,  txt:'🐚 Aparecen los primeros animales con esqueleto'},
-  {ma:2200, txt:'🪨 ¡Aquí se formaron las rocas del Cerro El Triunfo!'},
+  {ma:2200, txt:'🪨 ¡Aquí se formaron las rocas del El Mirador!'},
   {ma:3800, txt:'🦠 Aparece la primera vida en la Tierra'},
   {ma:4600, txt:'💫 La Tierra recién se está formando'},
 ];
@@ -943,11 +970,7 @@ function doMetaScrub(e){
 /* ════════════
    QUIZ
 ════════════ */
-const QUIZ=[
-  {q:'¿A qué tipo de roca pertenece el Gneis?',opts:['Ígnea','Metamórfica','Sedimentaria'],ok:1},
-  {q:'¿Cuántos millones de años tiene esta roca?',opts:['500 Ma','1.100 Ma','2.200 Ma'],ok:2},
-  {q:'¿Cómo se llama el proceso que formó estas rocas?',opts:['Erosión','Metamorfismo','Vulcanismo'],ok:1},
-];
+const QUIZ=[{"q": "¿Cuál es la máxima elevación del partido de Balcarce?", "opts": ["Cerro El Triunfo", "Sierra la Bachicha", "Sierra del Volcán"], "ok": 1}, {"q": "¿Cuántos sistemas de fallas controlan las sierras?", "opts": ["Uno", "Dos", "Tres"], "ok": 2}, {"q": "¿Qué jardín se creó en El Mirador?", "opts": ["Jardín de cactus", "Jardín Botánico de Plantas Nativas", "Jardín de plantas exóticas"], "ok": 1}];
 let qIdx=0,qScore=0,qAns=[];
 function initQuiz(){qIdx=0;qScore=0;qAns=[false,false,false];renderQ();}
 function renderQ(){
