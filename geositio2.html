@@ -140,8 +140,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #edad-panel.open{transform:translateY(0);}
 #meta-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
 #meta-panel.open{transform:translateY(0);}
-#estrat-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
-#estrat-panel.open{transform:translateY(0);}
+#historia-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:60vh;overflow:hidden;}
+#historia-panel.open{transform:translateY(0);}
+#paleo-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:70vh;overflow:hidden;}
+#paleo-panel.open{transform:translateY(0);}
 
 
 
@@ -322,11 +324,55 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
   
-<div id="estrat-panel">
+<div id="paleo-panel">
   <div class="ep-handle"></div>
-  <div class="ep-head"><h3>Estratigrafía</h3><button class="ep-close" onclick="closeExtraPanel('estrat')">✕</button></div>
-  <div class="ep-body" style="padding:8px 18px 12px;"><p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">En el faldeo norte de la Sierra La Barrosa se observa el contacto entre el <strong>Complejo Buenos Aires</strong> (2.200 Ma, rocas cristalinas) y la <strong>Formación Balcarce</strong> (480 Ma, ortocuarcitas). Esta inconformidad estratigráfica representa 1.700 millones de años de historia geológica sin registro y evidencia la ingresión de un mar paleozoico sobre antiguas rocas cristalinas.</p></div>
+  <div class="ep-head"><h3>Paleoambiente · 480 Ma</h3><button class="ep-close" onclick="closeExtraPanel('paleo')">✕</button></div>
+  <div class="ep-body" style="padding:8px 14px 10px;">
+    <!-- Isometric aquarium scene -->
+    <div style="border-radius:10px;overflow:hidden;background:#0C0908;position:relative;aspect-ratio:5/2.6;max-height:180px;margin-bottom:10px;">
+      <canvas id="paleo-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.80);line-height:1.55;margin-bottom:8px;">
+      Un mar somero del <strong>Cámbrico-Ordovícico</strong> cubre la región. Las corrientes forman <strong>ondulitas</strong> en la arena, mientras <strong>trilobites</strong> se desplazan por el fondo dejando trazas fósiles (icnofacies de <em>Cruziana</em>).
+    </p>
+    <p style="font-size:11px;color:rgba(200,180,140,.75);line-height:1.5;">
+      🔍 Estas estructuras hoy están preservadas en las <strong>ortocuarcitas de la Fm. Balcarce</strong> que forman la Sierra La Barrosa.
+    </p>
+  </div>
 </div>
+
+<!-- HISTORIA GEOLÓGICA PANEL -->
+<div id="historia-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>Historia geológica</h3>
+    <button class="ep-close" onclick="closeHistoriaPanel()">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 14px 10px;">
+    <!-- Side-by-side: canvas left, text right -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <!-- Canvas: square, fixed width -->
+      <div style="flex:0 0 42%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#0C0908;position:relative;">
+        <canvas id="rock-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+      </div>
+      <!-- Text right -->
+      <div style="flex:1;min-width:0;">
+        <div id="era-name" style="font-family:'Playfair Display',serif;font-size:14px;color:#C8841E;font-weight:700;line-height:1.3;margin-bottom:6px;"></div>
+        <div id="era-desc" style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.55;"></div>
+      </div>
+    </div>
+    <!-- Slider bottom -->
+    <div style="display:flex;justify-content:space-between;font-size:9px;color:#9B8A6E;margin-bottom:5px;font-weight:700;">
+      <span>← 4.500 Ma</span><span>Hoy →</span>
+    </div>
+    <div id="hist-bar" style="width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:7px;cursor:pointer;position:relative;touch-action:none;"
+      onmousedown="startHistScrub(event)" ontouchstart="startHistScrub(event)">
+      <div id="hist-prog" style="height:100%;width:0%;background:linear-gradient(90deg,#C8841E,#9ABA5A);border-radius:7px;pointer-events:none;"></div>
+      <div id="hist-thumb" style="position:absolute;top:50%;left:0%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#C8841E;border:2px solid rgba(255,255,255,.4);box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none;"></div>
+    </div>
+  </div>
+</div>
+
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -423,8 +469,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div class="bottom-bar">
     <div class="bar-label">¿Qué querés descubrir?</div>
     <div class="pills">
-      <button class="pill" onclick="openPanel('edad',this)"><span class="pi">⏳</span>Su edad</button>
-      <button class="pill" onclick="openPanel('estrat',this)"><span class="pi">🌊</span>Estratigrafía</button>
+      <button class="pill" onclick="openPanel('historia',this)"><span class="pi">🕰️</span>Historia geológica</button>
+      <button class="pill" onclick="openPanel('paleo',this)"><span class="pi">🦐</span>Paleoambiente</button>
       <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Mapa</button>
       <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🎯</span>Quiz</button>
     </div>
@@ -656,6 +702,1301 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 </div>
 
 <script>
+/* ════════════
+   HISTORIA GEOLÓGICA — v9
+════════════ */
+
+// Timeline anchors [ma, pct]
+const MA_ANCHORS=[
+  [4500,0.00],[4200,0.05],[3800,0.10],[3000,0.16],
+  [2500,0.20],[2200,0.26],[2100,0.40],[1000,0.56],
+  [500,0.68],[485,0.74],[440,0.84],[8,0.92],[0,1.00]
+];
+function maToPct(ma){for(let i=0;i<MA_ANCHORS.length-1;i++){const[m0,p0]=MA_ANCHORS[i],[m1,p1]=MA_ANCHORS[i+1];if(ma<=m0&&ma>=m1)return p0+(p1-p0)*(m0-ma)/(m0-m1);}return 1;}
+function pctToMa(pct){for(let i=0;i<MA_ANCHORS.length-1;i++){const[m0,p0]=MA_ANCHORS[i],[m1,p1]=MA_ANCHORS[i+1];if(pct>=p0&&pct<=p1)return m0+(m1-m0)*(pct-p0)/(p1-p0);}return 0;}
+
+const P_GN_S=maToPct(2200),P_GN_E=maToPct(2100);
+const P_QZ_S=maToPct(485), P_QZ_E=maToPct(440);
+const P_LO_S=maToPct(7.1);
+const P_ER_S=maToPct(2100),P_ER_E=maToPct(500);
+
+const HIST_LABELS=[
+  {maxMa:4500,title:'4.500 Ma · Hádico — Tierra incandescente',  desc:'La Tierra recién formada. La superficie es roca fundida incandescente. No hay corteza estable ni océanos.'},
+  {maxMa:4200,title:'4.200 Ma · Enfriamiento',                   desc:'La superficie comienza a solidificarse. La corteza primitiva se oscurece y endurece desde arriba hacia abajo.'},
+  {maxMa:3800,title:'3.800 Ma · Océano primitivo',               desc:'Las temperaturas bajan lo suficiente para que el agua persista. El océano primitivo comienza a acumularse sobre la corteza solidificada.'},
+  {maxMa:3000,title:'3.000 Ma · Océano primitivo máximo',        desc:'El océano alcanza su mayor extensión sobre la región. La vida más primitiva comienza a aparecer en estas aguas.'},
+  {maxMa:2500,title:'2.500 Ma · Retiro del océano',              desc:'El océano retrocede. Queda expuesto el Cratón del Río de la Plata: la corteza continental más antigua de la región.'},
+  {maxMa:2200,title:'2.200 Ma · Cratón del Río de la Plata',     desc:'El cratón está completamente expuesto. Una plataforma continental rígida y estable que abarca gran parte de la provincia de Buenos Aires.'},
+  {maxMa:2100,title:'2.100 Ma · Ciclo Transamazónico',           desc:'Comienza la colisión de placas. Las rocas estratificadas se pliegan. El granito se transforma en gneis a >20 km de profundidad.'},
+  {maxMa:800, title:'~800 Ma · Exhumación',                      desc:'La roca plegada se erosiona progresivamente, exponiendo el gneis en superficie.'},
+  {maxMa:500, title:'~500 Ma · Peneplano granítico',             desc:'El gneis queda completamente expuesto. Una inconformidad de ~1.700 Ma separa las dos unidades.'},
+  {maxMa:485, title:'485 Ma · Transgresión marina',              desc:'Un mar somero avanza sobre el peneplano. Arenas y conglomerados silíceos se depositan en aguas someras.'},
+  {maxMa:440, title:'440 Ma · Fm. Balcarce',                     desc:'La ortocuarcita completa su deposición. Al retirarse el mar queda en inconformidad sobre el gneis.'},
+  {maxMa:8,   title:'~8 Ma · Mioceno–Plioceno',                  desc:'El paisaje serrano toma su forma actual.'},
+  {maxMa:7.1, title:'7,1 Ma · Loess pampeano',                   desc:'Depósitos eólicos volcaniclásticos se acumulan (Fm. Barker, Vela, Las Ánimas).'},
+  {maxMa:0,   title:'Hoy · Sierra La Barrosa',                   desc:'Secuencia: Gneis (2.200 Ma) — Ortocuarcita (480 Ma) — Loess — Suelo actual.'},
+];
+let _histScrubbing=false;
+
+const F_GN=0.50,F_FOLD=0.18,F_QZ=0.46,F_LO=0.38,F_SOIL=0.04,F_FILM=0.05;
+
+function getColConfig(pct){
+  const ma=pctToMa(pct);
+  if(ma>4200) return {mode:'lava',   t:(4500-ma)/(4500-4200)};  // t:0=hottest,1=crust forming
+  if(ma>3800) return {mode:'cooling',t:(4200-ma)/(4200-3800)};  // t:0=all lava surface,1=all dark
+  if(ma>3000) return {mode:'ocean',  phase:'grow',  t:(3800-ma)/(3800-3000)}; // ocean grows
+  if(ma>2500) return {mode:'ocean',  phase:'shrink',t:(3000-ma)/(3000-2500)}; // ocean shrinks
+  // Craton + sediment deposition: 2500→2200 Ma
+  if(ma>2200){
+    const sedT=Math.min(1,(2500-ma)/(2500-2200)); // 0=no sediment, 1=full sediment layer
+    return {mode:'craton', sedT:sedT};
+  }
+  if(pct>=P_GN_S&&pct<P_GN_E) return {mode:'transamazonic',t:(pct-P_GN_S)/(P_GN_E-P_GN_S),sedT:1};
+  // post
+  let cfg={mode:'post',erosion:0,qH:0,seaF:0,lH:0,paleoF:0,soilH:0};
+  cfg.erosion=pct<P_ER_E?(pct-P_ER_S)/(P_ER_E-P_ER_S):1;
+  if(ma<485&&ma>440){cfg.qH=F_QZ*(485-ma)/(485-440);cfg.seaF=F_FILM;}
+  else if(ma<=440) cfg.qH=F_QZ;
+  if(ma<7.1){const g=(7.1-ma)/7.1;cfg.lH=F_LO*g;if(g<0.99)cfg.paleoF=F_FILM;}
+  if(ma<0.05){cfg.soilH=F_SOIL;cfg.paleoF=0;}
+  return cfg;
+}
+
+function colorHistBar(){
+  const bar=document.getElementById('hist-bar');if(!bar)return;
+  const g0=P_GN_S*100,g1=P_GN_E*100;
+  const q0=P_QZ_S*100,q1=P_QZ_E*100;
+  const l0=P_LO_S*100;
+  bar.style.background='linear-gradient(to right,'+
+    'rgba(255,100,20,.40) 0%,rgba(255,100,20,.40) 5%,'+
+    'rgba(60,110,170,.30) 5%,rgba(60,110,170,.30) 20%,'+
+    'rgba(255,255,255,.08) 20%,rgba(255,255,255,.08) '+g0+'%,'+
+    '#7A6A58 '+g0+'%,#7A6A58 '+g1+'%,'+
+    'rgba(255,255,255,.08) '+g1+'%,rgba(255,255,255,.08) '+q0+'%,'+
+    '#BEA870 '+q0+'%,#BEA870 '+q1+'%,'+
+    'rgba(255,255,255,.08) '+q1+'%,rgba(255,255,255,.08) '+l0+'%,'+
+    '#B8903A '+l0+'%,#B8903A 100%)';
+}
+
+// ── Helper: draw one isometric slab face-by-face ──
+function fillPrism3D(ctx,yBot,h,x0,x1,iX,iY,cFront,cSide,cTop,showTop){
+  if(h<=0.3)return;
+  const yTop=yBot-h;
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=cFront;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=cSide;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=cTop;ctx.fill();}
+}
+function fillGradPrism3D(ctx,yBot,h,x0,x1,iX,iY,makeGrads,showTop){
+  if(h<=0.3)return;
+  const yTop=yBot-h;
+  const[gF,gS,gT]=makeGrads(ctx,yBot,yTop,x0,x1,iX,iY);
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=gF;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=gS;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=gT;ctx.fill();}
+}
+
+// ─── RENDERER ────────────────────────────────────────────
+function drawIsoColumn(canvas,cfg){
+  const DPR=window.devicePixelRatio||1;
+  const S=canvas.offsetWidth||200;
+  canvas.width=Math.round(S*DPR); canvas.height=Math.round(S*DPR);
+  const ctx=canvas.getContext('2d');
+  ctx.scale(DPR,DPR);
+  ctx.clearRect(0,0,S,S);
+  ctx.fillStyle='#0C0908';ctx.fillRect(0,0,S,S);
+
+  const fW=S*0.44,iX=fW*0.52,iY=fW*0.28;
+  const maxH=S*0.74,bY=S*0.92,x0=S*0.10,x1=x0+fW;
+  const gTop=bY-maxH;
+  const MID=bY-maxH*0.5; // midpoint of column
+
+  const P={FL:{x:x0,y:bY},FR:{x:x1,y:bY},TL:{x:x0,y:gTop},TR:{x:x1,y:gTop},
+           BRR:{x:x1+iX,y:bY-iY},BTR:{x:x1+iX,y:gTop-iY},BTL:{x:x0+iX,y:gTop-iY}};
+
+  ctx.fillStyle='rgba(0,0,0,.2)';
+  ctx.beginPath();ctx.ellipse(x0+fW*0.5+iX*0.3,bY+5,fW*0.48,iY*0.4,0,0,Math.PI*2);ctx.fill();
+
+  // Clip to full prism silhouette
+  ctx.save();
+  ctx.beginPath();ctx.moveTo(P.FL.x,P.FL.y);ctx.lineTo(P.FR.x,P.FR.y);ctx.lineTo(P.BRR.x,P.BRR.y);ctx.lineTo(P.BTR.x,P.BTR.y);ctx.lineTo(P.BTL.x,P.BTL.y);ctx.lineTo(P.TL.x,P.TL.y);ctx.closePath();ctx.clip();
+
+  const mode=cfg.mode;
+
+  if(mode==='lava'){
+    const t=cfg.t; // 0=hottest, 1=crust forming
+    // Top half: EMPTY (glass only) — nothing drawn
+    // Bottom half: magma fixed
+    fillGradPrism3D(ctx,bY,maxH*0.5,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);
+      gF.addColorStop(0,`rgba(255,${Math.round(130-t*40)},${Math.round(t*10)},1)`);
+      gF.addColorStop(0.5,`rgba(245,${Math.round(75-t*15)},0,1)`);
+      gF.addColorStop(1,'rgba(190,50,0,1)');
+      const gS=ctx.createLinearGradient(0,yT,0,yB);
+      gS.addColorStop(0,`rgba(175,${Math.round(65-t*20)},0,1)`);gS.addColorStop(1,'rgba(110,22,0,1)');
+      const gT=ctx.createLinearGradient(x0,yT,x1+iX,yT-iY);
+      gT.addColorStop(0,`rgba(255,${Math.round(220-t*80)},${Math.round(t*12)},1)`);
+      gT.addColorStop(1,`rgba(225,${Math.round(105-t*30)},0,1)`);
+      return[gF,gS,gT];
+    },true);
+    // Glow blob inside bottom half
+    const rg=ctx.createRadialGradient(x0+fW*0.38,MID-maxH*0.22,0,x0+fW*0.38,MID-maxH*0.22,fW*0.42);
+    rg.addColorStop(0,`rgba(255,240,120,${0.22-t*0.07})`);rg.addColorStop(1,'rgba(255,100,0,0)');
+    ctx.fillStyle=rg;
+    ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,MID);ctx.lineTo(x0,MID);ctx.closePath();ctx.fill();
+    // Crust forming at top of bottom half (t>0.4)
+    if(t>0.4){
+      const crH=(t-0.4)/0.6*maxH*0.08;
+      fillGradPrism3D(ctx,MID,crH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'rgba(38,24,16,.95)');gF.addColorStop(1,'rgba(38,24,16,.05)');
+        return[gF,'rgba(26,16,10,.88)','rgba(36,22,14,.90)'];
+      },true);
+    }
+  }
+
+  else if(mode==='cooling'){
+    const t=cfg.t; // 0=surface lava, 1=all dark lithosphere
+    // Bottom half: magma cools — darkens from top downward, FIXED volume
+    const darkH=t*maxH*0.5;
+    const lavH =maxH*0.5-darkH;
+    // Remaining lava at bottom of bottom-half
+    if(lavH>1){
+      fillGradPrism3D(ctx,bY,lavH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'rgba(235,70,0,1)');gF.addColorStop(1,'rgba(190,45,0,1)');
+        return[gF,'rgba(125,30,0,1)','rgba(220,80,5,1)'];
+      },false);
+    }
+    // Dark cooled lithosphere above
+    if(darkH>1){
+      const yDarkBot=bY-lavH;
+      fillGradPrism3D(ctx,yDarkBot,darkH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+        return[gF,'#2A2A2A','#6A6A6A'];
+      },true);
+      // Granular texture on cooled lithosphere (front face)
+      // Front face dots
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,yDarkBot);ctx.lineTo(x1,yDarkBot);ctx.lineTo(x1,yDarkBot-darkH);ctx.lineTo(x0,yDarkBot-darkH);ctx.closePath();ctx.clip();
+      for(let gi=0;gi<55;gi++){
+        const gx=x0+2+(Math.abs(Math.sin(gi*41.3))*0.92)*fW;
+        const gy=(yDarkBot-darkH)+2+(Math.abs(Math.cos(gi*27.7))*0.92)*darkH;
+        const gr=0.8+Math.abs(Math.sin(gi*13))*0.9;
+        const wa=0.35+Math.abs(Math.sin(gi*7))*0.25;
+        ctx.fillStyle=`rgba(220,220,220,${wa})`;
+        ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+      // Side face dots
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x1,yDarkBot);ctx.lineTo(x1+iX,yDarkBot-iY);ctx.lineTo(x1+iX,yDarkBot-darkH-iY);ctx.lineTo(x1,yDarkBot-darkH);ctx.closePath();ctx.clip();
+      for(let gi=0;gi<30;gi++){
+        const gf=Math.abs(Math.sin(gi*37.1))*0.88;
+        const gsx=x1+iX*gf+2;
+        const gsy=(yDarkBot-darkH)+iY*gf+3+(Math.abs(Math.cos(gi*29.3))*0.88)*darkH;
+        const gr=0.7+Math.abs(Math.sin(gi*13))*0.7;
+        const wa=0.28+Math.abs(Math.sin(gi*7))*0.20;
+        ctx.fillStyle=`rgba(200,200,200,${wa})`;
+        ctx.beginPath();ctx.arc(gsx,gsy,gr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+    }
+    // Top half: empty while cooling
+  }
+
+  else if(mode==='ocean'){
+    const phase=cfg.phase, t=cfg.t;
+    // Bottom half: fully cooled lithosphere — same grey as gneiss
+    fillGradPrism3D(ctx,bY,maxH*0.5,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+      return[gF,'#2A2A2A','#6A6A6A'];
+    },false);
+    // Granular texture on lithosphere — front face
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,MID);ctx.lineTo(x0,MID);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<60;gi++){
+      const gx=x0+2+(Math.abs(Math.sin(gi*41.3))*0.92)*fW;
+      const gy=MID+2+(Math.abs(Math.cos(gi*27.7))*0.92)*(bY-MID);
+      const gr=0.8+Math.abs(Math.sin(gi*13))*0.9;
+      const wa=0.35+Math.abs(Math.sin(gi*7))*0.25;
+      ctx.fillStyle=`rgba(220,220,220,${wa})`;
+      ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Side face dots
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x1,bY);ctx.lineTo(x1+iX,bY-iY);ctx.lineTo(x1+iX,MID-iY);ctx.lineTo(x1,MID);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<35;gi++){
+      const gf=Math.abs(Math.sin(gi*37.1))*0.88;
+      const gsx=x1+iX*gf+2;
+      const gsy=MID+iY*gf+3+(Math.abs(Math.cos(gi*29.3))*0.88)*(bY-MID);
+      const gr=0.7+Math.abs(Math.sin(gi*13))*0.7;
+      const wa=0.28+Math.abs(Math.sin(gi*7))*0.20;
+      ctx.fillStyle=`rgba(200,200,200,${wa})`;
+      ctx.beginPath();ctx.arc(gsx,gsy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Ocean grows from MID upward, then shrinks
+    // Grow quickly to 20%, stay, then shrink
+    const rawH = phase==='grow' ? t : (1-t);
+    const oceanH = rawH * maxH * 0.20;
+    if(oceanH>1){
+      fillGradPrism3D(ctx,MID,oceanH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);
+        gF.addColorStop(0,'rgba(28,95,185,.90)');gF.addColorStop(1,'rgba(12,52,125,.92)');
+        const gT=ctx.createLinearGradient(x0,yT,x1+iX,yT-iY);
+        gT.addColorStop(0,'rgba(55,142,218,.55)');gT.addColorStop(1,'rgba(20,82,163,.55)');
+        return[gF,'rgba(8,38,102,.88)',gT];
+      },true);
+      // Wave lines
+      ctx.strokeStyle='rgba(80,168,238,.28)';ctx.lineWidth=0.8;
+      const nw=Math.max(2,Math.floor(oceanH/12));
+      for(let wi=0;wi<nw;wi++){
+        const wy=MID-(oceanH/(nw+1))*(wi+1);
+        ctx.beginPath();ctx.moveTo(x0,wy);
+        for(let xi=0;xi<=fW;xi+=9)ctx.lineTo(x0+xi,wy+Math.sin(xi*0.13+wi*1.2)*3);
+        ctx.stroke();
+      }
+    }
+  }
+
+  else if(mode==='craton'){
+    const sedT=cfg.sedT||0;
+    const sedH=sedT*maxH*0.18;   // thin sedimentary layer growing on top
+    const granitH=maxH*0.5;      // granite bottom half (fixed)
+
+    // Bottom half: granular lithosphere — same texture always
+    fillGradPrism3D(ctx,bY,granitH,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+      return[gF,'#2A2A2A','#6A6A6A'];
+    },sedH<=0);
+    // Granular texture
+    // Front face dots
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,bY-granitH);ctx.lineTo(x0,bY-granitH);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<60;gi++){
+      const gx=x0+2+(Math.abs(Math.sin(gi*41.3))*0.92)*fW;
+      const gy=(bY-granitH)+2+(Math.abs(Math.cos(gi*27.7))*0.92)*granitH;
+      const gr=0.8+Math.abs(Math.sin(gi*13))*0.9;
+      const wa=0.35+Math.abs(Math.sin(gi*7))*0.25;
+      ctx.fillStyle=`rgba(220,220,220,${wa})`;
+      ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Side face dots
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x1,bY);ctx.lineTo(x1+iX,bY-iY);ctx.lineTo(x1+iX,bY-granitH-iY);ctx.lineTo(x1,bY-granitH);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<35;gi++){
+      const gf=Math.abs(Math.sin(gi*37.1))*0.88;
+      const gsx=x1+iX*gf+2;
+      const gsy=(bY-granitH)+iY*gf+3+(Math.abs(Math.cos(gi*29.3))*0.88)*granitH;
+      const gr=0.7+Math.abs(Math.sin(gi*13))*0.7;
+      const wa=0.28+Math.abs(Math.sin(gi*7))*0.20;
+      ctx.fillStyle=`rgba(200,200,200,${wa})`;
+      ctx.beginPath();ctx.arc(gsx,gsy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+
+    // Thin sedimentary layer growing on top of granite
+    if(sedH>1){
+      const sedBot=bY-maxH*0.5;
+      fillGradPrism3D(ctx,sedBot,sedH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#9A9282');gF.addColorStop(1,'#7A7268');
+        return[gF,'#5E5850','#A09080'];
+      },true);
+      // Exactly 3 horizontal strata lines (flat, deposited by rivers)
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,sedBot);ctx.lineTo(x1,sedBot);ctx.lineTo(x1,sedBot-sedH);ctx.lineTo(x0,sedBot-sedH);ctx.closePath();ctx.clip();
+      for(let s=0;s<3;s++){
+        const sy=sedBot-(sedH/3)*(s+0.5);
+        ctx.strokeStyle=s%2===0?'rgba(165,155,138,.45)':'rgba(85,78,65,.42)';
+        ctx.lineWidth=1.1;
+        ctx.beginPath();ctx.moveTo(x0,sy);ctx.lineTo(x1,sy);ctx.stroke();
+      }
+      ctx.restore();
+      // River/dune ripples on TOP face — moving lines suggesting fluvial transport
+      const topY=sedBot-sedH;
+      ctx.save();
+      // Top face rhombus clip
+      ctx.beginPath();ctx.moveTo(x0,topY);ctx.lineTo(x1,topY);ctx.lineTo(x1+iX,topY-iY);ctx.lineTo(x0+iX,topY-iY);ctx.closePath();ctx.clip();
+      // Draw 4-5 curved channels across the top, spaced diagonally
+      const nRiv=4;
+      for(let ri=0;ri<nRiv;ri++){
+        const progress=sedT; // 0→1 as layer grows
+        const rx0=x0+iX*(ri/nRiv)*0.9;
+        const ry0=topY-iY*(ri/nRiv)*0.9;
+        const rxW=fW*0.85;
+        ctx.strokeStyle=`rgba(120,108,85,${0.28+ri*0.04})`;
+        ctx.lineWidth=1.4;
+        ctx.beginPath();
+        ctx.moveTo(rx0,ry0);
+        // Meander: gentle sinusoidal curve across the top face
+        for(let xi=0;xi<=rxW;xi+=4){
+          // Top face maps x→ x0+xi (front) + iso_x*(xi/fW) (depth offset)
+          const tx=rx0+xi;
+          const ty=ry0-iY*(xi/rxW)*0.5 + Math.sin(xi*0.18+ri*1.4)*2.5;
+          ctx.lineTo(tx,ty);
+        }
+        ctx.stroke();
+      }
+      // Small dune arcs — crescent shapes suggesting aeolian/fluvial bedforms
+      ctx.strokeStyle='rgba(155,142,118,.30)'; ctx.lineWidth=0.8;
+      for(let di=0;di<6;di++){
+        const dx=x0+iX*0.1+(Math.abs(Math.sin(di*41))*0.7)*(fW+iX*0.4);
+        const dy=topY-iY*0.15-(Math.abs(Math.cos(di*27))*0.6)*iY*0.7;
+        const dw=6+Math.abs(Math.sin(di*17))*8;
+        ctx.beginPath();ctx.arc(dx,dy,dw,Math.PI,Math.PI*2);ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  else if(mode==='transamazonic'){
+    const t=cfg.t; // 0=start, 1=complete — affects BOTH rocks simultaneously
+    const sedH=maxH*0.18;
+    const sedBot=bY-maxH*0.5;
+
+    // Bottom half: grey gneiss with white dashes — identical to post-transam,
+    // all dashes appear together with contrast growing as t increases
+    const gnH2=maxH*0.5;
+    const gnAlpha=t*0.82;
+    // Base fill: grey from the start
+    fillGradPrism3D(ctx,bY,gnH2,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+      return[gF,'#2A2A2A','#6A6A6A'];
+    },false);
+    // Granular dots (same as craton/ocean modes) fading out as dashes appear
+    if(t<0.5){
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,bY-gnH2);ctx.lineTo(x0,bY-gnH2);ctx.closePath();ctx.clip();
+      for(let gi=0;gi<30;gi++){
+        const gx=x0+3+(Math.abs(Math.sin(gi*41.3))*0.88)*fW;
+        const gy=(bY-gnH2)+4+(Math.abs(Math.cos(gi*27.7))*0.88)*gnH2;
+        const gr=1.2+Math.abs(Math.sin(gi*13))*1.6;
+        const dotA=(1-t*2)*0.50;
+        ctx.fillStyle=`rgba(${Math.round(65+Math.abs(Math.sin(gi*7))*50)},${Math.round(42+Math.abs(Math.sin(gi*11))*32)},${Math.round(26+Math.abs(Math.sin(gi*17))*18)},${dotA})`;
+        ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+    }
+    // White dashes — front face + side face, alternating rows, same as drawSlab gneiss
+    {
+      const nb=Math.max(8,Math.floor(gnH2/4));
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,bY-gnH2);ctx.lineTo(x0,bY-gnH2);ctx.closePath();ctx.clip();
+      for(let b=0;b<nb;b++){
+        const by2=bY-(gnH2/nb)*(b+0.5);
+        const rowShift=(b%2===0)?0:6;
+        const rowOff=Math.sin(b*17.3)*2;
+        const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+        const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+        ctx.strokeStyle=`rgba(235,235,235,${gnAlpha})`;
+        ctx.lineWidth=0.9+Math.abs(Math.sin(b*3.1))*0.35;
+        let xi=x0+1+rowShift; let di=0;
+        while(xi<x1-2){
+          const dl=dashL+Math.abs(Math.sin(di*11+b*2.3))*2;
+          const gl=gapL +Math.abs(Math.sin(di*7.7+b*4.1))*2;
+          ctx.beginPath();ctx.moveTo(xi,by2+rowOff);ctx.lineTo(Math.min(xi+dl,x1-1),by2+rowOff);ctx.stroke();
+          xi+=dl+gl; di++;
+        }
+      }
+      ctx.restore();
+      // Side face dashes
+      for(let b=0;b<nb;b++){
+        const by2=bY-(gnH2/nb)*(b+0.5);
+        const rowShift=(b%2===0)?0:6;
+        const rowOff=Math.sin(b*17.3)*2;
+        const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+        const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+        ctx.strokeStyle=`rgba(200,200,200,${gnAlpha*0.65})`;
+        ctx.lineWidth=0.85;
+        const sideFrac=iX>0?1/iX:1;
+        let sf=rowShift*sideFrac*0.5; let si2=0;
+        while(sf<1.0){
+          const dl2=(dashL*sideFrac*0.9)+Math.abs(Math.sin(si2*11+b*2.3))*sideFrac*1.5;
+          const gl2=(gapL *sideFrac*0.8)+Math.abs(Math.sin(si2*7.7+b*4.1))*sideFrac*1.5;
+          const ex=x1+iX*sf,        ey=by2-iY*sf+rowOff*0.5;
+          const ex2=x1+iX*(sf+dl2), ey2=by2-iY*(sf+dl2)+rowOff*0.5;
+          ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(Math.min(ex2,x1+iX-1),ey2);ctx.stroke();
+          sf+=dl2+gl2; si2++;
+        }
+      }
+    }
+
+    // Sedimentary layer base fill
+    fillGradPrism3D(ctx,sedBot,sedH,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#9A9282');gF.addColorStop(1,'#7A7268');
+      return[gF,'#5E5850','#A09080'];
+    },true);
+
+    // 3 strata lines: straight → 2 anticline+syncline folds, amplitude grows with t
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x0,sedBot);ctx.lineTo(x1,sedBot);ctx.lineTo(x1,sedBot-sedH);ctx.lineTo(x0,sedBot-sedH);ctx.closePath();ctx.clip();
+    const foldAmp=t*7;
+    for(let s=0;s<3;s++){
+      const sy=sedBot-(sedH/3)*(s+0.5);
+      ctx.strokeStyle=s%2===0?'rgba(165,155,138,.48)':'rgba(85,78,65,.45)';
+      ctx.lineWidth=1.1;
+      ctx.beginPath(); ctx.moveTo(x0,sy);
+      for(let xi=0;xi<=fW;xi+=4){
+        // 2 complete sine cycles = 1 anticline + 1 syncline across the width
+        ctx.lineTo(x0+xi, sy + foldAmp*Math.sin((xi/fW)*4*Math.PI));
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  else { // post
+    // Gneiss ALWAYS at bottom half — fixed at maxH*0.5
+    const gnH=maxH*0.5;
+    // Fold erodes on top of gneiss
+    const foldH=maxH*0.18*(1-cfg.erosion); // same thickness as original sed layer, erodes away
+    let curY=bY;
+    const hasQ=cfg.qH>0||cfg.seaF>0,hasL=cfg.lH>0||cfg.paleoF>0,hasO=cfg.soilH>0;
+    const hasFold=foldH>1;
+    drawSlab(ctx,curY,gnH,x0,x1,iX,iY,'gneiss',!hasFold&&!hasQ&&!hasL&&!hasO,'Gneis','2.200 Ma');curY-=gnH;
+    if(hasFold){
+      // Eroding folded sediment: same 3 wavy strata as end of transamazonic (full amplitude)
+      fillGradPrism3D(ctx,curY,foldH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#9A9282');gF.addColorStop(1,'#7A7268');
+        return[gF,'#5E5850',(!hasQ&&!hasL&&!hasO)?'#A09080':'#9A9282'];
+      },!hasQ&&!hasL&&!hasO);
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,curY);ctx.lineTo(x1,curY);ctx.lineTo(x1,curY-foldH);ctx.lineTo(x0,curY-foldH);ctx.closePath();ctx.clip();
+      for(let s=0;s<3;s++){
+        const sy=(curY)-(foldH/3)*(s+0.5);
+        ctx.strokeStyle=s%2===0?'rgba(165,155,138,.48)':'rgba(85,78,65,.45)';
+        ctx.lineWidth=1.1;
+        ctx.beginPath(); ctx.moveTo(x0,sy);
+        for(let xi=0;xi<=fW;xi+=4) ctx.lineTo(x0+xi, sy + 7*Math.sin((xi/fW)*4*Math.PI));
+        ctx.stroke();
+      }
+      ctx.restore();
+      curY-=foldH;
+    }
+    if(cfg.qH>0){const qH=cfg.qH*maxH*0.46;drawSlab(ctx,curY,qH,x0,x1,iX,iY,'quartzite',!hasL&&!hasO&&!(cfg.seaF>0),'Ortocuarcita','Fm. Balcarce');curY-=qH;}
+    if(cfg.seaF>0){const sf=cfg.seaF*maxH*0.46;drawFilmSlab(ctx,curY,sf,x0,x1,iX,iY,'sea');curY-=sf;}
+    // Discontinuity line before loess (wavy dashed, marks unconformity)
+    if(cfg.lH>0&&cfg.qH>=F_QZ){
+      ctx.strokeStyle='rgba(240,200,80,.75)'; ctx.lineWidth=1.8; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(x0,curY);
+      for(let xi=0;xi<=fW;xi+=6) ctx.lineTo(x0+xi, curY+Math.sin(xi*0.18)*3);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,curY); ctx.lineTo(x1+iX,curY-iY); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if(cfg.lH>0){const lH=cfg.lH*maxH*0.38;drawSlab(ctx,curY,lH,x0,x1,iX,iY,'loess',!hasO&&!(cfg.paleoF>0),'Loess','Cuaternario');curY-=lH;}
+    if(cfg.paleoF>0){const pf=cfg.paleoF*maxH*0.38;drawFilmSlab(ctx,curY,pf,x0,x1,iX,iY,'paleo');curY-=pf;}
+    if(cfg.soilH>0){drawSoilSlab(ctx,curY,cfg.soilH*maxH*0.38,x0,x1,iX,iY);}
+  }
+
+  ctx.restore();
+  drawGlassFrame(ctx,P);
+
+  // ── Layer labels: recompute heights from cfg (no scope issues) ──
+  (function(){
+    const lx=x1+iX+10;
+    if(lx+60>S) return;
+    ctx.font='8px sans-serif';
+    ctx.textAlign='left';
+
+    // Collect {top, bot, txt, col} for each visible layer
+    const labs=[];
+    const m=cfg.mode;
+
+    if(m==='cooling'){
+      const t2=cfg.t||0;
+      const dkH=t2*maxH*0.5;   // dark crust growing from MID downward
+      // Label grows from MID down: top=MID, bot=MID+dkH (i.e. bY at t=1)
+      if(dkH>6) labs.push({top:MID, bot:MID+dkH, txt:'Litosfera (enfriando)', col:'rgba(220,220,220,.75)'});
+    }
+    else if(m==='ocean'){
+      const rawH2=(cfg.phase==='grow'?cfg.t:(1-cfg.t));
+      const ocH=rawH2*maxH*0.20;
+      const litoBot=MID, litoTop=bY-maxH*0.5;
+      labs.push({top:bY-maxH*0.5, bot:bY, txt:'Granitoide (protolito)', col:'rgba(220,220,220,.75)'});
+      if(ocH>4) labs.push({top:MID-ocH, bot:MID, txt:'Océano primitivo', col:'rgba(100,185,240,.85)'});
+    }
+    else if(m==='craton'){
+      const sdT=cfg.sedT||0;
+      const sdH2=sdT*maxH*0.18;
+      const gnTop=bY-maxH*0.5;
+      labs.push({top:gnTop, bot:bY, txt:'Granitoide (protolito)', col:'rgba(220,220,220,.75)'});
+      if(sdH2>4){
+        labs.push({top:gnTop-sdH2, bot:gnTop, txt:'Sed. continental', col:'rgba(200,190,165,.82)'});
+
+      }
+    }
+    else if(m==='transamazonic'){
+      const sdH2=maxH*0.18;
+      const gnTop=bY-maxH*0.5;
+      labs.push({top:gnTop, bot:bY, txt:'Gneis', col:'rgba(230,230,230,.80)'});
+      labs.push({top:gnTop-sdH2, bot:gnTop, txt:'Roca plegada', col:'rgba(195,188,170,.82)'});
+
+    }
+    else if(m==='post'){
+      let cur=bY;
+      const gnH2=maxH*0.5;
+      labs.push({top:cur-gnH2, bot:cur, txt:'Gneis', col:'rgba(230,230,230,.80)'}); cur-=gnH2;
+      const fdH=maxH*0.18*(1-(cfg.erosion||0));
+      if(fdH>4){labs.push({top:cur-fdH, bot:cur, txt:'Roca plegada', col:'rgba(195,188,170,.82)', disc_bot:true}); cur-=fdH;}
+      if((cfg.qH||0)>0){
+        const qH2=cfg.qH*maxH*0.46;
+        // disc_bot: unconformity at base of Fm. Balcarce — only when deposition starts
+        labs.push({top:cur-qH2,bot:cur,txt:'Fm. Balcarce',col:'rgba(230,225,200,.85)',disc_bot:true}); cur-=qH2;
+      }
+      if((cfg.seaF||0)>0) cur-=cfg.seaF*maxH*0.46;
+      if((cfg.lH||0)>0){
+        const lH2=cfg.lH*maxH*0.38;
+        // disc_bot: contact between Fm. Balcarce and Loess = unconformity
+        labs.push({top:cur-lH2,bot:cur,txt:'Loess',col:'rgba(210,180,80,.85)',disc_bot:true}); cur-=lH2;
+      }
+      if((cfg.soilH||0)>0){const sH2=cfg.soilH*maxH*0.38;labs.push({top:cur-sH2,bot:cur,txt:'Suelo',col:'rgba(130,210,60,.85)'}); cur-=sH2;}
+    }
+
+    // Draw only unconformity lines (disc_top or disc_bot flagged)
+    labs.forEach(function(lb){
+      const tY=lb.top-iY, bY2=lb.bot-iY;
+      ctx.strokeStyle='rgba(240,196,60,.82)'; ctx.lineWidth=1.6; ctx.setLineDash([5,3]);
+      if(lb.disc_top){
+        ctx.beginPath();ctx.moveTo(lx,tY);ctx.lineTo(lx+S*0.38,tY);ctx.stroke();
+      }
+      if(lb.disc_bot){
+        ctx.beginPath();ctx.moveTo(lx,bY2);ctx.lineTo(lx+S*0.38,bY2);ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    });
+
+    // Draw vertical bracket + label per layer
+    const bracketX=lx+S*0.20;  // bracket further right to avoid overlap
+    labs.forEach(function(lb){
+      const tY=lb.top-iY, bY2=lb.bot-iY;
+      const midY=(tY+bY2)/2;
+      if(lb.bracket){
+        // Bracket: outer vertical line with top+bot serifs, label at mid
+        ctx.strokeStyle=lb.col; ctx.lineWidth=1.0;
+        ctx.beginPath();ctx.moveTo(bracketX,tY);ctx.lineTo(bracketX,bY2);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(bracketX,tY);ctx.lineTo(bracketX-4,tY);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(bracketX,bY2);ctx.lineTo(bracketX-4,bY2);ctx.stroke();
+        ctx.fillStyle=lb.col;
+        ctx.save();
+        ctx.translate(bracketX+10, midY);
+        ctx.rotate(-Math.PI/2);
+        ctx.textAlign='center';
+        ctx.fillText(lb.txt, 0, 0);
+        ctx.restore();
+        ctx.textAlign='start';
+      } else {
+        ctx.strokeStyle=lb.col; ctx.lineWidth=0.9;
+        ctx.beginPath();ctx.moveTo(lx+1,tY);ctx.lineTo(lx+1,bY2);ctx.stroke();
+        ctx.fillStyle=lb.col;
+        ctx.fillText(lb.txt, lx+6, midY+3);
+      }
+    });
+    ctx.textAlign='start';
+  })();
+}
+
+// ── Blend slab ──
+function drawBlendSlab(ctx,yBot,h,x0,x1,iX,iY,typeA,typeB,t,showTop){
+  if(h<=0.5)return;
+  const yTop=yBot-h,fW=x1-x0;
+  function lerpC(a,b,t){const ah=parseInt(a.replace('#',''),16),bh=parseInt(b.replace('#',''),16);const r=Math.round(((ah>>16)&0xff)*(1-t)+((bh>>16)&0xff)*t);const g=Math.round(((ah>>8)&0xff)*(1-t)+((bh>>8)&0xff)*t);const bl=Math.round((ah&0xff)*(1-t)+(bh&0xff)*t);return'#'+[r,g,bl].map(v=>v.toString(16).padStart(2,'0')).join('');}
+  const C={granite:{fl:'#3A3230',fr:'#252020',sr:'#1A1515',tr:'#4A4240'},gneiss:{fl:'#5A5A5A',fr:'#3C3C3C',sr:'#2A2A2A',tr:'#6A6A6A'},sediment:{fl:'#8A8A7A',fr:'#6A6A5A',sr:'#4A4A3A',tr:'#9A9A8A'},folded:{fl:'#7A7A68',fr:'#5A5A48',sr:'#3E3E2E',tr:'#8A8A78'}};
+  const cA=C[typeA],cB=C[typeB];
+  const c={fl:lerpC(cA.fl,cB.fl,t),fr:lerpC(cA.fr,cB.fr,t),sr:lerpC(cA.sr,cB.sr,t),tr:lerpC(cA.tr,cB.tr,t)};
+  const fg=ctx.createLinearGradient(0,yTop,0,yBot);fg.addColorStop(0,c.fl);fg.addColorStop(1,c.fr);
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=fg;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=c.sr;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=c.tr;ctx.fill();}
+  ctx.save();ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.clip();
+  if(typeA==='sediment'){const ns=Math.max(5,Math.floor(h/7));for(let s=0;s<ns;s++){const sy=yBot-(h/ns)*(s+0.5);const amp=t*6*(1+0.5*Math.sin(s*1.2));const freq=0.08+t*0.12;ctx.strokeStyle=s%2===0?'rgba(180,175,160,.35)':'rgba(80,75,60,.40)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x0,sy);for(let xi=0;xi<=fW;xi+=6)ctx.lineTo(x0+xi,sy+Math.sin(xi*freq+s*1.7)*amp+Math.sin(xi*freq*0.5+s)*amp*0.4);ctx.stroke();}}
+  else if(typeA==='granite'&&t>0.0){
+    const nb=Math.max(7,Math.floor(h/5));
+    const alpha=t*0.85;
+    // Draw front and side together per row
+    for(let b=0;b<nb;b++){
+      const by2=yBot-(h/nb)*(b+0.5);
+      // Row-level randomness seeded by b
+      const rowOff=Math.sin(b*17.3)*3;  // vertical jitter per row
+      const dashBase=4+Math.abs(Math.sin(b*7.1))*4;  // dash length varies 4-8px
+      const gapBase=5+Math.abs(Math.sin(b*13.7))*6;  // gap varies 5-11px
+      // FRONT FACE — horizontal dashes with irregular length+gap
+      ctx.strokeStyle=`rgba(235,235,235,${alpha})`;
+      ctx.lineWidth=0.9+Math.abs(Math.sin(b*3.1))*0.4;
+      let xi=x0+1+Math.abs(Math.sin(b*5.3))*4;  // staggered start
+      let di=0;
+      while(xi<x1-2){
+        const dl=dashBase+Math.abs(Math.sin(di*11.1+b*2.3))*3;
+        const gl=gapBase+Math.abs(Math.sin(di*7.7+b*4.1))*4;
+        ctx.beginPath();ctx.moveTo(xi,by2+rowOff);ctx.lineTo(Math.min(xi+dl,x1-1),by2+rowOff);ctx.stroke();
+        xi+=dl+gl; di++;
+      }
+      // SIDE FACE — foreshortened dashes along side direction, same row
+      ctx.strokeStyle=`rgba(200,200,200,${alpha*0.65})`;
+      ctx.lineWidth=0.85;
+      const sideSteps=5;
+      let si=0;
+      while(si<sideSteps){
+        const frac=si/sideSteps;
+        const dl2=0.06+Math.abs(Math.sin(si*9.3+b*3.7))*0.04; // fraction of side width
+        const gl2=0.04+Math.abs(Math.sin(si*6.1+b*2.9))*0.04;
+        const ex=x1+iX*frac, ey=by2-iY*frac+rowOff*0.5;
+        const ex2=x1+iX*(frac+dl2), ey2=by2-iY*(frac+dl2)+rowOff*0.5;
+        ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex2,ey2);ctx.stroke();
+        si+=dl2+gl2>0?(1+Math.abs(Math.sin(si*4.1))):1;
+        si++;
+      }
+    }
+  }
+  ctx.restore();
+}
+
+// ── Solid slab ──
+function drawSlab(ctx,yBot,h,x0,x1,iX,iY,type,showTop,label,age){
+  if(h<=0.5)return;
+  const yTop=yBot-h,fW=x1-x0;
+  const C={gneiss:{fl:'#5A5A5A',fr:'#3C3C3C',sr:'#2A2A2A',tr:'#6A6A6A'},quartzite:{fl:'#E8E0D0',fr:'#C8C0B0',sr:'#A8A098',tr:'#F0EAE0'},loess:{fl:'#B8903A',fr:'#8A6820',sr:'#6A5015',tr:'#C8A048'},folded:{fl:'#7A7A68',fr:'#5A5A48',sr:'#3E3E2E',tr:'#8A8A78'}};
+  const c=C[type]||C.gneiss;
+  const fg=ctx.createLinearGradient(0,yTop,0,yBot);fg.addColorStop(0,c.fl);fg.addColorStop(1,c.fr);
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=fg;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=c.sr;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=c.tr;ctx.fill();}
+  ctx.save();ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.clip();
+  if(type==='gneiss'){
+    const nb=Math.max(8,Math.floor(h/4));
+    for(let b=0;b<nb;b++){
+      const by2=yBot-(h/nb)*(b+0.5);
+      const rowShift=(b%2===0)?0:6;
+      const rowOff=Math.sin(b*17.3)*2;
+      const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+      const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+      ctx.strokeStyle='rgba(235,235,235,.82)';
+      ctx.lineWidth=0.9+Math.abs(Math.sin(b*3.1))*0.35;
+      let xi2=x0+1+rowShift; let di=0;
+      while(xi2<x1-2){
+        const dl=dashL+Math.abs(Math.sin(di*11+b*2.3))*2;
+        const gl=gapL +Math.abs(Math.sin(di*7.7+b*4.1))*2;
+        ctx.beginPath();ctx.moveTo(xi2,by2+rowOff);ctx.lineTo(Math.min(xi2+dl,x1-1),by2+rowOff);ctx.stroke();
+        xi2+=dl+gl; di++;
+      }
+    }
+  }
+  else if(type==='folded'){const ns=Math.max(4,Math.floor(h/6));for(let s=0;s<ns;s++){const sy=yBot-(h/ns)*(s+0.5);ctx.strokeStyle=s%2===0?'rgba(180,175,160,.35)':'rgba(80,75,60,.40)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x0,sy);for(let xi=0;xi<=fW;xi+=6)ctx.lineTo(x0+xi,sy+Math.sin(xi*0.18+s*1.7)*5+Math.sin(xi*0.10+s)*3);ctx.stroke();}}
+  else if(type==='quartzite'){
+    // Parallel horizontal strata
+    const ns=Math.max(4,Math.floor(h/9));
+    for(let s=0;s<ns;s++){
+      const sy=yBot-(h/ns)*(s+0.5);
+      ctx.strokeStyle='rgba(100,90,75,.55)'; ctx.lineWidth=1.1;
+      ctx.beginPath();ctx.moveTo(x0,sy);ctx.lineTo(x1,sy);ctx.stroke();
+    }
+    // Cross-bedding sets between strata
+    const nSets=Math.max(2,Math.floor(h/18));
+    for(let set=0;set<nSets;set++){
+      const setBot=yBot-(h/nSets)*set;
+      const setTop=yBot-(h/nSets)*(set+1);
+      const setH=setBot-setTop;
+      const setW=fW*0.28;
+      // Alternate foreset direction per set
+      const dir=(set%2===0)?1:-1;
+      const nForeset=5;
+      for(let f=0;f<nForeset;f++){
+        const fx=x0+fW*(0.05+set*0.32)+(f/nForeset)*setW*0.9;
+        ctx.strokeStyle='rgba(130,115,90,.38)'; ctx.lineWidth=0.7;
+        ctx.beginPath();
+        if(dir>0){
+          ctx.moveTo(fx, setTop+setH*0.1);
+          ctx.lineTo(fx-setW*0.3, setBot-setH*0.1);
+        } else {
+          ctx.moveTo(fx, setTop+setH*0.1);
+          ctx.lineTo(fx+setW*0.3, setBot-setH*0.1);
+        }
+        ctx.stroke();
+      }
+    }
+  }
+  else if(type==='loess'){ctx.fillStyle='rgba(148,102,22,.32)';for(let di=0;di<16;di++){const dx=x0+3+(Math.abs(Math.sin(di*41))*0.88)*fW;const dy=yTop+2+(Math.abs(Math.cos(di*27))*0.88)*h;ctx.beginPath();ctx.arc(dx,dy,2,0,Math.PI*2);ctx.fill();}}
+  ctx.restore();
+  // Gneiss: side face dashes, alternating rows
+  if(type==='gneiss'){
+    const nb2=Math.max(8,Math.floor(h/4));
+    for(let b=0;b<nb2;b++){
+      const by2=yBot-(h/nb2)*(b+0.5);
+      const rowShift=(b%2===0)?0:6;
+      const rowOff=Math.sin(b*17.3)*2;
+      const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+      const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+      ctx.strokeStyle='rgba(200,200,200,.62)'; ctx.lineWidth=0.85;
+      const sideFrac=iX>0?1/iX:1;
+      let sf=rowShift*sideFrac*0.5; let si2=0;
+      while(sf<1.0){
+        const dl2=(dashL*sideFrac*0.9)+Math.abs(Math.sin(si2*11+b*2.3))*sideFrac*1.5;
+        const gl2=(gapL *sideFrac*0.8)+Math.abs(Math.sin(si2*7.7+b*4.1))*sideFrac*1.5;
+        const ex=x1+iX*sf,        ey=by2-iY*sf+rowOff*0.5;
+        const ex2=x1+iX*(sf+dl2), ey2=by2-iY*(sf+dl2)+rowOff*0.5;
+        ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(Math.min(ex2,x1+iX-1),ey2);ctx.stroke();
+        sf+=dl2+gl2; si2++;
+      }
+    }
+  }
+  if(type==='quartzite'){ctx.strokeStyle='#E8A020';ctx.lineWidth=2.2;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.stroke();ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.stroke();ctx.setLineDash([]);}
+}
+function drawFilmSlab(ctx,yBot,h,x0,x1,iX,iY,kind){
+  if(h<=0.3)return;
+  const yTop=yBot-h,fW=x1-x0,isSea=kind==='sea';
+  const fl=isSea?'rgba(70,160,220,.55)':'rgba(60,140,40,.55)';
+  const sr=isSea?'rgba(20,90,160,.45)':'rgba(20,70,10,.45)';
+  const tr=isSea?'rgba(110,195,245,.40)':'rgba(80,170,50,.40)';
+  const lc=isSea?'rgba(180,225,255,.55)':'rgba(160,220,100,.55)';
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=fl;ctx.fill();
+  ctx.save();ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.clip();
+  ctx.strokeStyle=lc;ctx.lineWidth=0.8;const nw=Math.max(2,Math.floor(h/5));
+  for(let wi=0;wi<nw;wi++){const wy=yBot-(h/(nw+1))*(wi+1);ctx.beginPath();ctx.moveTo(x0,wy);for(let xi=0;xi<=fW;xi+=7)ctx.lineTo(x0+xi,wy+Math.sin(xi*0.18+wi*1.4)*2);ctx.stroke();}
+  ctx.restore();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=sr;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=tr;ctx.fill();
+}
+function drawSoilSlab(ctx,yBot,h,x0,x1,iX,iY){
+  if(h<=0.3)return;
+  const yTop=yBot-h,gH=h*0.4,yG=yTop+gH;
+  ctx.fillStyle='#1A1410';ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yG);ctx.lineTo(x0,yG);ctx.closePath();ctx.fill();
+  const gg=ctx.createLinearGradient(0,yTop,0,yG);gg.addColorStop(0,'#4A8018');gg.addColorStop(1,'#2A5008');ctx.fillStyle=gg;
+  ctx.beginPath();ctx.moveTo(x0,yG);ctx.lineTo(x1,yG);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#0E0A08';ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yG-iY);ctx.lineTo(x1,yG);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#2A5008';ctx.beginPath();ctx.moveTo(x1,yG);ctx.lineTo(x1+iX,yG-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle='#5AB020';ctx.fill();
+  ctx.fillStyle='#78D030';[[x0+5,yTop-3],[x0+13,yTop-5],[x0+22,yTop-2],[x1-8,yTop-4]].forEach(function(g){ctx.fillRect(g[0]-1,g[1],2,4);});
+}
+function drawGlassFrame(ctx,P){
+  ctx.save();
+  ctx.beginPath();ctx.moveTo(P.FL.x,P.FL.y);ctx.lineTo(P.FR.x,P.FR.y);ctx.lineTo(P.TR.x,P.TR.y);ctx.lineTo(P.TL.x,P.TL.y);ctx.closePath();ctx.fillStyle='rgba(200,220,255,.04)';ctx.fill();
+  ctx.beginPath();ctx.moveTo(P.TL.x,P.TL.y);ctx.lineTo(P.TR.x,P.TR.y);ctx.lineTo(P.BTR.x,P.BTR.y);ctx.lineTo(P.BTL.x,P.BTL.y);ctx.closePath();ctx.fillStyle='rgba(200,220,255,.07)';ctx.fill();
+  ctx.restore();
+  ctx.strokeStyle='rgba(200,220,255,.55)';ctx.lineWidth=1.2;
+  [[P.FL,P.TL],[P.FR,P.TR],[P.BRR,P.BTR],[P.FL,P.FR],[P.FR,P.BRR]].forEach(function(e){ctx.beginPath();ctx.moveTo(e[0].x,e[0].y);ctx.lineTo(e[1].x,e[1].y);ctx.stroke();});
+  ctx.strokeStyle='rgba(200,220,255,.7)';
+  [[P.TL,P.TR],[P.TR,P.BTR],[P.BTR,P.BTL],[P.BTL,P.TL]].forEach(function(e){ctx.beginPath();ctx.moveTo(e[0].x,e[0].y);ctx.lineTo(e[1].x,e[1].y);ctx.stroke();});
+  ctx.save();ctx.beginPath();ctx.moveTo(P.FL.x,P.FL.y);ctx.lineTo(P.FR.x,P.FR.y);ctx.lineTo(P.TR.x,P.TR.y);ctx.lineTo(P.TL.x,P.TL.y);ctx.closePath();ctx.clip();
+  const hg=ctx.createLinearGradient(P.TL.x,P.TL.y,P.TL.x+25,P.FL.y);hg.addColorStop(0,'rgba(255,255,255,.10)');hg.addColorStop(0.3,'rgba(255,255,255,.02)');hg.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hg;ctx.fillRect(P.TL.x,P.TL.y,32,P.FL.y-P.TL.y);ctx.restore();
+}
+
+function getHistLabel(pct){const ma=pctToMa(pct);let l=HIST_LABELS[0];HIST_LABELS.forEach(function(x){if(ma<=x.maxMa)l=x;});return l;}
+function updateHist(pct){
+  const prog=document.getElementById('hist-prog'),thumb=document.getElementById('hist-thumb');
+  if(prog)prog.style.width=(pct*100)+'%';if(thumb)thumb.style.left=(pct*100)+'%';
+  const lbl=getHistLabel(pct);
+  const en=document.getElementById('era-name');if(en)en.textContent=lbl.title;
+  const ed=document.getElementById('era-desc');if(ed)ed.textContent=lbl.desc;
+  const canvas=document.getElementById('rock-canvas');
+  if(canvas)drawIsoColumn(canvas,getColConfig(pct));
+}
+function startHistScrub(e){
+  e.preventDefault();_histScrubbing=true;doHistScrub(e);
+  const mv=function(ev){if(_histScrubbing)doHistScrub(ev);};
+  const up=function(){_histScrubbing=false;document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);};
+  document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);
+}
+function doHistScrub(e){
+  const bar=document.getElementById('hist-bar');if(!bar)return;
+  const r=bar.getBoundingClientRect();
+  const cx2=e.touches?e.touches[0].clientX:e.clientX;
+  updateHist(Math.max(0,Math.min(1,(cx2-r.left)/r.width)));
+}
+function initHistoria(){colorHistBar();setTimeout(function(){updateHist(0);},60);}
+
+
+/* ════════════
+   PALEOAMBIENTE — acuario isométrico
+════════════ */
+let _paleoRaf=null;
+let _paleoStart=0;
+
+function startPaleoScene(){
+  if(_paleoRaf) cancelAnimationFrame(_paleoRaf);
+  _paleoStart=performance.now();
+  const loop=()=>{
+    const canvas=document.getElementById('paleo-canvas');
+    if(!canvas || !document.getElementById('paleo-panel').classList.contains('open')){
+      _paleoRaf=null; return;
+    }
+    const tMs=performance.now()-_paleoStart;
+    drawPaleoScene(canvas, tMs/1000);
+    _paleoRaf=requestAnimationFrame(loop);
+  };
+  _paleoRaf=requestAnimationFrame(loop);
+}
+function stopPaleoScene(){
+  if(_paleoRaf){cancelAnimationFrame(_paleoRaf); _paleoRaf=null;}
+}
+
+function drawPaleoScene(canvas, tSec){
+  const DPR=window.devicePixelRatio||1;
+  // Use clientWidth (CSS size) for reliable sizing
+  const W=canvas.clientWidth  || canvas.offsetWidth  || 340;
+  const H=canvas.clientHeight || canvas.offsetHeight || 160;
+  // Only resize if changed (avoid flicker)
+  if(canvas.width!==Math.round(W*DPR))  canvas.width =Math.round(W*DPR);
+  if(canvas.height!==Math.round(H*DPR)) canvas.height=Math.round(H*DPR);
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  // ── Isometric "aquarium" — centered in available space ──
+  const margin=6;
+  // Compute box dimensions
+  const boxH=(H-margin*2)*0.70;
+  const iY=boxH*0.28;
+  const fW=Math.min(W*0.60, W-margin*2-boxH*0.50);
+  const iX=fW*0.35;
+  // Box footprint: width = fW + iX, height = boxH + iY
+  const boxFootW=fW+iX;
+  const boxFootH=boxH+iY;
+  // Center horizontally & vertically in canvas
+  const x0=(W-boxFootW)/2;
+  const x1=x0+fW;
+  const topY=(H-boxFootH)/2+iY;   // topY is front-top Y; back-top is topY-iY
+  const botY=topY+boxH;
+
+  // Sea occupies top 25% of box
+  const sandTop=topY+boxH*0.25;
+
+  // Background water
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#0A1830'); bg.addColorStop(1,'#061020');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  // Back water face
+  ctx.beginPath();
+  ctx.moveTo(x0+iX,topY-iY); ctx.lineTo(x1+iX,topY-iY);
+  ctx.lineTo(x1+iX,botY-iY); ctx.lineTo(x0+iX,botY-iY);
+  ctx.closePath();
+  const backG=ctx.createLinearGradient(0,topY,0,botY);
+  backG.addColorStop(0,'rgba(20,70,140,.45)'); backG.addColorStop(1,'rgba(10,40,90,.70)');
+  ctx.fillStyle=backG; ctx.fill();
+
+  // Back-left sand wall (cream/white)
+  ctx.beginPath();
+  ctx.moveTo(x0,sandTop); ctx.lineTo(x0+iX,sandTop-iY);
+  ctx.lineTo(x0+iX,botY-iY); ctx.lineTo(x0,botY);
+  ctx.closePath();
+  ctx.fillStyle='#C8C0B0'; ctx.fill();
+
+  // Light rays
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0,topY); ctx.lineTo(x1,topY);
+  ctx.lineTo(x1,sandTop); ctx.lineTo(x0,sandTop);
+  ctx.closePath(); ctx.clip();
+  for(let r=0;r<4;r++){
+    const rx=x0+fW*(0.15+r*0.22);
+    const off=Math.sin(tSec*0.5+r)*8;
+    const lg=ctx.createLinearGradient(rx+off,topY,rx+off-30,sandTop);
+    lg.addColorStop(0,'rgba(180,210,240,.18)'); lg.addColorStop(1,'rgba(180,210,240,0)');
+    ctx.fillStyle=lg;
+    ctx.beginPath();
+    ctx.moveTo(rx+off-4,topY); ctx.lineTo(rx+off+4,topY);
+    ctx.lineTo(rx+off+14,sandTop); ctx.lineTo(rx+off-14,sandTop);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+
+  // Suspended particles
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0,topY); ctx.lineTo(x1,topY);
+  ctx.lineTo(x1,sandTop); ctx.lineTo(x0,sandTop);
+  ctx.closePath(); ctx.clip();
+  for(let pi=0;pi<22;pi++){
+    const px=x0+4+(Math.abs(Math.sin(pi*37+tSec*0.15))*0.95)*fW;
+    const py=topY+4+((Math.cos(pi*23+tSec*0.1)+1)*0.5)*(sandTop-topY-8);
+    const pr=0.8+Math.abs(Math.sin(pi*7))*0.6;
+    ctx.fillStyle=`rgba(180,200,230,${0.2+Math.abs(Math.sin(pi*13+tSec))*0.2})`;
+    ctx.beginPath(); ctx.arc(px,py,pr,0,Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
+  // ── SAND TOP FACE (cream color) with RIPPLES ──
+  ctx.beginPath();
+  ctx.moveTo(x0,sandTop); ctx.lineTo(x1,sandTop);
+  ctx.lineTo(x1+iX,sandTop-iY); ctx.lineTo(x0+iX,sandTop-iY);
+  ctx.closePath();
+  const sg=ctx.createLinearGradient(x0,sandTop,x0+iX,sandTop-iY);
+  sg.addColorStop(0,'#E8E0D0'); sg.addColorStop(1,'#D8D0C0');
+  ctx.fillStyle=sg; ctx.fill();
+
+  // Ripples — parallel crests across top face
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0,sandTop); ctx.lineTo(x1,sandTop);
+  ctx.lineTo(x1+iX,sandTop-iY); ctx.lineTo(x0+iX,sandTop-iY);
+  ctx.closePath(); ctx.clip();
+  const rippleSp=14;
+  const totalW=fW+iX;
+  for(let ri=-2;ri*rippleSp<totalW+rippleSp*2;ri++){
+    const rx=x0+ri*rippleSp-iX*0.3;
+    // crest
+    ctx.strokeStyle='rgba(130,110,70,.45)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(rx,sandTop); ctx.lineTo(rx+iX,sandTop-iY); ctx.stroke();
+    // highlight next to crest
+    ctx.strokeStyle='rgba(255,250,235,.55)'; ctx.lineWidth=0.7;
+    ctx.beginPath(); ctx.moveTo(rx+4,sandTop+0.5); ctx.lineTo(rx+4+iX,sandTop-iY+0.5); ctx.stroke();
+  }
+  ctx.restore();
+
+  // ── SAND FRONT FACE with CROSS-BEDDING ──
+  ctx.beginPath();
+  ctx.moveTo(x0,sandTop); ctx.lineTo(x1,sandTop);
+  ctx.lineTo(x1,botY); ctx.lineTo(x0,botY);
+  ctx.closePath();
+  const sfg=ctx.createLinearGradient(0,sandTop,0,botY);
+  sfg.addColorStop(0,'#E0D6C4'); sfg.addColorStop(1,'#B8A890');
+  ctx.fillStyle=sfg; ctx.fill();
+  // Scalloped edge at top (ripples in profile)
+  ctx.strokeStyle='rgba(100,80,50,.50)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(x0,sandTop);
+  for(let xi=0;xi<=fW;xi+=5) ctx.lineTo(x0+xi, sandTop+Math.sin(xi*0.5)*1.2);
+  ctx.stroke();
+  // Cross-bedding on front: 3 sets of foresets alternating direction
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0,sandTop+2); ctx.lineTo(x1,sandTop+2);
+  ctx.lineTo(x1,botY); ctx.lineTo(x0,botY);
+  ctx.closePath(); ctx.clip();
+  const sandH=botY-sandTop;
+  const nSets=3;
+  for(let s=0;s<nSets;s++){
+    const setTop=sandTop+4+(sandH-4)*(s/nSets);
+    const setBot=sandTop+4+(sandH-4)*((s+1)/nSets);
+    const setH=setBot-setTop;
+    // Boundary line between sets
+    ctx.strokeStyle='rgba(100,80,50,.55)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x0,setTop); ctx.lineTo(x1,setTop); ctx.stroke();
+    // Foresets — tangent to boundaries, alternating direction
+    const dir=(s%2===0)?1:-1;
+    const fsSpacing=10;
+    for(let fx=-fW*0.5;fx<fW+fW*0.5;fx+=fsSpacing){
+      const startX=x0+fx;
+      ctx.strokeStyle='rgba(130,100,60,.40)'; ctx.lineWidth=0.7;
+      ctx.beginPath();
+      // Sigmoidal foreset: tangential at top and bottom
+      ctx.moveTo(startX, setTop+1);
+      const cpX = startX + dir*12;
+      ctx.bezierCurveTo(cpX, setTop+setH*0.3, cpX, setTop+setH*0.7, startX+dir*16, setBot-1);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // ── SAND RIGHT (SIDE) FACE with CROSS-BEDDING ──
+  ctx.beginPath();
+  ctx.moveTo(x1,sandTop); ctx.lineTo(x1+iX,sandTop-iY);
+  ctx.lineTo(x1+iX,botY-iY); ctx.lineTo(x1,botY);
+  ctx.closePath();
+  const srg=ctx.createLinearGradient(x1,0,x1+iX,0);
+  srg.addColorStop(0,'#C0B098'); srg.addColorStop(1,'#A89880');
+  ctx.fillStyle=srg; ctx.fill();
+  // Cross-bedding on side face
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x1,sandTop); ctx.lineTo(x1+iX,sandTop-iY);
+  ctx.lineTo(x1+iX,botY-iY); ctx.lineTo(x1,botY);
+  ctx.closePath(); ctx.clip();
+  for(let s=0;s<nSets;s++){
+    const setTop=sandTop+4+(sandH-4)*(s/nSets);
+    const setBot=sandTop+4+(sandH-4)*((s+1)/nSets);
+    // Boundary (projected with iso shift)
+    ctx.strokeStyle='rgba(100,80,50,.55)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(x1,setTop); ctx.lineTo(x1+iX,setTop-iY);
+    ctx.stroke();
+    // Foresets on side — run in iso direction
+    const dir=(s%2===0)?1:-1;
+    for(let ff=0;ff<5;ff++){
+      const sFrac=ff/5;
+      const sx=x1+iX*sFrac;
+      const sy=setTop-iY*sFrac;
+      ctx.strokeStyle='rgba(130,100,60,.35)'; ctx.lineWidth=0.6;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy+1);
+      const cpY=sy+(setBot-setTop)*0.5;
+      const endSx=sx+dir*5;
+      const endSy=setBot-iY*sFrac-1;
+      ctx.bezierCurveTo(sx+dir*3, cpY, sx+dir*3, cpY, endSx, endSy);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // Face outlines
+  ctx.strokeStyle='rgba(100,80,50,.35)'; ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.moveTo(x1,sandTop);ctx.lineTo(x1+iX,sandTop-iY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x1,botY);ctx.lineTo(x1+iX,botY-iY);ctx.stroke();
+
+  // ── Map (u,v) → top-face coords ──
+  const mapTop=(u,v)=>({x:x0+u*fW+v*iX, y:sandTop-v*iY});
+
+  // ── TRILOBITE paths — slower movement ──
+  const tri1=(ts)=>({u:0.50+0.32*Math.sin(ts*0.08),      v:0.55+0.25*Math.sin(ts*0.14)});
+  const tri2=(ts)=>({u:0.32+0.22*Math.sin(ts*0.11+2),    v:0.45+0.28*Math.cos(ts*0.09+1)});
+  const tri3=(ts)=>({u:0.70+0.22*Math.cos(ts*0.10+4),    v:0.35+0.22*Math.sin(ts*0.13+3)});
+
+  // ── Draw CRUZIANA — two parallel half-traces with central gap + striations ──
+  const drawTrace=(pathFn, trailLen, stepT, widthBase)=>{
+    // Build points (index 0 = NEWEST)
+    const pts=[];
+    for(let ti=0;ti<trailLen;ti++){
+      const ts=tSec-ti*stepT;
+      const p0=pathFn(ts);
+      const p1=pathFn(ts+0.05);
+      const m0=mapTop(p0.u,p0.v);
+      const m1=mapTop(p1.u,p1.v);
+      const ang=Math.atan2(m1.y-m0.y, m1.x-m0.x);
+      pts.push({x:m0.x, y:m0.y, ang:ang});
+    }
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x0,sandTop); ctx.lineTo(x1,sandTop);
+    ctx.lineTo(x1+iX,sandTop-iY); ctx.lineTo(x0+iX,sandTop-iY);
+    ctx.closePath(); ctx.clip();
+    ctx.lineCap='round'; ctx.lineJoin='round';
+
+    // Two half-grooves separated by a THIN central gap
+    const halfW=widthBase*0.42;      // half-groove width
+    const centerOff=widthBase*0.10;  // small offset — thin gap
+
+    // Helper: offset a point perpendicular to its direction
+    function offsetPt(p, d){
+      const nx=Math.cos(p.ang+Math.PI/2), ny=Math.sin(p.ang+Math.PI/2);
+      return {x:p.x+nx*d, y:p.y+ny*d, ang:p.ang};
+    }
+
+    // Draw each side (left = -1, right = +1)
+    for(let side=-1;side<=1;side+=2){
+      // Body of half-groove — dark stroke
+      for(let i=pts.length-1;i>0;i--){
+        const age=i/pts.length;
+        const fade=Math.pow(1-age, 1.2);
+        const p=pts[i], pn=pts[i-1];
+        const op=offsetPt(p, side*(centerOff+halfW/2));
+        const opn=offsetPt(pn, side*(centerOff+halfW/2));
+        // shadow
+        ctx.strokeStyle=`rgba(75,55,30,${0.60*fade})`;
+        ctx.lineWidth=halfW*1.15;
+        ctx.beginPath(); ctx.moveTo(op.x,op.y); ctx.lineTo(opn.x,opn.y); ctx.stroke();
+        // inner fill (lighter, indented)
+        ctx.strokeStyle=`rgba(190,170,135,${0.65*fade})`;
+        ctx.lineWidth=halfW*0.70;
+        ctx.beginPath(); ctx.moveTo(op.x,op.y); ctx.lineTo(opn.x,opn.y); ctx.stroke();
+      }
+      // Striations — diagonal scratches along the half-groove
+      // Cruziana striations go at an angle, not purely perpendicular (~45-60° from axis)
+      for(let i=2;i<pts.length-2;i+=2){
+        const age=i/pts.length;
+        const fade=Math.pow(1-age, 1.2);
+        const p=pts[i];
+        const op=offsetPt(p, side*(centerOff+halfW/2));
+        // Striation direction: at ~40° from perpendicular, same side for both halves
+        // This creates the characteristic V-shape of Cruziana striations
+        const strAng=p.ang+Math.PI/2 + side*(Math.PI*0.22);
+        const sx=Math.cos(strAng), sy=Math.sin(strAng);
+        const sLen=halfW*0.55;
+        ctx.strokeStyle=`rgba(60,45,22,${0.70*fade})`;
+        ctx.lineWidth=0.9;
+        ctx.beginPath();
+        ctx.moveTo(op.x-sx*sLen*0.3, op.y-sy*sLen*0.3);
+        ctx.lineTo(op.x+sx*sLen*0.9, op.y+sy*sLen*0.9);
+        ctx.stroke();
+      }
+    }
+
+    // Central gap: slightly darker faint line to emphasize the ridge/gap
+    for(let i=pts.length-1;i>0;i--){
+      const age=i/pts.length;
+      const fade=Math.pow(1-age, 1.2);
+      const p=pts[i], pn=pts[i-1];
+      ctx.strokeStyle=`rgba(235,220,190,${0.45*fade})`;
+      ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pn.x,pn.y); ctx.stroke();
+    }
+
+    ctx.restore();
+  };
+
+  // Draw traces: longer trails, thinner widths
+  drawTrace(tri1, 220, 0.08, 13);
+  drawTrace(tri2, 220, 0.08, 10);
+  drawTrace(tri3, 220, 0.08, 12);
+
+  // ── DRAW TRILOBITE (larger, simple, no eyes) ──
+  const drawTrilobite=(pathFn, size)=>{
+    const p=pathFn(tSec);
+    const pN=pathFn(tSec+0.05);
+    const m=mapTop(p.u,p.v);
+    const mN=mapTop(pN.u,pN.v);
+    const ang=Math.atan2(mN.y-m.y, mN.x-m.x);
+    ctx.save();
+    ctx.translate(m.x, m.y);
+    ctx.rotate(ang);
+    const L=size, Wd=size*0.62;
+
+    // ── Cephalon (head shield) — semicircular ──
+    ctx.fillStyle='#2A1F14';
+    ctx.beginPath();
+    ctx.ellipse(L*0.30, 0, L*0.32, Wd*0.54, 0, -Math.PI/2, Math.PI/2);
+    ctx.lineTo(L*0.05, -Wd*0.54);
+    ctx.lineTo(L*0.05,  Wd*0.54);
+    ctx.closePath(); ctx.fill();
+    // Cephalon rim highlight
+    ctx.strokeStyle='rgba(180,150,110,.7)';
+    ctx.lineWidth=0.8;
+    ctx.beginPath();
+    ctx.ellipse(L*0.30, 0, L*0.32, Wd*0.54, 0, -Math.PI/2, Math.PI/2);
+    ctx.stroke();
+
+    // Genal spines (points at back corners of head)
+    ctx.fillStyle='#1A1208';
+    ctx.beginPath();
+    ctx.moveTo(L*0.05, -Wd*0.54);
+    ctx.lineTo(L*-0.05, -Wd*0.50);
+    ctx.lineTo(L*0.08, -Wd*0.44);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(L*0.05, Wd*0.54);
+    ctx.lineTo(L*-0.05, Wd*0.50);
+    ctx.lineTo(L*0.08, Wd*0.44);
+    ctx.closePath(); ctx.fill();
+
+    // ── Thorax — segmented body ──
+    const nSeg=8;
+    const thoraxStart=L*0.05;
+    const thoraxEnd=L*-0.35;
+    const thoraxLen=thoraxStart-thoraxEnd;
+    // Axial lobe (central) + pleural lobes (sides)
+    ctx.fillStyle='#241810';
+    ctx.beginPath();
+    ctx.ellipse((thoraxStart+thoraxEnd)/2, 0, thoraxLen/2, Wd*0.5, 0, 0, Math.PI*2);
+    ctx.fill();
+    // Axial lobe darker in middle
+    ctx.fillStyle='#1A1008';
+    ctx.beginPath();
+    ctx.ellipse((thoraxStart+thoraxEnd)/2, 0, thoraxLen/2-1, Wd*0.18, 0, 0, Math.PI*2);
+    ctx.fill();
+    // Segment dividers
+    ctx.strokeStyle='rgba(180,150,110,.6)';
+    ctx.lineWidth=0.8;
+    for(let sg=0;sg<=nSeg;sg++){
+      const sx=thoraxStart - (thoraxLen/nSeg)*sg;
+      // Each segment curves slightly
+      ctx.beginPath();
+      ctx.moveTo(sx, -Wd*0.48);
+      ctx.quadraticCurveTo(sx-1, 0, sx, Wd*0.48);
+      ctx.stroke();
+    }
+    // Axial furrow lines
+    ctx.strokeStyle='rgba(160,130,90,.7)';
+    ctx.lineWidth=0.7;
+    ctx.beginPath();
+    ctx.moveTo(thoraxStart, -Wd*0.18);
+    ctx.lineTo(thoraxEnd,   -Wd*0.18); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(thoraxStart,  Wd*0.18);
+    ctx.lineTo(thoraxEnd,    Wd*0.18); ctx.stroke();
+
+    // ── Pygidium (tail shield) — semicircular ──
+    ctx.fillStyle='#1F1510';
+    ctx.beginPath();
+    ctx.ellipse(L*-0.35, 0, L*0.20, Wd*0.45, 0, Math.PI/2, -Math.PI/2);
+    ctx.lineTo(L*-0.35, Wd*0.45);
+    ctx.lineTo(L*-0.35, -Wd*0.45);
+    ctx.closePath(); ctx.fill();
+    // Pygidium segments (rings)
+    ctx.strokeStyle='rgba(150,120,80,.6)';
+    ctx.lineWidth=0.6;
+    for(let pg=1;pg<=3;pg++){
+      const pgR=L*0.20*(1-pg/4);
+      ctx.beginPath();
+      ctx.ellipse(L*-0.35, 0, pgR, Wd*0.45*(1-pg/5), 0, Math.PI/2, -Math.PI/2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  };
+
+  drawTrilobite(tri1, 24);
+  drawTrilobite(tri2, 18);
+  drawTrilobite(tri3, 20);
+
+  // ── Water surface — animated wavy on top face AND front edge ──
+  // Animated top face water surface
+  // The top face is a parallelogram: (x0,topY) → (x1,topY) → (x1+iX,topY-iY) → (x0+iX,topY-iY)
+  // Add animated waves as curved lines running across the top face
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0,topY); ctx.lineTo(x1,topY);
+  ctx.lineTo(x1+iX,topY-iY); ctx.lineTo(x0+iX,topY-iY);
+  ctx.closePath();
+  // Tint top face with water blue
+  ctx.fillStyle='rgba(80,150,210,.25)'; ctx.fill();
+  ctx.clip();
+  // Ripple lines flowing diagonally (in iso direction)
+  const nRipples=5;
+  for(let r=0;r<nRipples;r++){
+    const vFrac=(r+0.5)/nRipples;
+    ctx.strokeStyle=`rgba(160,210,240,${0.45-r*0.05})`;
+    ctx.lineWidth=1.0;
+    ctx.beginPath();
+    // Line runs from left edge to right edge at constant v depth
+    // At v=vFrac: starts at (x0+vFrac*iX, topY-vFrac*iY), ends at (x1+vFrac*iX, topY-vFrac*iY)
+    // Add wave displacement along x axis
+    for(let xi=0;xi<=fW;xi+=4){
+      const waveY = Math.sin(xi*0.10 + tSec*1.5 + r*1.3)*1.8
+                  + Math.sin(xi*0.22 + tSec*2.2 + r*0.7)*0.9;
+      const px = x0 + xi + vFrac*iX;
+      const py = topY - vFrac*iY + waveY;
+      if(xi===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+  // Front edge wavy line (water surface seen from front)
+  ctx.strokeStyle='rgba(150,205,240,.75)'; ctx.lineWidth=1.3;
+  ctx.beginPath();
+  ctx.moveTo(x0,topY);
+  for(let xi=0;xi<=fW;xi+=4) ctx.lineTo(x0+xi, topY+Math.sin(xi*0.12+tSec*1.8)*2);
+  ctx.stroke();
+  // Right edge (iso) wavy line
+  ctx.strokeStyle='rgba(150,205,240,.50)'; ctx.lineWidth=1;
+  ctx.beginPath();
+  for(let ti=0;ti<=iX;ti+=3){
+    const frac=ti/iX;
+    const wx=x1+ti;
+    const wy=topY-frac*iY + Math.sin(frac*4+tSec*1.5)*1.5;
+    if(ti===0) ctx.moveTo(wx,wy); else ctx.lineTo(wx,wy);
+  }
+  ctx.stroke();
+
+  // Glass frame edges
+  ctx.strokeStyle='rgba(200,220,255,.25)'; ctx.lineWidth=1;
+  [[x0,topY,x0,botY],[x1,topY,x1,botY],[x0+iX,topY-iY,x0+iX,botY-iY],[x1+iX,topY-iY,x1+iX,botY-iY],
+   [x0,topY,x1,topY],[x1,topY,x1+iX,topY-iY],[x0+iX,topY-iY,x1+iX,topY-iY],[x0,topY,x0+iX,topY-iY],
+   [x0,botY,x1,botY],[x1,botY,x1+iX,botY-iY]].forEach(e=>{
+    ctx.beginPath();ctx.moveTo(e[0],e[1]);ctx.lineTo(e[2],e[3]);ctx.stroke();
+  });
+
+
+}
+
+function closeHistoriaPanel(){
+  document.getElementById('historia-panel').classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  activeBtn=null;mascotRelax();
+}
+
+
 
 /* ════════════
    MAPA GEOCIRCUITO
@@ -791,7 +2132,9 @@ function hideSpeechBubble(){
 
 function openPanel(id,btn){
   document.getElementById('edad-panel').classList.remove('open');
-  document.getElementById('estrat-panel').classList.remove('open');
+  const _hp=document.getElementById('historia-panel');if(_hp)_hp.classList.remove('open');
+  const hp=document.getElementById('historia-panel');if(hp)hp.classList.remove('open');
+  document.getElementById('paleo-panel').classList.remove('open');stopPaleoScene();
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
@@ -820,7 +2163,23 @@ function openPanel(id,btn){
     return;
   }
 
-  if(id==='estrat'){document.getElementById('logo-bg').style.opacity='0';document.getElementById('main').classList.add('panel-half-open');showSpeechBubble('🐸 Este contacto representa 1.700 Ma sin registro');document.getElementById('estrat-panel').classList.add('open');return;}
+  if(id==='paleo'){document.getElementById('logo-bg').style.opacity='0';document.getElementById('main').classList.add('panel-half-open');showSpeechBubble('🐸 Así era el mar paleozoico aquí');document.getElementById('paleo-panel').classList.add('open');setTimeout(startPaleoScene,80);return;}
+  if(id==='historia'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Deslizá para recorrer 2.500 millones de años');
+    document.getElementById('historia-panel').classList.add('open');
+    setTimeout(initHistoria,80);
+    return;
+  }
+  if(id==='historia'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Deslizá para recorrer 2.500 millones de años');
+    document.getElementById('historia-panel').classList.add('open');
+    setTimeout(initHistoria,80);
+    return;
+  }
   document.getElementById('panel-title').textContent=panels[id].title;
   document.getElementById('panel-body').innerHTML=panels[id].html;
   document.getElementById('info-panel').classList.add('open');
@@ -831,7 +2190,9 @@ function closeExtraPanel(id){document.getElementById(id+'-panel').classList.remo
 
 function closeEdadPanel(){
   document.getElementById('edad-panel').classList.remove('open');
-  document.getElementById('estrat-panel').classList.remove('open');
+  const _hp=document.getElementById('historia-panel');if(_hp)_hp.classList.remove('open');
+  const hp=document.getElementById('historia-panel');if(hp)hp.classList.remove('open');
+  document.getElementById('paleo-panel').classList.remove('open');stopPaleoScene();
   hideSpeechBubble();
   document.getElementById('logo-bg').style.opacity='0.18';
   document.getElementById('main').classList.remove('panel-half-open');
@@ -850,7 +2211,9 @@ function closeMetaPanel(){
 }
 function closePanel(){
   document.getElementById('edad-panel').classList.remove('open');
-  document.getElementById('estrat-panel').classList.remove('open');
+  const _hp=document.getElementById('historia-panel');if(_hp)_hp.classList.remove('open');
+  const hp=document.getElementById('historia-panel');if(hp)hp.classList.remove('open');
+  document.getElementById('paleo-panel').classList.remove('open');stopPaleoScene();
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
