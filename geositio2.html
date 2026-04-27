@@ -305,6 +305,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 #mapa-screen.open{display:block;}
 #ar-screen.open{display:block;}
+#ar-shutter-btn:active{transform:translateX(-50%) scale(.92);}
+.panel-half-open #ar-shutter-btn{display:none!important;}
 
 #cam-video{
   position:absolute;inset:0;
@@ -524,6 +526,42 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       cursor:pointer;backdrop-filter:blur(8px);
       display:flex;align-items:center;justify-content:center;">✕</button>
 
+  <!-- botón obturador (foto) — abajo centro -->
+  <button id="ar-shutter-btn" onclick="capturePhoto()"
+    style="position:absolute;bottom:120px;left:50%;transform:translateX(-50%);z-index:30;
+      width:64px;height:64px;border-radius:50%;
+      background:rgba(255,255,255,.95);border:4px solid rgba(255,255,255,.4);
+      box-shadow:0 4px 16px rgba(0,0,0,.5);
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:transform .15s ease;">
+    <div style="width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.1);"></div>
+  </button>
+
+  <!-- flash overlay para feedback al disparar -->
+  <div id="ar-flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .3s ease;"></div>
+
+  <!-- preview de foto capturada -->
+  <div id="ar-preview" style="position:absolute;inset:0;background:#000;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+    <img id="ar-preview-img" style="max-width:100%;max-height:75%;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.6);" />
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button onclick="discardPhoto()"
+        style="padding:12px 22px;border-radius:24px;border:none;
+          background:rgba(255,255,255,.15);color:#fff;font-weight:700;
+          font-size:14px;cursor:pointer;backdrop-filter:blur(8px);">↺ Otra</button>
+      <a id="ar-download-link" download="punantu-foto.jpg"
+        style="padding:12px 22px;border-radius:24px;
+          background:#C8841E;color:#fff;font-weight:700;text-decoration:none;
+          font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+        ⬇ Guardar
+      </a>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:14px;text-align:center;max-width:280px;">
+      Tocá <strong>Guardar</strong> para descargar la foto en alta calidad.
+    </div>
+  </div>
+
+
   <!-- instrucción rotación — arriba derecha, solo en portrait -->
   <div id="ar-rotate-hint"
     style="position:absolute;top:16px;right:16px;z-index:30;
@@ -557,8 +595,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <div style="text-align:right;">
       <div style="font-family:'Playfair Display',serif;font-size:14px;
         color:#FDF8EE;line-height:1.4;margin-bottom:2px;">¡Gracias por<br>visitar!</div>
-      <div style="font-size:9px;color:#C8841E;font-weight:700;letter-spacing:1px;">
-        PUNANTUGEOPARQUE.COM.AR</div>
       <div style="font-size:10px;color:#F0C070;font-weight:700;letter-spacing:.5px;margin-top:3px;">@Pun_Antu</div>
     </div>
 
@@ -2372,6 +2408,7 @@ async function openAR(){
   updateHint();window.addEventListener('resize',updateHint);
 }
 function closeAR(){
+  discardPhoto();
   document.getElementById('ar-screen').classList.remove('open');
   if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
   else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
@@ -2379,6 +2416,141 @@ function closeAR(){
   const video=document.getElementById('cam-video');
   if(video)video.srcObject=null;
 }
+
+/* ════════════
+   PHOTO CAPTURE — high-quality composite of video + 3D model + overlay
+════════════ */
+async function capturePhoto(){
+  const video = document.getElementById('cam-video');
+  const model = document.getElementById('ar-model');
+  const screen = document.getElementById('ar-screen');
+  const flash = document.getElementById('ar-flash');
+  const preview = document.getElementById('ar-preview');
+  const previewImg = document.getElementById('ar-preview-img');
+  const dlLink = document.getElementById('ar-download-link');
+
+  if(!video || !model || !screen) return;
+
+  // Visual feedback — flash effect
+  flash.style.opacity = '0.85';
+  setTimeout(()=>{ flash.style.opacity = '0'; }, 300);
+
+  // Output canvas: match screen size with high DPR for quality
+  const rect = screen.getBoundingClientRect();
+  const dpr  = (window.devicePixelRatio || 1) * 2; // 2× for extra crispness
+  const W = Math.round(rect.width  * dpr);
+  const H = Math.round(rect.height * dpr);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // 1. Draw camera video as background (cover-fit)
+  if(video.videoWidth > 0 && video.videoHeight > 0){
+    const vAR = video.videoWidth / video.videoHeight;
+    const cAR = W / H;
+    let dw, dh, dx, dy;
+    if(vAR > cAR){ // video wider — crop sides
+      dh = H; dw = H * vAR;
+      dx = (W - dw)/2; dy = 0;
+    } else {       // video taller — crop top/bottom
+      dw = W; dh = W / vAR;
+      dx = 0; dy = (H - dh)/2;
+    }
+    ctx.drawImage(video, dx, dy, dw, dh);
+  } else {
+    ctx.fillStyle = '#0a0301';
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // 2. Capture model-viewer to image and composite over video
+  try {
+    let modelDataURL = null;
+    if(typeof model.toDataURL === 'function'){
+      modelDataURL = model.toDataURL('image/png');
+    } else if(typeof model.toBlob === 'function'){
+      const blob = await model.toBlob();
+      modelDataURL = URL.createObjectURL(blob);
+    }
+    if(modelDataURL){
+      await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          // Draw model centered, full canvas
+          ctx.drawImage(img, 0, 0, W, H);
+          resolve();
+        };
+        img.onerror = reject;
+        img.src = modelDataURL;
+      });
+    }
+  } catch(err){
+    console.warn('Could not capture model-viewer:', err);
+  }
+
+  // 3. Draw bottom overlay (gradient + text)
+  // Gradient
+  const gradH = H * 0.22;
+  const grad = ctx.createLinearGradient(0, H - gradH, 0, H);
+  grad.addColorStop(0, 'rgba(10,3,1,0)');
+  grad.addColorStop(0.4, 'rgba(10,3,1,.75)');
+  grad.addColorStop(1, 'rgba(10,3,1,.95)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, H - gradH, W, gradH);
+
+  // Text overlay — match screen layout
+  const padX = W * 0.06;
+  const padBot = H * 0.08;
+  const baseY = H - padBot;
+  const scale = W / rect.width / 1; // text scale relative to base size
+
+  // Left side
+  ctx.textAlign = 'left';
+  // "GEOPARQUE" small caps
+  ctx.fillStyle = '#C8841E';
+  ctx.font = `800 ${Math.round(11*scale)}px sans-serif`;
+  ctx.fillText('G E O P A R Q U E', padX, baseY - 70*scale);
+  // "Pun Antü"
+  ctx.fillStyle = '#FDF8EE';
+  ctx.font = `${Math.round(34*scale)}px "Playfair Display", serif`;
+  ctx.fillText('Pun Antü', padX, baseY - 38*scale);
+  // Subtitle
+  ctx.fillStyle = '#9B8A6E';
+  ctx.font = `${Math.round(12*scale)}px sans-serif`;
+  ctx.fillText('Sierra La Barrosa · Balcarce · Argentina', padX, baseY - 18*scale);
+
+  // Right side
+  ctx.textAlign = 'right';
+  const rightX = W - padX;
+  ctx.fillStyle = '#FDF8EE';
+  ctx.font = `${Math.round(16*scale)}px "Playfair Display", serif`;
+  ctx.fillText('¡Gracias por visitar!', rightX, baseY - 38*scale);
+  ctx.fillStyle = '#F0C070';
+  ctx.font = `bold ${Math.round(12*scale)}px sans-serif`;
+  ctx.fillText('@Pun_Antu', rightX, baseY - 18*scale);
+
+  // 4. Convert to JPEG (smaller, good quality) and show preview
+  const jpegDataURL = canvas.toDataURL('image/jpeg', 0.92);
+  previewImg.src = jpegDataURL;
+  dlLink.href = jpegDataURL;
+  // Filename with timestamp
+  const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+  dlLink.download = `punantu-foto-${ts}.jpg`;
+
+  preview.style.display = 'flex';
+
+  // Track event
+  if(typeof gtag === 'function') gtag('event','capture_ar_photo');
+}
+
+function discardPhoto(){
+  const preview = document.getElementById('ar-preview');
+  const previewImg = document.getElementById('ar-preview-img');
+  preview.style.display = 'none';
+  previewImg.src = '';
+}
+
+
 </script>
 </body>
 </html>
