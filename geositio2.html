@@ -321,6 +321,56 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   top:30%;
 }
 /* photo booth — no camera needed */
+
+/* ── Fullscreen splash ── */
+#fs-splash{
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(ellipse at 50% 60%,#2A1A0A 0%,#0E0603 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:32px;
+  transition:opacity .5s ease;
+}
+#fs-splash.hide{opacity:0;pointer-events:none;}
+#fs-splash .fs-logo{
+  font-family:'Playfair Display',serif;font-size:42px;
+  color:#FDF8EE;letter-spacing:1px;line-height:1;text-align:center;
+  margin-bottom:6px;
+}
+#fs-splash .fs-sub{
+  font-size:11px;letter-spacing:4px;color:#C8841E;
+  text-transform:uppercase;font-weight:800;text-align:center;
+  margin-bottom:40px;
+}
+#fs-splash .fs-tagline{
+  font-size:13px;color:rgba(253,248,238,.55);
+  text-align:center;margin-bottom:52px;line-height:1.6;max-width:260px;
+}
+#fs-btn{
+  padding:16px 36px;border-radius:32px;
+  background:linear-gradient(135deg,#C8841E,#A86A10);
+  border:none;color:#FDF8EE;font-weight:800;font-size:15px;
+  letter-spacing:.5px;cursor:pointer;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  display:flex;align-items:center;gap:10px;
+}
+#fs-btn:active{transform:scale(.97);}
+#fs-skip{
+  margin-top:20px;font-size:12px;color:rgba(253,248,238,.35);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+}
+/* ── Fullscreen exit button ── */
+#fs-exit-btn{
+  position:fixed;top:14px;right:14px;z-index:9000;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,.45);border:none;color:#fff;
+  font-size:16px;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+#fs-exit-btn.visible{display:flex;}
+:fullscreen #fs-exit-btn.visible{display:flex;}
+:-webkit-full-screen #fs-exit-btn.visible{display:flex;}
+
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Google Analytics -->
@@ -387,6 +437,20 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 <!-- ════════════════════════════
      MAIN SCREEN
 ════════════════════════════ -->
+<!-- Fullscreen splash -->
+<div id="fs-splash">
+  <div class="fs-logo">Pun Antü</div>
+  <div class="fs-sub">Geoparque · Balcarce</div>
+  <div class="fs-tagline">Recorré 4.500 millones de años<br>de historia geológica</div>
+  <button id="fs-btn" onclick="enterFullscreen()">
+    <span style="font-size:18px;">⛶</span> Pantalla completa
+  </button>
+  <div class="fs-skip" onclick="skipFullscreen()">Continuar sin pantalla completa</div>
+</div>
+
+<!-- Fullscreen exit button (visible only in fullscreen) -->
+<button id="fs-exit-btn" onclick="exitFullscreen()" title="Salir de pantalla completa">✕</button>
+
 <div id="main">
 
   <!-- Top bar -->
@@ -738,6 +802,37 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 </div>
 
 <script>
+/* ════════════
+   FULLSCREEN
+════════════ */
+function enterFullscreen(){
+  const el = document.documentElement;
+  const p = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+  if(p) p.call(el).catch(()=>{});
+  dismissSplash();
+}
+function exitFullscreen(){
+  const p = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+  if(p) p.call(document).catch(()=>{});
+}
+function skipFullscreen(){
+  dismissSplash();
+}
+function dismissSplash(){
+  const sp = document.getElementById('fs-splash');
+  if(sp){ sp.classList.add('hide'); setTimeout(()=>sp.remove(), 600); }
+}
+// Show/hide exit button based on fullscreen state
+function onFSChange(){
+  const inFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+  const btn = document.getElementById('fs-exit-btn');
+  if(btn){ btn.classList.toggle('visible', inFS); }
+}
+document.addEventListener('fullscreenchange',      onFSChange);
+document.addEventListener('webkitfullscreenchange',onFSChange);
+document.addEventListener('mozfullscreenchange',   onFSChange);
+
+
 /* ════════════
    HISTORIA GEOLÓGICA — v9
 ════════════ */
