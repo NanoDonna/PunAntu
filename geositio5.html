@@ -2,9 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+  <!-- PWA / Fullscreen mobile -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+  <meta name="apple-mobile-web-app-title" content="Pun Antü">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0E0603">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1A0A04">
-<title>Geoparque Pun Antü · La Tosquera · Cuaternario</title>
+<title>Geoparque Pun Antü · La Tosquera</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <style>
@@ -39,6 +45,9 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   transition:height .4s cubic-bezier(.3,1,.3,1);
   margin-top:6%;
   margin-bottom:6%;
+  width:100%;
+  align-self:stretch;
+  background:rgba(14,4,2,.96);
 }
 /* when panel open */
 .panel-half-open .bottom-bar{display:none;}
@@ -83,7 +92,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .site-name{font-family:'Playfair Display',serif;font-size:14px;color:rgba(255,255,255,.8);}
 
 /* 3D model area */
-/* mv-main is now position:absolute inside its wrapper */
+model-viewer{display:block;}
 
 /* Bottom pills */
 .bottom-bar{
@@ -140,10 +149,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #edad-panel.open{transform:translateY(0);}
 #meta-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
 #meta-panel.open{transform:translateY(0);}
-#mega-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
-#mega-panel.open{transform:translateY(0);}
-#cuater-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
-#cuater-panel.open{transform:translateY(0);}
+.biozone-tab{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:14px;font-size:11px;cursor:pointer;white-space:nowrap;font-family:sans-serif;}
+.biozone-tab.active{background:#C8841E;border-color:#C8841E;color:#fff;font-weight:700;}
+#mega-panel,#loess-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:60vh;overflow:hidden;}
+#mega-panel.open,#loess-panel.open{transform:translateY(0);}
 
 
 
@@ -305,6 +314,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 #mapa-screen.open{display:block;}
 #ar-screen.open{display:block;}
+#ar-shutter-btn:active{transform:translateX(-50%) scale(.92);}
+.panel-half-open #ar-shutter-btn{display:none!important;}
 
 #cam-video{
   position:absolute;inset:0;
@@ -319,34 +330,180 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   top:30%;
 }
 /* photo booth — no camera needed */
+
+/* ── Fullscreen splash ── */
+#fs-splash{
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(ellipse at 50% 60%,#2A1A0A 0%,#0E0603 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:32px;
+  transition:opacity .5s ease;
+}
+#fs-splash.hide{opacity:0;pointer-events:none;}
+#fs-splash .fs-logo{
+  font-family:'Playfair Display',serif;font-size:42px;
+  color:#FDF8EE;letter-spacing:1px;line-height:1;text-align:center;
+  margin-bottom:6px;
+}
+#fs-splash .fs-sub{
+  font-size:11px;letter-spacing:4px;color:#C8841E;
+  text-transform:uppercase;font-weight:800;text-align:center;
+  margin-bottom:40px;
+}
+#fs-splash .fs-tagline{
+  font-size:13px;color:rgba(253,248,238,.55);
+  text-align:center;margin-bottom:52px;line-height:1.6;max-width:260px;
+}
+#fs-btn{
+  padding:16px 36px;border-radius:32px;
+  background:linear-gradient(135deg,#C8841E,#A86A10);
+  border:none;color:#FDF8EE;font-weight:800;font-size:15px;
+  letter-spacing:.5px;cursor:pointer;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  display:flex;align-items:center;gap:10px;
+}
+#fs-btn:active{transform:scale(.97);}
+#fs-skip{
+  margin-top:20px;font-size:12px;color:rgba(253,248,238,.35);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+}
+/* ── Fullscreen exit button ── */
+#fs-exit-btn{
+  position:fixed;top:14px;right:14px;z-index:9000;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,.45);border:none;color:#fff;
+  font-size:16px;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+#fs-exit-btn.visible{display:flex;}
+:fullscreen #fs-exit-btn.visible{display:flex;}
+:-webkit-full-screen #fs-exit-btn.visible{display:flex;}
+
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
   
-<div id="mega-panel">
+<div id="paleo-panel">
   <div class="ep-handle"></div>
-  <div class="ep-head"><h3>Megafauna del Pleistoceno</h3><button class="ep-close" onclick="closeExtraPanel('mega')">✕</button></div>
-  <div class="ep-body" style="padding:8px 18px 12px;"><p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">Entre 3,5 Ma y 20.000 años atrás vivieron aquí: <strong>Gliptodontes</strong>, <strong><em>Macrauchenia</em></strong>, <strong><em>Mylodon</em></strong>, <strong><em>Hippidium</em></strong> y <strong><em>Eeucelophorus</em></strong>. También se observan <strong>crotovinas</strong> (paleocuevas) de más de 10.000 años, construidas por xenartros — mamíferos autóctonos — con diámetros de 40 cm a 2 m.</p></div>
+  <div class="ep-head"><h3>Paleoambiente · 480 Ma</h3><button class="ep-close" onclick="closeExtraPanel('paleo')">✕</button></div>
+  <div class="ep-body" style="padding:8px 14px 10px;">
+    <!-- Isometric aquarium scene -->
+    <div style="border-radius:10px;overflow:hidden;background:#0C0908;position:relative;aspect-ratio:5/2.6;max-height:180px;margin-bottom:10px;">
+      <canvas id="paleo-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.80);line-height:1.55;margin-bottom:8px;">
+      Un mar somero del <strong>Cámbrico-Ordovícico</strong> cubre la región. Las corrientes forman <strong>ondulitas</strong> en la arena, mientras <strong>trilobites</strong> se desplazan por el fondo dejando trazas fósiles (icnofacies de <em>Cruziana</em>).
+    </p>
+    <p style="font-size:11px;color:rgba(200,180,140,.75);line-height:1.5;">
+      🔍 Estas estructuras hoy están preservadas en las <strong>ortocuarcitas de la Fm. Balcarce</strong> que forman la La Tosquera.
+    </p>
+  </div>
 </div>
 
-<div id="cuater-panel">
+<!-- PANEL MEGAFAUNA -->
+<div id="mega-panel">
   <div class="ep-handle"></div>
-  <div class="ep-head"><h3>Estratigrafía cuaternaria</h3><button class="ep-close" onclick="closeExtraPanel('cuater')">✕</button></div>
-  <div class="ep-body" style="padding:8px 18px 12px;"><p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">Esta cava expone una de las secuencias cuaternarias más completas de Balcarce: <strong>Formación Barker</strong> (7,1–3,1 Ma), <strong>Formación Vela</strong> (&lt;450 Ka) y <strong>Formación Las Ánimas</strong> (&lt;40 Ka). Los sedimentos loessoides son los materiales parentales de los suelos agrícolas de alta productividad que caracterizan esta región.</p></div>
+  <div class="ep-head">
+    <h3>Megafauna del Pleistoceno</h3>
+    <button class="ep-close" onclick="closeExtraPanel('mega')">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 14px 12px;">
+    <!-- Biozone tabs -->
+    <div style="display:flex;gap:4px;margin-bottom:8px;overflow-x:auto;padding-bottom:4px;">
+      <button class="biozone-tab active" onclick="showBiozone(0,this)">Chapadmalense</button>
+      <button class="biozone-tab" onclick="showBiozone(1,this)">Marplatense</button>
+      <button class="biozone-tab" onclick="showBiozone(2,this)">Ensenadense</button>
+      <button class="biozone-tab" onclick="showBiozone(3,this)">Bonaerense</button>
+      <button class="biozone-tab" onclick="showBiozone(4,this)">Lujanense</button>
+    </div>
+    <!-- 3D diorama canvas -->
+    <div style="border-radius:10px;overflow:hidden;background:#0C0908;position:relative;aspect-ratio:5/2.6;max-height:200px;margin-bottom:10px;">
+      <canvas id="mega-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+    </div>
+    <!-- Biozone info -->
+    <div id="biozone-name" style="font-family:'Playfair Display',serif;font-size:15px;color:#C8841E;font-weight:700;margin-bottom:2px;"></div>
+    <div id="biozone-age" style="font-size:10px;color:rgba(200,160,80,.75);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:6px;"></div>
+    <div id="biozone-fauna" style="font-size:11px;color:rgba(255,255,255,.65);font-style:italic;margin-bottom:6px;"></div>
+    <div id="biozone-desc" style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.6;"></div>
+  </div>
 </div>
+
+<!-- PANEL LOESS -->
+<div id="loess-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>El Loess Pampeano</h3>
+    <button class="ep-close" onclick="closeExtraPanel('loess')">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 14px 12px;overflow-y:auto;max-height:calc(78vh - 60px);">
+    <p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:10px;">
+      El <strong>loess</strong> es un sedimento limoso de origen <strong>eólico</strong> que cubre gran parte de la región pampeana. Durante los períodos fríos y secos del Pleistoceno, los <strong>vientos del oeste y sudoeste</strong> transportaron polvo desde la Patagonia y el frente cordillerano, depositándolo sobre el paisaje.
+    </p>
+    <div style="border-left:3px solid #C8841E;padding-left:12px;margin-bottom:12px;">
+      <div style="font-size:10px;color:#C8841E;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Tres formaciones loéssicas</div>
+      <p style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.65;margin:0;">
+        <strong>Fm. Barker</strong> (7,1–3,1 Ma) · base más antigua<br>
+        <strong>Fm. Vela</strong> (&lt;450 ka) · niveles intermedios<br>
+        <strong>Fm. Las Ánimas</strong> (&lt;40 ka) · cubierta superior
+      </p>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:10px;">
+      En La Tosquera, los depósitos loéssicos <strong>preservaron restos de megafauna</strong> del Pleistoceno: huesos, dientes y placas óseas de Gliptodontes, Megaterios y otros mamíferos gigantes que habitaron la pampa.
+    </p>
+    <div style="border-left:3px solid #C8841E;padding-left:12px;margin-bottom:10px;">
+      <div style="font-size:10px;color:#C8841E;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">¿Qué es la tosca?</div>
+      <p style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.65;margin:0;">
+        La <strong>tosca</strong> es un nivel duro de carbonato de calcio que precipita dentro del loess. Aparece como capas o bloques compactos que la gente del campo extrae para hacer pisos, caminos rurales y rellenos.
+      </p>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:10px;">
+      La explotación de la tosca para construcción dio origen a las <strong>tosqueras</strong>, canteras donde se extrae el material. Al excavar, los pobladores fueron descubriendo fósiles de la megafauna pleistocena, lo que terminó dándole identidad a este geositio.
+    </p>
+    <p style="font-size:11px;color:rgba(200,160,80,.75);line-height:1.6;">
+      🔍 Cada tosquera es una ventana al pasado: bajo la tosca se preservan huesos, dientes y placas óseas que cuentan cómo era la pampa hace cientos de miles de años.
+    </p>
+  </div>
+</div>
+
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-F6ZCDHTFSN');
   </script>
+<script>
+// Embed trilobite image — fallback to external file, preload base64 for offline
+(function(){
+  const d='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAD2CAYAAABsr7qIAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAABEd0lEQVR42u3dd5Sk13ke+OeGL1Wu6uo8PXkGGAwikRnEJJE8CpQlS06yV1pLsuUoe21v8O7a0nrPrr2SfWyvpEPbe0yZkpVoyqLETAIEmAAGEBmT80xPp8pVX7pp/6jqnu4ZgMRAIE1K7++cAQYzXT09X18+vPfWe98LEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgj5Jhg9AvJa3Lo4s9vjrOpLsQAG4ZzNwZhkYDzT5oo2tn38yvolelKEAot82xxZnNlTLYXvLvrySODJPZwhYIx5DnDOuRwAnINiDN61QcW4AxxjzHPOKedcrqzrpnl+apDkT/ZH2WfPrrXp4RIKLPLHd9/BXT9WL0XfH/ryIAAYY7vW2hFnLBCclz1f7pGCN6TgDcE42xpFDrDOwho30Ma0tLFtY+3AGNt1cAZgjDMWcM6K1iFLcnWyN0o+87Uzyx+mp04osMirduee2Qdm65Wfi3x5mDnYXJur1rnM9+RSMfLuK0RhKfR8SMHAOQdjm8PHwblJWrnN3Br/mnMO1lloAyitkecKaaZPp3l+UlvTY4z5kvMKZzzMtVvpjEafePLkpf9I3w1CgUVe1gOHln5iulr8K1LyaaPNhtJmRQoxVSkW3lkpBmEQeJCcA4zBWLsVSuOloNucWG2fZAHOwcGBTQINYGAMk2BjMEYjyxVGSd4apfnTudbLHBBSihnGWZRk+th6d/jrz1xY+RJ9hwgFFsGDh5d+aqZW/mnGmG+0XtfGtj1PLtbLhXfUSiE86cEBcM5OgubV2woy57ZmYdt/HQA4G/+6sUCWK/RHyfIozZ821g4E52XBedk4l3SHyce/ePzCv6HvGKHA+lPorr3zb16arv2i4KystVlT1nYk59VGpfRD9UoRvuQwdhxSjDE453b8+/rg+aahtfWPyYDbNuKsGy8dmQOMc8hVjn6crozi7InJ6BSekNMA0B3Fn3r8xfO/QN9BCizyp8T33XXoPxRD/x6tzZpxNnYOqlwI3tysl3dFgQ9r3dZsajNYtgfV9iC6PrxeKcw4Z+NloHVQuUKmNZTWyHK9lit1UeX6gjJ2w1g7mHx80TmXMzA++bw+4yzyhGgKyZvdYfJxCi4KLPIn2N37Ft6xb6b+y9q6vrF24KyNpeTT0/Xy26ulwmSDfOfs52ZmU9tZ58A5AweD0hpJmmGU5nGSqZfyXJ3LjFlxxg4YgyeFmIqC4GgQ+LeEgV/zPA9CcIjJhpcyBlmWI87U5TRNn8tydcbzxKIn5fxab/SBJ05cfB99dymwyJ8g77j9wC9VS9G7c62XGcDgnC6VCu+crlUC3+Nw1gEMcNbBvszyb8dgmfzeKy0BBecAA4Zxiu4wbsVJ9pTWZk1b23PWxp6U84UwvLtaKdxeKRZQKESIfB+cMzA23th3ANjWnz9OUWstlFLoDmKsrrf7nX7/g1J6cwDD2ZWNv3nsysZF+k5TYJHvcj9w362fkJxXtLFtxuA55xRjzAt979AkDITvyd2+JxH6PkJfQnDAWOx86+/lBs6O8HIQQiBJc6x1+hdHcfqEdcitM4ngolItFd5Tr1ZqtXIBhTCCkAJwDtZaWOte8fNvbtgzBjDGIQQHnEN3MMTZy1dXeoPRR6LQv7PVjz/4hWMXfpm+4xRY5LvQLYszu27bNfOH2pmhtS6GcxoAOGOBY+DOuXz8A8o6m1rrYsFYFAT+LcVCeH+1GCHyx+8SWmu3Zlsvt/m++fP17gCt7uBDzjllrRtJwerTjdqPzs9MoVSIICZlEdbeuO91/c+3L0Xdzn/AMcCTApxxXF5Zw6mLV3499Pz9ypj1j3/95I/Rd58Ci3wXuWvP/MMHF6ben2lzxTmnOGOBFLxhncvyXJ3NtV3RxrQY474QqAZSLEopZ5lzVlnbMcZ0GEdULhS/Z6panisE3qQA1G0LLlyrsnLApdXWmcEoeUxwVjLOJrON+k/tXZhDoRDCWQdtDNwkcBjYK8ymJntg1sExC845hJAQnI9fwa4VqWqloI2GLz10hyO8cPr8x2BdJoSoH7u09oOnV1ojGgkUWOQ73L0HFt+7d7bxr9JcneaMBZ7gzSTXJ1c7g/d9/dzyp79h0O2eu3+qUvjxYuTfx+BYpvQFzlhYq5R/tFkteZ4UMNZtBdZmiFy4unZslGRfYeDC8+Suw3sX3zbdqMEaC20sNitGty8hr59ZGWPgAEgpEIUBoihEGAYQYjyTYjuGq4MxBmmWo9vrQxuFUZLj2WOnP2qdTX0pF85cbf+1Fy6tvkAjggKLfKeG1f7FH9g7V/vXSWaO+5LPGWO759e7//j5CytfvdnPdc+e2TfN1ct/A4xJY83Al3JhulH7/lopGi8TnYMUHFfW2/1uf/RfwZgsBcE9t9964LYo8KCUveFzXr+Rz7BZh+UQBD7K5RIKxWgcUm7nsvDlZmSbPzq9Pvr9ATZ6fTx/4uyvS86rvieXzq90fv6ZC1epUv5PGEGP4LvfPfsW3rlvvvlrmbIXA0/sWe+NfvMzz53+ubXecPnVfo7Dc43KYqNydLZSnGaMeZHvH+IcRcF5yVj0B8PRk6nSjSgM6oEn0B8lWGsNfk8wXvClmL/7tsP3B54HrQwY5zfsSV3/38YaeL6HZqOB5lQdUegDYON3LV8mqK6flblJ2BULEax14HDQxt7dHQy/6ADbKBd+JJDy+dXe8AqNEJphke8QR5dmb7tlcfp3lXNDASdPXNn4C8cur515VSE1P9VYqJf+duDJPQyOjdvFMMYY8421A+egwCAE52XOedFYO5CCNxZnmz/a7Q8uD0bpY9a60S37l/760twM0kxNCkVfeXZknQMDUKtVUKtWIThgjR2/KflNSile7vc316hXltcQxyN87dipzxhtNwCHwPP2nFlp/Y0XLq4+SyOFAov8N7Z/ti7u2r/reTink1yf/MTXj7/qd8necXTf/1UI5NFM6QvOubwQhvcUIv/eyPerUgqAcRhrkGW57cfp42mWHROclxnnhcnAYWCQzkHdd/SWPxsFAcy2dxS3LwW371X5nsTMTBObH7953JB9gxnVN8M5x9p6C6MkxtnLK7hweeXf+p5ccs7mnpRzL15c+74zq21FI+a7n6RH8N3rjj2LX+ScFdr95EOfff70P3i1r3vPPYd+WzCEmbZXqqXie6Yb1UOhLyGEGJdnYVw+wBgDg+NzDm/vDeO3r7Y6n03z/KQUYgqMeeNAstnW5vo32LcyRqFYLGKmOQXOObQxk32oGwPKvcKScPuvX19awRlgrMVso4JLy6sF51zOGPeVNitHlqY/cma1/W4aMd/9OD2C707vecMtHwx8sW+1PfjVmwmrd9996ANC8Jq1iOvl6L2Von+Is/EyzWgDY8y4XspYGGOhjAWcQ7NSxsFdc2/ft2v+rwsh6kqZK5yJ0BjT2eh0ISTHKx3iMcagUa9hfnYabFK5/nIzsW9Un/VyIXatKwSQKQNngWIUoVgIH7bWjnxPLE3K5/X33Xng12jUfPejTffvQt9z+75/Nl0p/6Xza51/+MSJ8796M6/dVa8eCXyxTwDSjJvoNY3OA+scAt8H53wrKBgANumFpZVGpVzGnsU5LDQb+4dxcn93OPqY73m7B8P4xWa9diT0vevCiME5jeb0FOq1GqwxwOTdvZffinrlZeArbeJzzqCURqvdAeMM0uPo9UczveHoM+UofNDjKMdKn44870Al8gfLncFxGkEUWOTb5K59C287MN/8d6eX13/yq6cu/dbNvv7CRvfzJ5dbv7nQKN3KGJNprk9KLuqcoZqpDEJweNLbFloMzlrUalVUqmUYpeB7Ekvzs7DOPLjR7j/q4MxgMKrNNafqnLOtw9TOGczOTKNSLsFo8w2D6mb2rLYHluAC7W4PSZKOi025RHcwRGcw/GIg5a5SIbwzzdQpZW27Wiq86+Tyxn+iUUSBRb5N3nbnoRdOLW/85adOX/7Qzbzu0Fy9uHuqet/uqcq9c/XyfilY1Zdi1jmoNFcnjXUpF2JR5RmHc/A8b7xRbg0a9TrK5SKcteCTA8rOOSzOTqMQevevt3onkyx7rj8cHZpuNkLBGLRWmJubQbFUhNXmG86Svtns6huFllIK6xsb48PTAIQQ6A5H6PT6X/I8uVAM/V2CYTpV+iwYY3una285u9r5KI0kCizyLfbDD9/+3OX1zj+5mZnVG/YvvOeuPTP/ZKoUvTcKvFtDT+wp+N5hwVlJG9uCg+acF5Sx63mWnxSMlxxcXakcQgg0p+solYpwxoBvK9hkjEFrg0atinq1cnur3U97w+HHu/3hfL1aqe1enEchCLaWiN8skF7N7Ov6jxFC4OrqGvJcgXMxWSJytPsDdPrDr4S+dyCQYt6XspgbO1JaXwl975Dvy+Nr3eFlGlEUWORb5O13HPyXcZJ//UvHz7/qdsHvuvvg+2vF4Pu0cW3OWVQqhA/XyqUfqFdKD1RLxYeiKHwLZwhypS5aawdg3EtyfdLBwZdiwVmDMAxRKBTHe9fObYXWZoBorVEqRpifmdrTGQ5vbXf6/7E7GBTmZmYWGtUylPnmS8FXM7va/i6hm8wA250uev0+pJTYLIwQnGGt1UF/GD8Z+t6hwPdmwRwk53NJrk9awFTC8IHTK60P0qiiwCLfArfvmb+vXAjf/Njzp//hq33N9997+MNi3L0zrZULP7hrZureqWq5WSxEKIQ+CmGAUilCo1Kcrxaj+wB2S5JnLzk4rYxdT3N9MfT9I2mSIElTlEoFSCnhrN1afm3OaLS28H2JxbmZMM2yt2y0u//53MUrJ6Tv3bM4Oz0+K3j90ZybWAJeP8PyPA/D4Qir6xvjUgxs65TKgUsra600zZ8PA/+W0BPNccBxYax1uTLnPU8uFAL/0kp3cI5GFwUWeZ3ddWDxlz/z9MmffLUf/567D/2G4KKkjWn5UsxVQv/W8QFkPt5En3RfsG5cYR5IH7VqoVAqFO8djdKVXOsrjHF/mKbPMsH3MGfDQX8wnm2FEYw1N4TP+HgMsDgzDefYm9q93pcvXLn6SJxkb961MA8pAGPsK1azf7OQ2pxZCSEximOsrK5i+5WImzfz5Erh/JW1R5xzeTGQt/uSlx3Gl14IIWaTTB13zubFwLv99Er7v9LoosAir6M3Htn79x9//sw/upnX7J9t/IAneJMx5imtr2ZKX5WCH3LGQHABIcV4KbZ55s85OAtIzrB3ae4WzuWb2r3+p7jglTTVLyhtlO/LxcFgCOuAUrkINqmbuj5YrLGYn55CFIX3dbv99vLq+m+vbrTftjA3h2IYQGv9ioH0jYLLOQcpJYajEVZWV8flEds+zjkGKQXavQGurrc+I4WoF0P/DYIzOe4FyCA4h9J2mCtz2fe9PR4XT673Ry0aZRRY5HVw666ZfU+fvfLxm33dmdX2H55Y3vjAYqN8qy/lbK7N1VSpM0LwJTgXOmvH7wJOulONZ0gG1WoFtWoFszNTqBQLb2p3B61c6UvGYZSk2eXAE4ezLJ0sEUuQXMC662ZNjEEbjUatjEa9dktnMGy2Wp33XbyyUqrWqguNehVa65taHnLGwIVEp9fF+toGGOfgWzXPbGv/inOO88srGI7SJz0hmqXIP8o2y/YdA2MWYKwS5/o4Z5C+L/ecX+t8ikYaBRZ5HWz0R92bfc0dSzN3LE6Vjs5WCzO+ENOeFLOcwQdzLMn0SwAreQINpQykFBBCQCmNWq2KWq0GYyyss2hUy1icnd2XZflDvcHocTCIOM2PMSaWGFwwHIwQRiHCINh5ZGYSQNpYFKIQizPNmWGcvLXV6/3GhcvLZzxf3r04OwNr7dYM7RttygspYKzF6voaOp0uuBC4dvKQwY3PEIFzjjjNcObS8oc4gww9ubcQeouTyNuch0EKHqS5uqSt64eet+/k8sZv0kijwCLfZm87uucXj+ya/rlS5D0QenJPOQzu94SYss5l1rqhs0g5Z1Gq1XllbOpLsWSMhgPQnGqgXq3AGg3OOThjsMbCExy75mdQKIQPtju9FWXsWqb0eW2sF3iiORwOIIREoRDdED6MMVjn4EmBpflpGG3e3OkOvnDpysrnkix749zsNDxPjmd51/XJ4pyDcw5rLfr9Ia6ubiBN08kG+/hy182e74wBzlp4vsC5y1fR7Q0f4UKUK4XgjVKIYHw40o0vDWPj2ZoyLs+1uexxXi8E3pWV7pA23ymwyLfDHbtn7n7w0K4PMMakNrYVBcGRRqX0481a5f6peuW+qVrp/lqp8JAnvbszpc4bY7vauHaW5ed9KY4wOIRRiGIxAmccm82PN4/oKK0xVatgYaZ5YDiM3zCI488b6/pJmq95vrcvS0bQxqBSKm0VlG6VKwBbl0wszDbhefKBdm9waWW99fHVtdabSlEAwTmsG3cbZYzBAsjSDL1eH2utNvqDEZgDuOBbV5GNSxzYVqmDlAKDUYxT5y/9BuciEoJVqoXgDobr9tgcMEmuUpKr44xBCs7L59e6n6GRRIFFvtV7XIvTS4cWpn89U/qC5Kwy16j+5OLM1J5SIWSh7yGQEoHnIQoCVMtF2agUjzDg/iTNntXW9dNMHfM8eadROYvTFKViCb43Pg/IJxvym50VPCmxtDALzvn9rU7vaWddPEryk0Lw24xRiJNssq/Fr10XBmz1x9LGYKZRR6Vcur3dG6DfG/z+ykbbZ4LPG6XQ6fbQH8To9vro9QdI0gwOGF8dhu0FpJszq2uzMi44XjxzsZWm2TOOMV4t+G8Ofa9sX+EwNePMTzJ91gHak2L21NXW79BoosAi32Jvvm3fo0rpixxglSh8YxjwsjYaQkrAbXYzYFttjTnnqFdKiALvnlGSrWVaX05zfdpa1CVHtd8fwPM8FAsFWGu3/gfO2WYphMVcs45arXrXRrs7ypU6n+T6tHVsljMUh4M+CsUIgedvbcZvn+EoY1ApRphtNnZ3B8OD3eHojzrdfrsQBYdKxQJypa79mZPA3N7B4fpaLussgsDH+cvLWF7d+A9SymkpWLVeiu5z4xftCKyt84eMI9emp7RZ8aWY1cb+584osTSiKLDIt1C9XPSLobzTATbJ1Uk4VvA4b2it4Um5teez1XmBMeS5Rr1Wwa0H9h7K0uyhbn/0SK7NcpapvufJvcN4OF7ilcs7QoKN12LQ2qBajLA4O71rMBrdOxgmj+faXFZaM9+Ts4PBAL7vo1CIdoTeZvAZ4xD4Eotzs4U4Th7q9PsfW+/0TwjO727WapMl5OQS1W2uDx3nHALPx8pGCyfPXXyflHLaWjuaKkU/7EnubX6Wl9vQ5wxQ2qSZMueF4NVc6UtXu8OzNKIosMi30OWN7ldOLrd+c9907e0M4HGWP2+s1b6Uu7XOwTiHJ+X4SM1kEzsMA0w1GvClwO6FOXiefHij3X0p0/ZykucrUohbjFJIkgSlYhFSymvnAScBYKydbKbPwFn3wEav+2Vl3HqWq17oyz2jeATrgEq5dK0CfVujvs0jPotzM9BaP9Tp9r/Q6vafzJV6cKpRBWfYWpaOX4TJva9sckXh+OKK9XYPL506+xuM84K1GFVC/4FyIVi01/UTfLlD19o6l+T6mBC8po3rXNrofZlGFAUW+RY4MNeIDs42fmjPdO3Nu6fKb2AABwMTnJezXJ9J8vysH3h3OqPhrIPv+5PQYpiZmYYU4/opYwxmm3U0G/U7W51eFGfps1muz8G6OuOuMhj0EYUhwiC84UJVi3GozM82USwU7l3baJ/MlbqY5vla4PuH8jRFrhQqlcpkUXpjgFhrsTAzDS7FAxud3vO9wfBzg8HoYKVSLoShB6MtMLkDcXz8xkFwDs+TWF5fx7HT536DMe47hzzyxYFGKXrAuW3tltkrB5axTiS5Pi44KziH/Nxa55M0siiwyOscVG/YP/evmuXCn/Uln/MFn4oC/6gvxZy1LjbGdvm4z3o+yrJnfSEPcO7CXGv4vo+5mXEpwfZ9IqU1ilGIpfnZmSTJH+gOhp/Ltb2aKZ15Ui4ORyMwDhSLxUmPK7dVHb/Zp71eLWOmUTu63ul6caZfyFJ1yfPkEWsMkjRGpVze2Rjw2nQL2mrMTjVQKhTesNbuXB7F6RPrnW7Hk/JguVSEFBycj6vUpZTIlcbpC5dx7uLy+zgXJeNsEkq5q1kpvH0cjDtLJLb+KOz8cx0g40wdA2ceg8OZlfYf0AijwCKvkzfsm/veA7P1f62N3WCcBfVy4Yfmmo13z0zV7pxpVI/Wq5UHi6H/ZmMNslyfcWAuztJnGePNQIoGYwy1agXBZLa1c/PagXNgaWEWHpf3r3c7LyhlrmRZvu5J72CcJUiTHJVSaby0nCzptpZXWiOKQuyam57r9wf3DobJpzOlLjPGD3IGMRzGKJdKkFLsPM6DzboojUa1ima9cttGu+vSTB1r9fov9vujJWNtQRmN3jDGlZUNnL545VOdwfBRKWXTWjcsF/yHm+XwgfGbC+wb3qqy82Yeh1GmTzAwzjmPTl1t/TaNMgos8jq4fffsXXtn6v8i1eZSMfBu3z3XfO90o1YJPAE5mbl4UqBYiDBVqyyFYfimNE3XtLUdlevzACsXo6DZ6/XAOEe5VLyhh7pz40scZpp1NKrVOzbanTzO1UtJnl/yGD/irEG/P0CxWEQY+DcsEY21kEJgaWGGZUo/1O72H82VOmetnfIkL/eGA5QKRfi+v6NH1mZXU2MMioUQ89PNXe1ef0+W6zOZys6td7pfWm91X9zodJ8exPEzztmcMxb4gk1NlaP3VqJgZmufbNuSb/vXtv1Ng+1GqToBwDIGQYFFgUVeJw8dXvrdTOtLgeDT5UL0FmeUGN++7O2cQTgHB4dS5KNRq95itD6c5tmJ3Ni1UZp1oiDYmyYxsixDuTyeLe0o9GRs/A5hsYiFueauXn94Tz9OPpspddZaV/Y9Uev1+/A9D8VCtONar2uXmwK75mYguHhgvd35Wq7MpVwbHvreTG9rTyyA2dYna7O+yhiLMPAxVasW1zZaRhmz7ntyiXMWCS5KgvNS4Hm7y4F3T60Y3OEJwR3YVp949gplDNvXiOO/73i2NUr1ic2go1osCizyOji6NHOkUYp+UHBRNsZ201yd4Jw3YG1ZGw0pPcjJ+bpx6cC4Itxajb275qOpZuPe1fXWMZWbC8M0u+x78oi1GsPhCKViEf51F0eM+1uNyyJ2L8xxlasH2r3BF7S262mukkLgL/YHAzjnJu8CuutCD5PN/AaiKLpndb39YqbN5UwZXQjkQn8wgOf5KBULW3+udRhXuwuOUZqi2+miVirN94bDfq7tFcaYHK9cXeoLMVWO/INwk5r8V9muZjOwNsPROWCU5sc2d/NOXd2gwKLAIn9c6/3RxonljV+XHF8ohv7dAEySqZcY45En2IzKcvDJO2ebgeOcRRj6aExNYbpWxVxz6vZWrzcXx+kTcabOMMYPe1LKXq8DPwgQRRHctlqAnbOlaQgu71trt7+mrWnHabZciMJD48Z+GaqVyg1FnYwxKK3RqFVQLZfvWF1fv5AqfTbNdCcM/f2jfh+cC5RKpckh6HFFe5qmaLXa0Ga8vCxF0e52d/Dc5pHBcbscswrnZOjL5vY3H6//Gq7fpxvvWm27J9E6jDL10uZC8tTV1u/SaKPAIn9Mh+enGktT5bsCIWalYDXOmMcYE2mWH1Patv3AO6yVgrUWQRAAbLwhPjczDSE4lNIoRAF2L8xVkzR/uNsbPJLn+pxSKgjCoNnv9wAmUC6V4Jy9bpbioI3BbLOGYrFwz+p6+4TRdmOYpKcD3z9qrcJgOJxsqMtxdTt2bsZXywXU6/Vb1zZa/Uzpc1mmOoUo2B+P4q1aLYBhNBqh1e5szRSttfA9D4zzO3uD4WOCi5KD04wxmWl9SQqxGHgi2vm+IG5YojLG4Ni12dXmryljXZzp5zhHYBziMyutD9Foo8Air9G9+xbefeee2f+1UYzeHXpyfxh4tzLOQmeRWGv6jDHfWAziNH/W88VBwRAqpeD7PmaaTQSBv6NglDOOpcVZcM4e3mh3nsmMuZqkea8QBnviJEauNCrl0lZH0uuP1ExVy5iq145e3djY0NpcjdPsOGfyoBTM6/f7KBRLCDz/hpmaNgblQoSZqcbetY0NleT6RJbrTiEK98fDIQDAwmGj3b5WKDpZvllrUYoCDOKUZUqfE5wVHGDBGMtzfdaT/KAnhLx+OXhD25pJ4ambTMk4Y8i1HSWZekkIXjXGbJxZ7fwRjToKLPIavP32ff+8VgrfpbRZlpJPNevln5pt1N4406g/3KyX31wIw7dqZ63Os3MO3I6y7BnGeDPwZcMag3q9isD3b5h1GGMwOz2FSqV09/pGZyNX6nyc5eu+5x0wOscoTlAuj8sPdryTB0Abi3Ixwsx048DaRoerXJ9LlD5jrWtEQVDp9fsIQx9hGL7sO4hRGGC22dy1ttFicZY9l2ZqPQqDQ71+H6NRjEJU2HHJxGQNN75rUPCFTn/4pBCixhgT4z0thizXZwPfv1VyvqNk4YZC0UlIbc6yOGNIc93KlDknOC/HuXrxwnr3MRp5FFjkJn3P0f2/UAq9u5TWV6YqpT+/Z2HmoWqpKILAg8c5PClQLkRo1sq7ozB4U5Jma9q4Vq70OWMMi6LxprjkAsXijcs8ozVqlRLmpqf2tzq92VGafy3L8suM81s4B/r9HopRAcGk/ODaa8cdFyLfx8Ls9Hyr09+VpsnTuTGrWa5cKQrn+oMBpC9Rioqw1uyYaRlrEfgeZqen5ludXjPJshfiNDsTBfK2PM+VtU6EQTDu9LDt67XWIfA9DOJUK62ucM4jAGCcBRbMpLk6G/rykJgc23nFdwg3kwvjdwmHqTqvtF31pJjtjNKPX2n3n6fRR4FFbsLRXTOHFxuVv5cpdb4YeneWi/4RTC5e2JxxwG1uiDMUogj1aumWLM+boyT5ijGum+SqHwX+/iSJx0djyqWdXQ84h9YGYeBj1/xseTAYvaE/GD2SKn3WWjsT+l6x2+vDD3wUouiG8gNjx439FudnS93B4IHRKPm8cUjiPI8rUXFxOOyDC4ZCqQhnrlseao1CGCCMotrKyvoLStuVJNMni5H/hjRLuxYujMIAzl7bTXfOgnMBa81SP06+LBiLHKAnGcqsc6nSZqMQenvA8I1LR9nmPxj6cf68c8il4LXlzuDfbvTjDo1ACixyEx46vPt3HaxygNHGtpx1jjHMWaMhPQnBxWSGwLaKPQGH+enG1FS9/rZWp/eS0uZKnKYXhSdus1ojGcUolYoQQuzonrB5uHhpYQaZ0ve3u/0vaGWupMqgFIWz/eEAHAKlyY3P2DHrseCcYdfCHAaj5IHeYPgIA+OjJG2Vi8Xdw9EAjAmUiiU4ayczn/Hybr3dRRLHKBTCu7r9wdPG2mGW69PFKLw3SbM15lAKgmCrq+jmMSDOGDqD0Yvj2GaWMx4CcJwxqa0bAK4Y+UHt+i4P1wcWY4DSwDDJvs44As64/4XjF/4VjT4KLHKTAk+8xBkPPMmaAFyW61PauoHgbEllSvBJ94XJkggAIIXAdHMK8zMNNBuNuzu9Xj1Js2fjLD8OYK/gLBz0+wiDAGEYwJhroTXucQXsmp2B4OK+9Xbn68rYtTjNuqUw2jOKh7B23GpmR9/2zY1tAItzM4iT+MFOb/ApBsbjJG2XCsXd8XAEIRhKxRIAB2UcNtodJEkKOCAIPDDO7x8Mh5+3zqWp0ucKUXhPlqRXBWfVYKtX/HjHnHOO3ihuMcex0Rv8J21NtxgF9xrnRoxB5tpeCT15RHC21Zl0cz9sq0wDAGcco1ytp0qfEZyXlTbLdN0XBRZ5DdZ6o+UL693HT6+0P7TYKB31JG/mylzIcn3Gk2LBGF201sD3/cllphZzs9PwPQ+51igVQuyan5sajpIH+sPR47myl7WyQRB4zX5/AMH4+Np5Z69VhwPQWmNuuoFCoXD36nrruDJ2fZhky8UwOJSnOdI8n5QfTGqZwLbValnsmp1BkuYPdnv9zzpwFyfJaqkY7RsOhhCeByEEVtfWoJQeNwOEgzEW5ShEkuWNNMtfcs6lWunlKAzuiJPRspRe3fM8bO/SMEozqbVeiTP14hOnrrz/4NzUj8IxAzBn4bSDY5HvTU/eEry2rGSTgJ/8fQdx/ry2tiuFqHeGyUcutXpP0eijwCI36a49Mw8emmv8yL6Z2js4wB1gOWOBdS6LM/2ilGJOcNTyNAMXAvNzs1vn+gQbH23hgmH3whycw4Prnc6XtNarSaaGhSjcPYhHyJVGtVKGg53MRNi2Qs8q6pXS0ZW1jQvKmvYozs8Evn+bMwZJEqNSqUwq6XeWDThnsTA3gyRNH2h3+59ygEvTvFOMCns73Q6GoxjS84Bt7/5tzn5KxXC62x+edg6Z1nrFWNv3fW9fkiQbYRDU5WY/L8aQZKoyStOvBZ7YdWa181FfiKemq8W/bKztc8YCpe1qwQtum1wGfW1GyK/14FLaYpCor4E5JgWvnVvt/Dx1G6XAIjfh1sXppfsO7Pq1cuQ/AMa4L8Vs4Hv7PM9bcM5m2tg2AJdm6hgcPOl5i85plIpFRGG0NQvZvGjBWoO56SmUCoX7Vlrt00rZS0mabkRBcFCrDKM4QaVShth2lhCTmValXESzUb91Zb3VVUpdirP8rJTeUQZgMBqgUq5Aimt928f5w+CMwfzsDEZx8nBvMHjcgqk4Ta+GvjyYpIkSnAtvWzPAzcCSQkBKcXerP/yEx3lNKX2RgXHpybk0y2whDCIGAJwjznIWp9lzDIyfXm1/eL0/au1p1t8oJZ8CnAFgBUM59ER1M4w3A3KznKGfZmey3JwVnJWUcetfPX3592gEUmCRV+n23bN3HZhvvE9rtcwZC2Yatb+xONO4b6ZROzpdrxyeqpTfUAqjt2S5bitj1jNlLihjuuVCdGg4HEJphXKpuOMgs3OA1gaNWgXTjdpt6+0Oi9P8mTjNLwa+d5TBodfvo1wsQUoPdnL1/LjswaAYRZibmdq71u4U0yw/nmTZCSHEnZ7k6PX7KG5eVmHGDfY2Gxo767A4N42NbveO3jD+pLGmnyuzWoyC2+JRvCGkV9heLrF5FVghDBCnWZhk6kUmWDFT5oIn+BTnCJQ2tUKhAAZglOaI0+w5MMY39508KZ6eqxV/2ljbZ2BwcCbyvaWXe9bGOfRH+ZMOTkspZ9d7ow9cafdfpFFIgUVepYcPL30wy9WZUiF6ePf8zPfWytH4phgGsMkZu0LBR71WvsUYe8soTr5k4NIkyS6GgX+bMQq9wWBykHln6xatDUqFCAtz0/PdXv+OQRw/lmb5RTAcDqQUvW4PURQhDIOt141vydEIgwCLszPTG63ubJJlL6Rp/iKAg74v/W6viyiMtjqRThZeYIyh2+0hDAJvOEqgcnXeGNPKlLkaBeHRZJSseb6s7FgejpMLvhS72r3BY2BMMgaplL7kef4ua80IQKMQBhiMUpfk+TEw8NMr7Q8BwMYg7u+drX8vF6w8bsbAsmhSl7UZiuMJGsMw1Stprk9xzkucMe/RF87+QxqBFFjkVfreOw/+KmMQjEFMVQrvCDwJbHbm3HaNvAMDcw7NeqUwNzPz1l5/0EuVOhOn+SnO+e2eJ3m/24X0PRSiCM6O28xwPj4a4wuOpYU5L03zh1r9wSMqV2eNddNRGJS7vR6CzZtytvXHMsZAegKLczPVdqe/P07Tp9JcnzbG1guhX+v2uvADH1EQTopTGVqdDgbDEQTnqFVKe7qDwZqxrq+1WdHWdsPAuzVJ4n4QBEUpxLXK9klxaJzlYZqpY4w5aR1Src3VMJCHtdJxEISVOM3zLFennXP59nf26sUI1UL0VuPcCM7p0JMHpRDc4VrTPuscuqP0c2BMSM4rvVH6yIX17uM0CimwyKtwYG4q2jvT+H+UNsvOOZXn+qqxelYwBJ70wHc0uAMY42g2G5iZqmNxdvpAtz84MkjiL6S5Pm20rhajoN7v92FhUS6VJpvObut/rACwND8Do82DrXbvUW3Meq60LBWL04PhAEIIlIoFGHNthmatgxAci7PTUavXPzqKky9qbVaVMqIYhbO9Xhd+EEJIibX1DWRZDjEJIsEZKqXikU6v/wIA5FpdsoAJfe9gkiRxGITh9rODnHEwznb1+qNHGWfBZIsrA5jzfbnHGlvKlL6qre0o49bPrrY/uvna5fbgpSOLMz9rnB0xwPlSLvhShNg6jsMxTLILqTLnNi9P/eQzp/47GoUUWORV6gwTXYn8rsdZTQhe0ca28kydcs7V4WxVSgE5qXC31qA51UAxiqCUQuh72LM4FyZp9nCnN3hEK7sc53lWKhaWkjjBKElRLpchuIAbnxWGA2Cswa7ZaQgpH1rd6DyhjWmlWW7KxcL8YDiAA1Aulra6LmyGFuccu+bn/O5g8HB/lDyirGvnKnflKJxvdTpIkmxrObk5a7LWjS9xDYN7N7r9TwvOK3muTzPGfE/KuTRNXSGKvMm+EwDA8wS6g/gCA9wgyZ9MtbkY+mKfL+WCA/wk18c5Y0E3Th+51Op9bfvzPDg/9eOAs5bBBp7Y5XuisHmRq9IW3VH2WcZZILmo9eL0UTo7SIFFbtKVdv+5s2udj59eaf+XpWbpDYzJIM3VKcCVrTVNzhikkKhUy6hVyrDWbHVfAIClhTkwjjeutzpf0o6NhnF6pRiGh6wx6A/7KBYKO/e1MN7Xmm3WUIjCe1fW2k8rra/GaT6slKI9cTKavFNYHs/K3PZruYBdC7Po90dv7A+Hn7IWcZKpni/53ixJbBAE7PoOptZaFAoRGMNbu4PRxzzBm2mmjkkpmuBOam0qhUI0XhY6Bykk4jT38zw/5ZxLnzh99bf2NKsPeZ63izMeZNpc8aSYObvW/nvtYZJtf5b75xo/LDgrWOdiX4qFwJeVyfYYOsP0SWMxGs+uWOmTz5z6KzT6KLDIa/Dgod1/Ze9M+a2cMW+yd8Wz3JxxcIIBC5wBc3Mz2NzzYXzSVRTj7gvzM01EUfTA6nrrOTiX9+P0mO97RwMp0O51Efg+oii6YTO+Wa+iVC7dfXWtdVJrvRqn+aBUiPbkWYo0U6iWy5ON8c3wMWBwWFqYQ284enO3P/gjrc2qtTYuhN7BUZykge/LzSXhVmgZg2qpiDjNanGafV1yVklzdcL3/b3O6owzvlXVLgRHrtT0ME6+FPny8KnV7h+cW+89ctti82e0dR3BRSXOsme/evrKDc329s/Wvl8IXnPOZaEnlnwpywDDIM4vJrk5xRg8KURjtTv6/y63ek/TyKPAIjfh4cNLP3PX3rlf9DnqUeDfVgrDe33P222djY013VybK84BYeDvSuMRwus6g27uaxmt0KzX0KhW7rq6tnHBWNeLk+yYBQ6VolB2e30IPt6f2llzZVGvlNCs125fWdtYy5Q+nyT5eqkQHlR5hjRNUalUtmY/QoxbL/eGQxQCD3mubh0l6ZeVMavGIg5972ASx3EYRv74Y3d2/CxE4Xy7N3iGsfGYy3J1yvPlkjZK+J5fEFKCAVDGoj9MnpKcV0+udP4LANSKoW2Ui38mzdWpjz996s+93PM8OD/144LzkoNTgRSLgS/LSaaHgzT/CmeQjDHPwOWfff7MP6DRR4FFbsL3HN37T2vF6J1K6cvz042/vnuueWS6Xtk1XS8vTdUqd0kp35Rm+fkkU8/nuRpKzg8mSQIOoFgq7bjtBhg32KsUC5ibaR5ebXeCTOVn81yd1ko3SqViZTAYwFo7XurZzdcCSo97XE1PNQ6urG8M81yfG6X5aqkQHTJaYRQnqFYq4/bFWY5Ot4fhMAacRb1eKeW5OhzH6ZO5Nleds5nny91JkugoDL3t9xCOu6H6MNbePxjGn+SclxyglNIXPenNKa0rYRRKwYBcW/RG8XPCE9Mnl9v/GQAut/pPVwrB6NHnz75i2BxaaP5FznmBWeTFwL/dWOf14uwxxphwgPE9uXji8vqPtAbxiEYgBRZ5le47sPDDU+XCjyqtr9yyZ+GvTdcr2KxUBxikEKiVS6hVSrc7x+7tDuOPxFl2Tgh+p9Y5MpWjUqqA822dNTFusBcFPnbNz0y3u71b4zh7Uhu3kaSprpRLc3EygspzlCuVScHEtYtQC2GA2enmntX1lk5zdXKYZJdKUXSr1gqjJIWDQ6fbhbF28i7guBvoVK1STtJ8LkmzZ7U2qw7QnscXsjTzCoUi396SyjmHyPd5uz886ZzLJxfYZMbYrpRsGtbVoyhCnOYYxMnznuDNE8ut/7T5+sut/jc873dk18zfhHWJELwipTc3iLMvuMmBS0/KmVZ/9DtPn1v+FI1ACixyE+49sPgrSZa/sG9h5m9N1UrIlQbjk7f1t67a0qiWy7j98EGpjHljq9P5XJKqY4A4BGf8URyjVCzCk2Jn7ZS1kIJjaWHe6w1H9/eHo8ecY2o0StYr5eLeLMuQpDmqlRK2DtUwBm0sCqGP2Znm4tp6i6dZ9uIoyS8VouC2LE0wHMYoFgoAtvXVGt+ZhWq1PD0YDONcmUtKmxXBRZFLWc+VCopRuKOLqO9JZErtGcXpE5zzQnuYfNQTvC6lNw3nQk96xTRXSJL0RU+IxvHl1vtf7XM9ujTzd43FQHJeUVpfMUDGxu1nwtzY9UeeO/13aPRRYJGb3LcKPLG7XIjetGd+qqn0uK/U9qZzbPLO4PTUFCwsluamEfj+A6sbrWeHWfp1Z92054naYDBAGIYItgo3r12IypzFnoV5pFn2QLvbe9RxJofD+GKlVDyoVI4kSVCtlAHs7L0eBT6mm1PzK+utLM3yY3GanSuE4R2wBsoahGF0w1lAzoByqXh4o9t/mgE8zdVpzxMLwtnQWBtEUbStNQ0D46zY7Q+f9Dxvcbk7/JVekn1hqhT+EOei4JxtZnm+nBu7Csb4yeXWb7y6/xNY+KFqIXq7cTZ24xbxGmDMwVkpZfMjX33pbTT6KLDITbp979z/Zoxt75mfeVfoezu6JWzf72lOTSGadGHQWmOm2UC1Wrl7baPVjpP8qUwbGXlybjgaQgiOQqGw7V3Acc2otRaLczPQ1jyw0e49zhj3hnFytVIu7ldKIdu2qb4ZJsZYFKIQ9Vplz9WVtQta69U4y0+EoX+3Vjmcw46e7Vu32wQ+pCcf7vb6nxJCVJM0eyYMglutVZJz7gd+sBVaQgj0h8MVOOTWueyFyxvHpsvFSjEM7gVjfprrU5KLSjfOH72w3nlVleh37Zn734XgFeegGHc+wJlzLvV9uefU8sZPrPdGazT6KLDITTqy2PxpIcXUrtmpfQ5uRzX75oylVCygXqvDbDuQrLVBrVLCTLN5YG2jLeIk/UqS6zgM/D1ZMoK2DuWtMoRr5+estViYnQZj7L6VjfYjYM4laT6qlAq7sixDno9Dy23rYtrr95EmCQqF8PZ2t/+UsXaQZvmJQhjenWTZSMhxAG2faVljUSpEGMaJl2bZi5zzQpLnxwphcGeW5ZnveaGcdGoQnGEYpyrT+hLniM6v9z93qdV/6uBc/b0OMMa5REgx9YmnT/65V/tc79g7/wva2DZjzN/sjeV7Yml5o/8vnj63/GkaeRRY5CbdvXfuLeUwuL9UCB6arlejzcsWrr9Sa2a6CSGu/ff2K+RLUYCFuZm5VquzaxCnn0uyvBOFwQGVpcjSDOVK+YZrrowet5rxpHjw6lrrs866YZpmSblUWEqSFLlSqFWrSNIUrW4Ho1ECYyyiIEDgew+0u/1HHKCzPD9VCIO7kzRJfM/zPenteLeSMUBKsbvdHTzGOS9ZY3u5tpcLoX9XmqUuikIJAFxwjNI8SrLsBS5E5exq5yPj+R0+MV+v/C0IVnjp4ur3tgbx4NU817ffcfBfBp7YZQHFAOacyz0pptuD+Pe/dPzCv6WRR4FFXoODC82/5Ekx26yW762WIhgzvr1lszTBWotqtYJyuQS77TzftfOEDNoa+J7E4sJcqdft39cfxo+kqWoFgX/AWo14UobAxbUjMpg055udbsD3/QeX1zY+Z4zr5nlmS+XiQpwkiOMUeZZDawPOx0PCWItSoQBj3ff0R/GnnXOpUupiGARH4jRVURT6grMdm+qB76E/TEZKqYuM8yA3ZpU5ZzzpzWujoyga9+4axqlN8/wEGBNnVjofBoDWMEkiX55+9LmzP/9qwwoA7tk//0va2HXGmHTO5VKIqUGafeWx58/+Ixp1FFjkNTq8OP3fc8aD6XrltigMdmyUAw5CCExPN1/xzpfN0LJ23C54aWEW/dHo3m5/9GiS5ld837uFMYfhcIByqbR1CHly6fE4tJp1+L7/4NW1jceVsRuZ0qxSCBdGoxGEkPB9f8esyViHSrmIwXBkcqUvaGPXrXNZ4Mu9SZb6hSgaf/2T22i45FBKHRrGyefd5C+WK33Rk2KGMVfmggeB76HdG1zSxrWNMe2zq92Pb/4dr3YGp27mmb7nnsO/zTkLnWPawWlPitlhlj/zyLOn/xqNuD+ZOD2Cbw/JWQVwkIJPmoyLrcdvrUW1XIQv5c6A2n578bZfs5PLIx68+w4sLcz8bK7V8lqr94eDOEOmDc6ev4g0y7D9mAxnDEma4cDSAu645cDfN8b1hkn65Hqn/6Ln+xgMBsiybMeVYONeohaL8zPvAADOeWkYJ18YJdlXlVJXO73e1m3Njjk4BxQLEWOM+ZyxYKUzep91LB8m6ZPWsiROEqSZRq7sZV+ImTQ3Z17r87zv4OKfLfrebdYidnDWk2J2lOZPf+aZUz9No40Ci/xxHzSDf21GBWByLhAY33xTLpdhjMEkGG6YXW3/OWcMDBbGGNx/5xHs373r57TWq63O8CP9QQLngAsXLiFNsnHHB3ftinalNRZnm5ibqv0PzrqkN8oe3egOXhKCo9/vbbWX2QwtYxzKxRC1WvkvKms6Uoip3jD5ZK7t1TRJ1obDIdjk0LNzDp7ngQtR9aVcOHa1vfb48Uu/zBjz4yx/wRibtrrd/mSfaW5jkHzotT7P3c36L2TWbjg460sx34+zz3/6mVN/lUYaBRZ5PTAmxwunyeV4k9mLdRaFKML4hhi87Izq+p+P/5uDMcAYjXtvP4xDe5d+Vml1td0bfqQ7GAKc48KlS0jSBFyIrUaA7W4PK2vrWFqYldVi8V1wVnWH8ce6w/gMGEOv37vxazfAzFRtv2CTW5cZ83v9+MPaibQ3GPZUnk9mfuPCVSFE3YG52xenDwJAN84fs86muXYraW5OS8mnR1n+3PEr65dey6P8ofuPfFYb23bOqcDju7vD9BOPPnf679Igo8AirxcHA+e03XHjDAfAUCwVb7ha/fqguv7H5oyJMQ6VK9x122EcPrDvZzOjVzZ6w99r9QbGAjh34SLiNIPWBqtraxiORuBcwDmLvUvzd3qe3MUY81v90e8NU3VVqRyD4RDbzwIaa1EMAxQL4RuNtQPOWcHAqf5w9EnHwDu93vhSCjcOZM5FicGx0BN7AeDLp5d/x1gMc2UuCc7LubHrH//6qR97LY/x3Xcf+oDgrGScTQJP7F5pj37lsy+c+Z9ogFFgkdeRsXbg4Iw2ZqvTAsAgpbfVG/36QLo+xK4Psq1/M4Ysz3HHrQdw28G9P6O1Xmv3hr/TGYwAMJw9dwGXr65CGwfB5da+mScFdi/M/TlYm0rOK+1O/9czbVpxMkKWZZOV67i9HuMclXLhnRYw1rkMYEiVOhen+TNK643BcAgGBmcdGIPHGDzjXLL5dZ9f7f4DIXj9Sqf/bz761ePf91qe4dtuP/B/R6F/hza2HUi5eHa18/NfOnHh12h0UWCR15k2tj05ugLHrxV2ep6ElOJll4PXB9Ur/f54X4sjzzLcfmg/bjt08G9b59KNTv/97cEoAXPo9Xuw1mztNYFxGG3QqBRRr1d/UhvbZpxH7d7od4x2g26/t3VOcbLlhkIYgnNW4JwX13qjDxiLYZJmz1nnsiRNRpnKYeHgrEsY54XcmK0K82PLG1d+/8kX73ji+MVffS3P7+Fbdv9coxz9GWtdLASvv3Bh5a3PnKWiUAos8i0RZ+pFzngYp2k2qQIAAEgpwbYtv17p3cFvtlwEG2/W58bgwO4FzE9P/bSxdtDqDj7QH8apEBy9bu9ahfpkaWqsw2yzNis4L3OOoja23RkmH1VaDwfDwdbHwjn4vg/ORUkK1nhpuX3l8ycu/7/jv5N+Do7ZNE2RZhmsNUPOWfHFyxunXo9n94YDiz8436j8vHMu18a0Pvzllx44eXWjTaOKAot8i/ST7ItS8EaS5s9ZYzCeZFkIzsHBbjim80oBdv3HbH0jJw32up0+rqysYGl+BlP1+s8459R6d/D+UZoBzKE32FmTaY1FMQxRLhXfZYztSMEbSZa9mGbqeJykeZpnYILDYXyxhBSyCTAcXZzaBwD9NP+KsyY2xnVzZdDuDo4xzgvKoPV6PLe7985/z96Z+i8BQKsff/BjT514L40mCizyLfbixdXnGeN+lqkTozQf3z24tQe142b1l93Hur6D586P5RjGCVbWNjCcFIEaY3Bgaa5QCIO7neN6rdX/lVxbKJVjOBqN3zW0dvNyHVRL0W3OuRwABGfl3ij9jNJ2dbP53+bqkDMWMMYDznkRAL548sq/d4xzZW03VWY50+Zy4PsHL270/4/XI6xu2TX9Ietcenq59VOfe+nc/0kjiQKLfJtkylwEc6LV7YHxceGomYTGN9tgv/73uRCA5EjyHKvr62i3OpNrucR4tTm5hHXv0vybGXOeY2Arrd6/c86hPxohz3MwzsEAWOcQhQEYF0XnoDJtr2jjOsM4+aJSpjcYxOPQtA7OuZwzFjCwrbGz3B7+GwbGM6UvBFLuWm71fumFiyvP/HGe1T37F959ZM/sp3tx/vgfPPniPc9duPplGkGEAuvbqD0c/mHgeXtb3cGncq0ghECSxNBaX1dhjpf9OWMMXAhwzpFlGTbW2lhfW0eWZRCcg7Fr5wfHNzhb1EolNOvVn7HOZcbZZLUz+E0GoNfvTz52HFie50EIUZeCT7X6yQc7cfqI1nYt1eZSkiU2zzIorWGdTTnnxe0b6k+fX3k8Vvq0cS554dLau588dfkDf5zn9PAtu3/uyNLMR86ttP/OJ75+/Mdo5BAKrP8GvnLqym8xxrxcqYurrS48j0Mrg41We9y4T0pwzrfu+ON8/G8pJbgQ4wsaBkNcXV3Dyuo64jgF52J8BAeb9xxv7eeDTzbV55tTUjBR4IJXcq2Xu4PRJ3Jt1GA0ACZBKaWAJ8UsY9xnXBSfvbj+lAFUlqsz1rpRkiToDUapY+BgkMeXWyvb/24ff+rkn/nIV4+/87UWg2763jsP/dpco/y3nzh+MXjyxMV/T6OGbEeHn7/NmpVirRyFD/eHo+cbtfJh35NI0xRJkm7dBWidg7EWWhukWYbhMEa/30e320M8SmCtBecCnL/8MvJaG+NxhAW+h1GS7h3F6ZeEEPUkUy95XNTg3ILvy8mFq0C7P1y21vYTpU9d7Q7PF315sVEKf2CyVIxGSf5VxuFnyl48u9r5o9f72fzgfUc+FSt16pNfP/nj3VHiaLSQ60l6BN9eXzh2/pd++IHbfsRYOzhzeWX9tn27pzkXSDOFJG2D882iUj7p6LAZOwycO3DJwcB3LBmxYw9s3Jtq23oSjDHUKqXmRqenAeeE4PXeKPmMlHJ2NIx31atVWGthncsYZxFnCADg+csbx+cb1QuedAupNbEDrMdl/aPPHvv+1/u5fN9dh/7DR7527F00QggtCb/DnLm68bNRGNzZ6Y9+/9zlVXieBBccUoptS8LxXYDXfrCtG3LGl0fg2p7V5IjP9h7tWwE26ZkchQGE4HXnoAZJ/qRxLhml2dfTXKlcK2jrYI3pSs6rubHrm1/rhY3eP5VCNMCYMNYN/+Arxx5+PZ/FgdmGd/e+hXd8+tlTP0sjg9CS8DvQWn+0Pl0ulGql6D3t3vC/5krf36hWwBgmhZ3bZ00MO4seblwCftOC08l1Xuud3jEhePWxFy/+wnytuMeXfMbzxAKYKCdZjjhOn/OkmH38pQv/bPNztAbxqBIFg7Xe8P2fP3bhn7/ez6IzSuxKd3CORgWhwPoOdnGj98X5WnlfuRC9pTsYfmwwGNWKxUI9ioLNwvIdM6ZXqsO6NrOyNwTb+BgOwPm4F9Zau/dEIMTciavt37zcHjx7eK7xY4LLioOr9kfJF31PLLaHyYcvrPc+t/3zXG71v77SHV6k7xqhJeGfYp994ez/vNGLf6sURQ8NsvSpF06f/9D5K6tQSkNKCSn4VlhtHkLeuXe186yfw1brq8mBZQbfk/CExHpnADBI7bB183Fu7Jq2tpcpc8H3vN2DJH/y8ZcuUHEmoRkWeaWZVveJQPIXpiqlPy+5qHT6g0fWO73LWZ4dFlLA9yR8KbZ6Wo1/CIwbJo/3rjYPP49LHMalEGAOxmgMRgnOL6+h1em9P/Dl/n6cPX5xo/dFAPCkeHaxUfn7aW5OX1jv/i9fPHHxV+g7Qr6TMXoE3znecmTv/9isFn/COpdlSp13julC4B2tlAp3FsIQUeDBHxd47lgeuu1lELlCnKQYxslammXHMqUvOAYeed4BZ5H84deOvZOeNKHAIq+bhw4v/dVmtfgTvpAzxtlEabNije0xBo9zXhqXHrBgs4upcza3FrGzNrbOZYwxjzMWSiEaQvC6NabbjdPPPvbCuX9MT5dQYJFvif2zDdmslP5CtRi+M/LEfsF5GexllvGMSbZtP9IY28mUujBM86c6w/RjL15afYmeJqHAIt/+EJupIwq8I4wx35diHgCU1isOsEmmjp1Z7Sh6SoQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQ8qfN/w9DNlCHh+DNXAAAAABJRU5ErkJggg==';
+  if(typeof _trilobiteImg!=='undefined') _trilobiteImg.src=d;
+  // Also set pill image
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('.tri-pill-img').forEach(function(el){el.src=d;});
+  });
+})();
+</script>
 </head>
 <body>
 
 <!-- ════════════════════════════
      MAIN SCREEN
 ════════════════════════════ -->
+<!-- Fullscreen splash -->
+<div id="fs-splash">
+  <div class="fs-logo">Pun Antü</div>
+  <div class="fs-sub">Geoparque · Balcarce</div>
+  <div class="fs-tagline">Recorré 4.500 millones de años<br>de historia geológica</div>
+  <button id="fs-btn" onclick="enterFullscreen()">
+    <span style="font-size:18px;">⛶</span> Abrir en pantalla completa
+  </button>
+  <div class="fs-skip" onclick="skipFullscreen()">Continuar sin pantalla completa</div>
+</div>
+
+<!-- Fullscreen exit button (visible only in fullscreen) -->
+<button id="fs-exit-btn" onclick="exitFullscreen()" title="Salir de pantalla completa">✕</button>
+
 <div id="main">
 
   <!-- Top bar -->
@@ -363,7 +520,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <!-- geositio tag: hidden at start, visible when panel open -->
     <div id="geo-tag" style="display:none;flex-direction:column;align-items:flex-end;gap:1px;">
       <span style="background:#7A1A0A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;">Geositio 5</span>
-      <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:600;">La Tosquera · Cuaternario</span>
+      <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:600;">La Tosquera</span>
     </div>
   </div>
 
@@ -374,7 +531,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       position:absolute;top:10px;left:0;right:0;z-index:10;
       text-align:center;pointer-events:none;">
       <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Geositio 5</div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">La Tosquera · Cuaternario</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">La Tosquera</div>
     </div>
     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
       <img src="logo.png" id="logo-bg" alt="" style="width:88%;max-width:380px;opacity:0.18;filter:brightness(2) saturate(0.4);">
@@ -385,7 +542,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       camera-controls touch-action="pan-y"
       shadow-intensity="1.2" exposure="1.2"
       camera-orbit="180deg 82deg 7.5m"
-      camera-target="0m 0.5m 0m"
       field-of-view="36deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
     </model-viewer>
@@ -393,7 +549,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       src="PunAntuMascot.glb"
       shadow-intensity="1.2" exposure="1.2"
       camera-orbit="180deg 85deg 10.0m"
-      camera-target="0m 0.5m 0m"
       field-of-view="36deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
     </model-viewer>
@@ -423,7 +578,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     display:flex;align-items:center;justify-content:center;
     font-size:22px;">🏆</div>
   <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
-  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del La Tosquera · Cuaternario es una de las rocas más antiguas de Argentina.</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del La Tosquera es una de las rocas más antiguas de Argentina.</div>
 </div>
   </div>
 
@@ -432,7 +587,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <div class="bar-label">¿Qué querés descubrir?</div>
     <div class="pills">
       <button class="pill" onclick="openPanel('mega',this)"><span class="pi">🦣</span>Megafauna</button>
-      <button class="pill" onclick="openPanel('cuater',this)"><span class="pi">🪨</span>Cuaternario</button>
+      <button class="pill" onclick="openPanel('loess',this)"><span class="pi">💨</span>Loess</button>
       <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Mapa</button>
       <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🎯</span>Quiz</button>
     </div>
@@ -486,6 +641,42 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       cursor:pointer;backdrop-filter:blur(8px);
       display:flex;align-items:center;justify-content:center;">✕</button>
 
+  <!-- botón obturador (foto) — abajo centro -->
+  <button id="ar-shutter-btn" onclick="capturePhoto()"
+    style="position:absolute;bottom:120px;left:50%;transform:translateX(-50%);z-index:30;
+      width:64px;height:64px;border-radius:50%;
+      background:rgba(255,255,255,.95);border:4px solid rgba(255,255,255,.4);
+      box-shadow:0 4px 16px rgba(0,0,0,.5);
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:transform .15s ease;">
+    <div style="width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.1);"></div>
+  </button>
+
+  <!-- flash overlay para feedback al disparar -->
+  <div id="ar-flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .3s ease;"></div>
+
+  <!-- preview de foto capturada -->
+  <div id="ar-preview" style="position:absolute;inset:0;background:#000;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+    <img id="ar-preview-img" style="max-width:100%;max-height:75%;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.6);" />
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button onclick="discardPhoto()"
+        style="padding:12px 22px;border-radius:24px;border:none;
+          background:rgba(255,255,255,.15);color:#fff;font-weight:700;
+          font-size:14px;cursor:pointer;backdrop-filter:blur(8px);">↺ Otra</button>
+      <a id="ar-download-link" download="punantu-foto.jpg"
+        style="padding:12px 22px;border-radius:24px;
+          background:#C8841E;color:#fff;font-weight:700;text-decoration:none;
+          font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+        ⬇ Guardar
+      </a>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:14px;text-align:center;max-width:280px;">
+      Tocá <strong>Guardar</strong> para descargar la foto en alta calidad.
+    </div>
+  </div>
+
+
   <!-- instrucción rotación — arriba derecha, solo en portrait -->
   <div id="ar-rotate-hint"
     style="position:absolute;top:16px;right:16px;z-index:30;
@@ -509,7 +700,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       <div style="font-family:'Playfair Display',serif;font-size:26px;
         color:#FDF8EE;line-height:1;margin-bottom:4px;">Pun Antü</div>
       <div style="font-size:10px;color:#9B8A6E;letter-spacing:.5px;">
-        La Tosquera · Cuaternario · Balcarce · Argentina</div>
+        La Tosquera · Balcarce · Argentina</div>
     </div>
 
     <!-- separador vertical -->
@@ -519,8 +710,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <div style="text-align:right;">
       <div style="font-family:'Playfair Display',serif;font-size:14px;
         color:#FDF8EE;line-height:1.4;margin-bottom:2px;">¡Gracias por<br>visitar!</div>
-      <div style="font-size:9px;color:#C8841E;font-weight:700;letter-spacing:1px;">
-        PUNANTUGEOPARQUE.COM.AR</div>
       <div style="font-size:10px;color:#F0C070;font-weight:700;letter-spacing:.5px;margin-top:3px;">@Pun_Antu</div>
     </div>
 
@@ -619,7 +808,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     display:flex;align-items:center;justify-content:center;
     font-size:22px;">🏆</div>
   <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
-  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del La Tosquera · Cuaternario es una de las rocas más antiguas de Argentina.</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del La Tosquera es una de las rocas más antiguas de Argentina.</div>
 </div>
 </div>
 
@@ -668,7 +857,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 /* ════════════
    MAPA GEOCIRCUITO
 ════════════ */
-const GEOSITIOS = [{"n": 1, "name": "La Tosquera · Cuaternario", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Sierra La Barrosa", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
+const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "La Tosquera", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
 const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
 let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
 
@@ -756,6 +945,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 /* ════════════
    PANELS
 ════════════ */
+const QUIZ=[
+  {q:'¿En qué período geológico vivió la megafauna pampeana?',opts:['Cretácico','Mioceno','Pleistoceno'],ok:2},
+  {q:'¿Qué animal gigante de caparazón habitó la pampa?',opts:['Megaterio','Gliptodonte','Smilodon'],ok:1},
+  {q:'¿Cuál es el origen del sedimento llamado loess?',opts:['Marino','Eólico (viento)','Volcánico'],ok:1},
+  {q:'¿Cómo se llamaban los perezosos gigantes que habitaron Balcarce?',opts:['Megaterios','Mamuts','Mastodontes'],ok:0},
+  {q:'¿Hace cuántos años se extinguió la megafauna sudamericana?',opts:['~1 millón','~10.000 años','~100 millones'],ok:1},
+];
 const panels={
   quiz:{title:'¡Poné a prueba tu saber!',html:'<div id="qwrap"></div>'}
 };
@@ -799,8 +995,8 @@ function hideSpeechBubble(){
 
 function openPanel(id,btn){
   document.getElementById('edad-panel').classList.remove('open');
-  document.getElementById('mega-panel').classList.remove('open');
-  document.getElementById('cuater-panel').classList.remove('open');
+  const _hp=document.getElementById('historia-panel');if(_hp)_hp.classList.remove('open');
+  const _pp=document.getElementById('paleo-panel');if(_pp){_pp.classList.remove('open');stopMegaScene();}
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
@@ -829,20 +1025,39 @@ function openPanel(id,btn){
     return;
   }
 
-  if(id==='mega'){document.getElementById('logo-bg').style.opacity='0';document.getElementById('main').classList.add('panel-half-open');showSpeechBubble('🐸 Acá vivieron gliptodontes y megafauna hace miles de años');document.getElementById('mega-panel').classList.add('open');return;}
-  if(id==='cuater'){document.getElementById('logo-bg').style.opacity='0';document.getElementById('main').classList.add('panel-half-open');showSpeechBubble('🐸 Este perfil registra los últimos 3,5 millones de años');document.getElementById('cuater-panel').classList.add('open');return;}
+
+  if(id==='estrat'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Este contacto representa 1.700 Ma sin registro');
+    document.getElementById('estrat-panel').classList.add('open');
+    return;
+  }
+  if(id==='mega'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Aquí vivieron mamíferos gigantes');
+    document.getElementById('mega-panel').classList.add('open');
+    setTimeout(function(){ showBiozone(0, document.querySelector('.biozone-tab')); startMegaScene(); },80);
+    return;
+  }
+  if(id==='loess'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 El polvo del viento conserva los huesos');
+    document.getElementById('loess-panel').classList.add('open');
+    return;
+  }
   document.getElementById('panel-title').textContent=panels[id].title;
   document.getElementById('panel-body').innerHTML=panels[id].html;
   document.getElementById('info-panel').classList.add('open');
   if(id==='quiz')initQuiz();
 }
 
-function closeExtraPanel(id){document.getElementById(id+'-panel').classList.remove('open');hideSpeechBubble();document.getElementById('logo-bg').style.opacity='0.18';document.getElementById('main').classList.remove('panel-half-open');document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));activeBtn=null;mascotRelax();}
-
 function closeEdadPanel(){
   document.getElementById('edad-panel').classList.remove('open');
-  document.getElementById('mega-panel').classList.remove('open');
-  document.getElementById('cuater-panel').classList.remove('open');
+  const _hp=document.getElementById('historia-panel');if(_hp)_hp.classList.remove('open');
+  const _pp=document.getElementById('paleo-panel');if(_pp){_pp.classList.remove('open');stopMegaScene();}
   hideSpeechBubble();
   document.getElementById('logo-bg').style.opacity='0.18';
   document.getElementById('main').classList.remove('panel-half-open');
@@ -859,10 +1074,22 @@ function closeMetaPanel(){
   activeBtn=null;
   mascotRelax();
 }
+function closeExtraPanel(id){
+  if(id==='mega'){ stopMegaScene(); }
+  const el=document.getElementById(id+'-panel');
+  if(el) el.classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(function(b){b.classList.remove('active');});
+  activeBtn=null;
+  mascotRelax();
+}
+
 function closePanel(){
   document.getElementById('edad-panel').classList.remove('open');
-  document.getElementById('mega-panel').classList.remove('open');
-  document.getElementById('cuater-panel').classList.remove('open');
+  const _hp=document.getElementById('historia-panel');if(_hp)_hp.classList.remove('open');
+  const _pp=document.getElementById('paleo-panel');if(_pp){_pp.classList.remove('open');stopMegaScene();}
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
@@ -881,7 +1108,7 @@ const HITOS=[
   {ma:66,   txt:'🦕 Se extinguieron los dinosaurios',  maxMa:130},
   {ma:252,  txt:'💀 La mayor extinción masiva de la historia'},
   {ma:541,  txt:'🐚 Aparecen los primeros animales con esqueleto'},
-  {ma:2200, txt:'🪨 ¡Aquí se formaron las rocas del La Tosquera · Cuaternario!'},
+  {ma:2200, txt:'🪨 ¡Aquí se formaron las rocas del Cerro El Triunfo!'},
   {ma:3800, txt:'🦠 Aparece la primera vida en la Tierra'},
   {ma:4600, txt:'💫 La Tierra recién se está formando'},
 ];
@@ -970,7 +1197,7 @@ function doMetaScrub(e){
 /* ════════════
    QUIZ
 ════════════ */
-const QUIZ=[{"q": "¿Qué son las crotovinas?", "opts": ["Fósiles de plantas", "Paleocuevas de mamíferos", "Huellas de dinosaurios"], "ok": 1}, {"q": "¿Hace cuántos años vivió la megafauna en esta región?", "opts": ["200.000 años", "Entre 3,5 Ma y 20.000 años", "Solo 1.000 años"], "ok": 1}, {"q": "¿Para qué se usó originalmente esta cava?", "opts": ["Mina de carbón", "Cantera de gneiss", "Extracción de sedimentos para caminos"], "ok": 2}];
+
 let qIdx=0,qScore=0,qAns=[];
 function initQuiz(){qIdx=0;qScore=0;qAns=[false,false,false];renderQ();}
 function renderQ(){
@@ -1028,6 +1255,1374 @@ function closeAR(){
   const video=document.getElementById('cam-video');
   if(video)video.srcObject=null;
 }
+
+
+/* ════════════
+   FULLSCREEN
+════════════ */
+function enterFullscreen(){
+  const el = document.documentElement;
+  const p = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true;
+
+  if(isStandalone){
+    // Already running as PWA — just dismiss
+    dismissSplash(); return;
+  }
+  if(isIOS){
+    // iOS Safari can't go fullscreen — show instructions to add to Home Screen
+    showIOSTip(); return;
+  }
+  if(p){
+    p.call(el).then(()=>{ dismissSplash(); }).catch(()=>{ dismissSplash(); });
+  } else {
+    dismissSplash();
+  }
+}
+
+function showIOSTip(){
+  const splash = document.getElementById('fs-splash');
+  if(!splash) return;
+  splash.innerHTML = `
+    <div style="text-align:center;padding:0 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">📲</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:#FDF8EE;margin-bottom:8px;">
+        Pantalla completa en iOS
+      </div>
+      <div style="font-size:13px;color:rgba(253,248,238,.65);line-height:1.7;margin-bottom:32px;">
+        Para una experiencia sin barras de navegador:<br>
+        Tocá <strong style="color:#F0C070;">Compartir</strong> <span style="font-size:16px;">⬆</span>
+        y luego<br>
+        <strong style="color:#F0C070;">"Agregar a Inicio"</strong> <span style="font-size:16px;">➕</span>
+      </div>
+      <button onclick="dismissSplash()"
+        style="padding:14px 32px;border-radius:28px;background:linear-gradient(135deg,#C8841E,#A86A10);
+          border:none;color:#FDF8EE;font-weight:800;font-size:14px;cursor:pointer;
+          box-shadow:0 4px 20px rgba(200,132,30,.35);margin-bottom:12px;width:100%;max-width:260px;">
+        Continuar en Safari
+      </button>
+      <div style="font-size:11px;color:rgba(253,248,238,.35);margin-top:4px;">
+        (Sin pantalla completa)
+      </div>
+    </div>`;
+}
+function exitFullscreen(){
+  const p = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+  if(p) p.call(document).catch(()=>{});
+}
+function skipFullscreen(){
+  // Try to hide Android URL bar by scrolling
+  try{ window.scrollTo(0,1); }catch(e){}
+  dismissSplash();
+}
+function dismissSplash(){
+  const sp = document.getElementById('fs-splash');
+  if(sp){ sp.classList.add('hide'); setTimeout(()=>sp.remove(), 600); }
+}
+// Show/hide exit button based on fullscreen state
+function onFSChange(){
+  const inFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+  const btn = document.getElementById('fs-exit-btn');
+  if(btn){ btn.classList.toggle('visible', inFS); }
+}
+document.addEventListener('fullscreenchange',      onFSChange);
+document.addEventListener('webkitfullscreenchange',onFSChange);
+document.addEventListener('mozfullscreenchange',   onFSChange);
+
+
+/* ════════════
+   HISTORIA GEOLÓGICA — v9
+════════════ */
+
+// Timeline anchors [ma, pct]
+
+
+/* ════════════
+   MEGAFAUNA — diorama isométrico animado
+════════════ */
+const BIOZONES=[
+  {
+    name:'Chapadmalense',
+    age:'~4 – 3 Ma · Plioceno tardío',
+    fauna:'Platygonus, Glossotheridium, Psilopterus, Chapadmalania',
+    desc:'Sabanas arboladas con palmeras (Arecaceae), gramíneas C4, y bosques en galería. Clima cálido con estación seca, temperaturas >10°C en invierno. Primer registro del tayassuido Platygonus en Sudamérica, marcando el inicio de los precursores del intercambio biótico.',
+    veg:'palm',
+    layers:1,
+    fossilsIn:[],
+    animals:[
+      {kind:'glossotheridium',x:0.22, y:0.38, scale:1.20, name:'Glossotheridium'}, // biggest → back
+      {kind:'platygonus',     x:0.50, y:0.52, scale:0.65, name:'Platygonus'},
+      {kind:'psilopterus',    x:0.75, y:0.47, scale:0.85, name:'Psilopterus'},
+      {kind:'chapadmalania',  x:0.90, y:0.62, scale:0.45, name:'Chapadmalania'}   // smallest → front
+    ]
+  },
+  {
+    name:'Marplatense',
+    age:'~3 – 1.8 Ma · Plioceno tardío - Pleistoceno temprano',
+    fauna:'Glossotherium, Lama, Hippidion, Dusicyon, Eutatus',
+    desc:'Inicio del Gran Intercambio Biótico Americano (GABI). Llegan los primeros caballos (Hippidion), camélidos (Lama) y zorros (Dusicyon). Clima cálido y húmedo en el Barrancalobiense con bosques densos, transitando a condiciones frío-áridas hacia el Sanandresense.',
+    veg:'mild',
+    layers:2,
+    fossilsIn:[0],
+    animals:[
+      {kind:'glossotherium', x:0.18, y:0.35, scale:1.40, name:'Glossotherium'},  // biggest → back
+      {kind:'hippidion',     x:0.44, y:0.44, scale:1.05, name:'Hippidion'},
+      {kind:'lama',          x:0.65, y:0.48, scale:0.90, name:'Lama'},
+      {kind:'dusicyon',      x:0.83, y:0.60, scale:0.40, name:'Dusicyon'},
+      {kind:'eutatus',       x:0.95, y:0.62, scale:0.50, name:'Eutatus'}         // smallest → front
+    ]
+  },
+  {
+    name:'Ensenadense',
+    age:'~1.8 – 0.4 Ma · Pleistoceno temprano-medio',
+    fauna:'Glyptodon, Stegomastodon, Arctotherium, Toxodon, Tapirus',
+    desc:'Climas fríos y áridos con pulsos cálidos. Llegan los gomfoterios (Stegomastodon), osos gigantes (Arctotherium), félidos (Panthera), tapires y cérvidos. Diversificación de la megafauna autóctona: Glyptodon, Panochthus, Doedicurus, Megatherium, Mylodon.',
+    veg:'cool',
+    layers:3,
+    fossilsIn:[0,1],
+    animals:[
+      {kind:'stegomastodon', x:0.22, y:0.33, scale:1.95, name:'Stegomastodon'}, // biggest → furthest back
+      {kind:'arctotherium',  x:0.60, y:0.40, scale:1.85, name:'Arctotherium'},
+      {kind:'toxodon',       x:0.84, y:0.52, scale:1.10, name:'Toxodon'},
+      {kind:'glyptodon',     x:0.95, y:0.62, scale:1.30, name:'Glyptodon'}       // front
+    ]
+  },
+  {
+    name:'Bonaerense',
+    age:'~0.4 – 0.13 Ma · Pleistoceno medio',
+    fauna:'Megatherium, Doedicurus, Glyptodon, Macrauchenia',
+    desc:'Inicia con un evento cálido (interglacial MIS 11). La megafauna alcanza su máximo desarrollo: Megatherium americanum, Doedicurus con su maza caudal espinosa, Macrauchenia. Sobre el sedimento ensenadense se acumula una nueva capa preservando los fósiles anteriores.',
+    veg:'warm',
+    layers:4,
+    fossilsIn:[0,1,2],
+    animals:[
+      {kind:'megatherium', x:0.20, y:0.32, scale:2.30, name:'Megatherium'},  // biggest → furthest back
+      {kind:'macrauchenia',x:0.50, y:0.40, scale:1.20, name:'Macrauchenia'},
+      {kind:'doedicurus',  x:0.76, y:0.52, scale:1.40, name:'Doedicurus'},
+      {kind:'glyptodon',   x:0.94, y:0.62, scale:1.00, name:'Glyptodon'}     // front
+    ]
+  },
+  {
+    name:'Lujanense',
+    age:'~0.13 – 0.011 Ma · Pleistoceno tardío - Holoceno temprano',
+    fauna:'Smilodon, Equus, Macrauchenia, Glyptodon, Homo sapiens',
+    desc:'Última etapa antes de la gran extinción. Durante el Último Máximo Glacial (~21-10 ka), clima frío-árido con vegetación de estepa similar a la patagónica actual. Primeros registros de Homo sapiens en la región pampeana. Extinción de toda la megafauna al final del Pleistoceno.',
+    veg:'cold',
+    layers:5,
+    fossilsIn:[0,1,2,3],
+    animals:[
+      {kind:'macrauchenia',x:0.14, y:0.36, scale:1.15, name:'Macrauchenia'}, // biggest → back
+      {kind:'glyptodon',   x:0.40, y:0.43, scale:1.20, name:'Glyptodon'},
+      {kind:'equus',       x:0.62, y:0.50, scale:1.05, name:'Equus'},
+      {kind:'smilodon',    x:0.82, y:0.57, scale:0.95, name:'Smilodon'},
+      {kind:'homo',        x:0.93, y:0.63, scale:1.00, name:'Homo sapiens'}  // human → front
+    ]
+  }
+];
+
+let _megaRaf=null;
+let _megaStart=0;
+let _megaIdx=0;
+
+function startMegaScene(){
+  if(_megaRaf) cancelAnimationFrame(_megaRaf);
+  _megaStart=performance.now();
+  function loop(){
+    const canvas=document.getElementById('mega-canvas');
+    if(!canvas || !document.getElementById('mega-panel').classList.contains('open')){
+      _megaRaf=null; return;
+    }
+    drawMegaScene(canvas, (performance.now()-_megaStart)/1000);
+    _megaRaf=requestAnimationFrame(loop);
+  }
+  _megaRaf=requestAnimationFrame(loop);
+}
+function stopMegaScene(){
+  if(_megaRaf){cancelAnimationFrame(_megaRaf); _megaRaf=null;}
+}
+
+function showBiozone(idx, btn){
+  document.querySelectorAll('.biozone-tab').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  _megaIdx=idx;
+  const b=BIOZONES[idx];
+  document.getElementById('biozone-name').textContent=b.name;
+  document.getElementById('biozone-age').textContent=b.age;
+  document.getElementById('biozone-fauna').textContent=b.fauna;
+  document.getElementById('biozone-desc').textContent=b.desc;
+}
+
+function drawMegaScene(canvas, tSec){
+  const DPR=window.devicePixelRatio||1;
+  const W=canvas.clientWidth||340, H=canvas.clientHeight||175;
+  if(canvas.width!==Math.round(W*DPR)) canvas.width=Math.round(W*DPR);
+  if(canvas.height!==Math.round(H*DPR)) canvas.height=Math.round(H*DPR);
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const margin=6;
+  const boxH=(H-margin*2)*0.86;
+  const iY=boxH*0.22;
+  const fW=Math.min(W*0.62, W-margin*2-boxH*0.45);
+  const iX=fW*0.32;
+  const boxFootW=fW+iX, boxFootH=boxH+iY;
+  const x0=(W-boxFootW)/2, x1=x0+fW;
+  const topY=(H-boxFootH)/2+iY;
+  const botY=topY+boxH;
+  const skyTop_fixed = topY + boxH * 0.42;  // ground takes ~58% of box height for max layers
+
+  const biozone=BIOZONES[_megaIdx];
+
+  // Fixed layer dimensions — same height regardless of biozone so accumulation is visible
+  const maxLayers = 5;
+  const totalGroundH = botY - skyTop_fixed;
+  const soilThickness = totalGroundH * 0.07;
+  const layerH = (totalGroundH - soilThickness) / maxLayers;
+  const layers = biozone.layers;
+  // skyTop rises as sediment accumulates: 1 layer = lowest, 3 layers = highest
+  const skyTop = botY - (soilThickness + layers * layerH);
+
+  // Sky colors per biozone
+  let skyA, skyB;
+  if(biozone.veg==='palm'){ skyA='#4A5A6E'; skyB='#D8C098'; }       // warm Pliocene sky
+  else if(biozone.veg==='mild'){ skyA='#3A4858'; skyB='#A8C0D0'; }  // transitional
+  else if(biozone.veg==='cool'){ skyA='#3A4A5A'; skyB='#90AABE'; }  // cool Pleistocene
+  else if(biozone.veg==='warm'){ skyA='#3F3D4D'; skyB='#C0A878'; }  // warm Bonaerian
+  else if(biozone.veg==='cold'){ skyA='#2E3848'; skyB='#7A8A9A'; }  // cold LGM
+  else { skyA='#3A4858'; skyB='#A8C0D0'; }
+
+  ctx.fillStyle='#0C0908'; ctx.fillRect(0,0,W,H);
+
+  // ── BACK FACE: SKY with clouds ──
+  ctx.beginPath();
+  ctx.moveTo(x0+iX,topY-iY); ctx.lineTo(x1+iX,topY-iY);
+  ctx.lineTo(x1+iX,skyTop-iY); ctx.lineTo(x0+iX,skyTop-iY);
+  ctx.closePath();
+  const skyG=ctx.createLinearGradient(0,topY-iY,0,skyTop-iY);
+  skyG.addColorStop(0,skyA); skyG.addColorStop(1,skyB);
+  ctx.fillStyle=skyG; ctx.fill();
+  // Clouds — drift slowly
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0+iX,topY-iY); ctx.lineTo(x1+iX,topY-iY);
+  ctx.lineTo(x1+iX,skyTop-iY); ctx.lineTo(x0+iX,skyTop-iY);
+  ctx.closePath(); ctx.clip();
+  for(let cl=0;cl<4;cl++){
+    const isHigh = cl % 2 === 0;
+    const skyH = skyTop - topY; // height of sky area
+    const cy = topY-iY + skyH*(isHigh ? 0.22 : 0.62);
+    const cx = x0+iX + ((cl*97 + tSec*(isHigh ? 9 : 6) + cl*53) % (fW+80)) - 40;
+    ctx.fillStyle='rgba(255,255,255,'+(0.55-cl*0.08)+')';
+    ctx.beginPath();
+    ctx.ellipse(cx,cy,18,3.5,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx-8,cy+1,10,2.5,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx+10,cy+0.5,12,3,0,0,Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
+  // ── BACK FACE: GROUND (loess) below sky ──
+  ctx.beginPath();
+  ctx.moveTo(x0+iX,skyTop-iY); ctx.lineTo(x1+iX,skyTop-iY);
+  ctx.lineTo(x1+iX,botY-iY); ctx.lineTo(x0+iX,botY-iY);
+  ctx.closePath();
+  let loessA, loessB;
+  if(biozone.veg==='palm'){ loessA='#C8A878'; loessB='#9A7A48'; }
+  else if(biozone.veg==='mild'){ loessA='#B0A082'; loessB='#806848'; }
+  else if(biozone.veg==='cool'){ loessA='#A89878'; loessB='#7A6A50'; }
+  else if(biozone.veg==='warm'){ loessA='#B8A07A'; loessB='#8A7048'; }
+  else if(biozone.veg==='cold'){ loessA='#9A8C70'; loessB='#6A5A40'; }
+  else { loessA='#B0A082'; loessB='#806848'; }
+  ctx.fillStyle=loessB; ctx.fill();
+
+  // ── LEFT (BACK-LEFT) FACE: split sky/ground vertically ──
+  // Sky portion of the left face
+  ctx.beginPath();
+  ctx.moveTo(x0,topY); ctx.lineTo(x0+iX,topY-iY);
+  ctx.lineTo(x0+iX,skyTop-iY); ctx.lineTo(x0,skyTop);
+  ctx.closePath();
+  const skyL=ctx.createLinearGradient(x0,topY,x0+iX,topY-iY);
+  skyL.addColorStop(0,skyA); skyL.addColorStop(1,skyB);
+  ctx.fillStyle=skyL; ctx.fill();
+  // Ground portion of the left face — multiple layers
+  // (groundH, layers, soilThickness, layerH already computed above)
+
+  // Draw left side ground stack (top→bottom: soil, then layers)
+  // Soil
+  ctx.beginPath();
+  ctx.moveTo(x0,skyTop); ctx.lineTo(x0+iX,skyTop-iY);
+  ctx.lineTo(x0+iX,skyTop-iY+soilThickness); ctx.lineTo(x0,skyTop+soilThickness);
+  ctx.closePath();
+  ctx.fillStyle='#2A1F12'; ctx.fill();
+  // Sediment layers
+  for(let li=0;li<layers;li++){
+    const ly0 = skyTop+soilThickness+li*layerH;
+    const ly1 = ly0+layerH;
+    ctx.beginPath();
+    ctx.moveTo(x0,ly0); ctx.lineTo(x0+iX,ly0-iY);
+    ctx.lineTo(x0+iX,ly1-iY); ctx.lineTo(x0,ly1);
+    ctx.closePath();
+    // Alternate slightly different loess shades per layer
+    const tint = li%2===0 ? loessB : '#6A5A40';
+    ctx.fillStyle=tint; ctx.fill();
+    // Faint stratification
+    ctx.strokeStyle='rgba(60,40,20,.40)'; ctx.lineWidth=0.6;
+    ctx.beginPath(); ctx.moveTo(x0,ly0); ctx.lineTo(x0+iX,ly0-iY); ctx.stroke();
+  }
+
+  // ── TOP FACE: vegetation ──
+  ctx.beginPath();
+  ctx.moveTo(x0,skyTop); ctx.lineTo(x1,skyTop);
+  ctx.lineTo(x1+iX,skyTop-iY); ctx.lineTo(x0+iX,skyTop-iY);
+  ctx.closePath();
+  let vegA, vegB;
+  if(biozone.veg==='palm'){ vegA='#9AB058'; vegB='#7A9040'; }       // lush sub-tropical
+  else if(biozone.veg==='mild'){ vegA='#80A268'; vegB='#608048'; }
+  else if(biozone.veg==='cool'){ vegA='#7A9060'; vegB='#5A7048'; }
+  else if(biozone.veg==='warm'){ vegA='#8AA060'; vegB='#6B8048'; }
+  else if(biozone.veg==='cold'){ vegA='#8A8868'; vegB='#6A6850'; } // dry steppe
+  else { vegA='#80A268'; vegB='#608048'; }
+  const vegG=ctx.createLinearGradient(x0,skyTop,x0+iX,skyTop-iY);
+  vegG.addColorStop(0,vegA); vegG.addColorStop(1,vegB);
+  ctx.fillStyle=vegG; ctx.fill();
+
+  // Grass tufts on top face
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0,skyTop); ctx.lineTo(x1,skyTop);
+  ctx.lineTo(x1+iX,skyTop-iY); ctx.lineTo(x0+iX,skyTop-iY);
+  ctx.closePath(); ctx.clip();
+  for(let g=0;g<60;g++){
+    const u=((g*73)%100)/100;
+    const v=(((g*131)%100)/100);
+    const px=x0+u*fW+v*iX;
+    const py=skyTop-v*iY;
+    ctx.strokeStyle='rgba(50,70,30,.55)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+1.5,py-3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px-1,py-2.5); ctx.stroke();
+  }
+  ctx.restore();
+
+  // ── FRONT FACE: stratified ground with soil + N sediment layers ──
+  // Soil layer (top, dark)
+  ctx.fillStyle='#2A1F12';
+  ctx.fillRect(x0, skyTop, fW, soilThickness);
+  // Sediment layers (multiple)
+  for(let li=0;li<layers;li++){
+    const ly0 = skyTop+soilThickness+li*layerH;
+    const tint = li%2===0 ? loessA : '#9A8260';
+    ctx.fillStyle=tint;
+    ctx.fillRect(x0, ly0, fW, layerH);
+    // Stratification line at top of each layer
+    ctx.strokeStyle='rgba(80,60,30,.45)'; ctx.lineWidth=0.7;
+    ctx.beginPath(); ctx.moveTo(x0, ly0); ctx.lineTo(x1, ly0); ctx.stroke();
+  }
+
+  // ── FOSSILS in specific layers ──
+  // Each layer gets a varied, deterministic pseudo-random scatter of different fossil types
+  const FOSSIL_KINDS = ['rib','skull','plate','bone-small','vertebra','jaw','tooth','claw'];
+  biozone.fossilsIn.forEach(function(layerIdx){
+    const ly0 = skyTop+soilThickness+layerIdx*layerH;
+    // Use layer index as seed so each layer has a different but stable scatter
+    const seed = layerIdx*17+3;
+    // Front face: 5-6 fossils scattered across width and depth in layer
+    const nFront = 5 + (seed%2);
+    for(let i=0;i<nFront;i++){
+      const r1 = ((seed*7 + i*53) % 100)/100;
+      const r2 = ((seed*11 + i*37 + 13) % 100)/100;
+      const r3 = (seed*5 + i*29) % FOSSIL_KINDS.length;
+      const fx = x0 + fW*(0.06 + r1*0.88);
+      const fy = ly0 + layerH*(0.15 + r2*0.70);
+      drawFossils(ctx, fx, fy, FOSSIL_KINDS[r3]);
+    }
+    // Right side face: 2-3 fossils (perspective-shrunk in iX/iY)
+    const nSide = 2 + (seed%2);
+    for(let i=0;i<nSide;i++){
+      const r1 = ((seed*13 + i*41) % 100)/100;
+      const r2 = ((seed*9 + i*23 + 7) % 100)/100;
+      const r3 = (seed*3 + i*19 + 4) % FOSSIL_KINDS.length;
+      const u = 0.15 + r1*0.7;
+      const fx = x1 + iX*u;
+      const fy = ly0 - iY*u + layerH*(0.2 + r2*0.6);
+      drawFossils(ctx, fx, fy, FOSSIL_KINDS[r3]);
+    }
+  });
+
+  // ── RIGHT (SIDE) FACE: stratified ──
+  // Soil
+  ctx.beginPath();
+  ctx.moveTo(x1,skyTop); ctx.lineTo(x1+iX,skyTop-iY);
+  ctx.lineTo(x1+iX,skyTop-iY+soilThickness); ctx.lineTo(x1,skyTop+soilThickness);
+  ctx.closePath();
+  ctx.fillStyle='#2A1F12'; ctx.fill();
+  // Layers
+  for(let li=0;li<layers;li++){
+    const ly0 = skyTop+soilThickness+li*layerH;
+    const ly1 = ly0+layerH;
+    ctx.beginPath();
+    ctx.moveTo(x1,ly0); ctx.lineTo(x1+iX,ly0-iY);
+    ctx.lineTo(x1+iX,ly1-iY); ctx.lineTo(x1,ly1);
+    ctx.closePath();
+    const tint = li%2===0 ? '#7A6048' : '#5A4830';
+    ctx.fillStyle=tint; ctx.fill();
+    ctx.strokeStyle='rgba(60,40,20,.40)'; ctx.lineWidth=0.6;
+    ctx.beginPath(); ctx.moveTo(x1,ly0); ctx.lineTo(x1+iX,ly0-iY); ctx.stroke();
+  }
+
+  // Map (u,v) on top face → screen
+  function mapTop(u,v){ return {x:x0+u*fW+v*iX, y:skyTop-v*iY}; }
+
+  // Background vegetation per biozone (drawn before animals so animals appear in front)
+  drawBackgroundVegetation(ctx, biozone.veg, mapTop, fW, iY, tSec);
+
+  // Animals
+  const drawList = biozone.animals.map(function(a){
+    const phase = tSec*0.20 + a.x*7;
+    const wU = a.x + Math.sin(phase)*0.08;
+    const wV = a.y;
+    return Object.assign({}, a, {wU:wU, wV:wV, phase:phase});
+  });
+  drawList.sort(function(a,b){ return (a.wV - b.wV); });
+  drawList.forEach(function(a){
+    const m = mapTop(a.wU, a.wV);
+    const dir = Math.cos(a.phase) >= 0 ? 1 : -1;
+    drawAnimal(ctx, a.kind, m.x, m.y, a.scale, dir, tSec);
+  });
+
+  // Glass frame
+  ctx.strokeStyle='rgba(200,220,255,.20)'; ctx.lineWidth=1;
+  [[x0,topY,x0,botY],[x1,topY,x1,botY],[x0+iX,topY-iY,x0+iX,botY-iY],[x1+iX,topY-iY,x1+iX,botY-iY],
+   [x0,topY,x1,topY],[x1,topY,x1+iX,topY-iY],[x0+iX,topY-iY,x1+iX,topY-iY],[x0,topY,x0+iX,topY-iY],
+   [x0,botY,x1,botY],[x1,botY,x1+iX,botY-iY]].forEach(function(e){
+    ctx.beginPath();ctx.moveTo(e[0],e[1]);ctx.lineTo(e[2],e[3]);ctx.stroke();
+  });
+}
+
+function drawBackgroundVegetation(ctx, veg, mapTop, fW, iY, t){
+  ctx.save();
+  if(veg==='palm'){
+    // Palms — big tropical Chapadmalense canopy
+    const palms=[[0.12,0.88],[0.38,0.92],[0.62,0.86],[0.84,0.92],[0.26,0.78],[0.74,0.80]];
+    palms.forEach(function(p){
+      const m=mapTop(p[0],p[1]);
+      const sway=Math.sin(t*0.6+p[0]*4)*3;
+      const h = 52 + p[0]*14; // taller palms vary in height
+      // trunk — thick and curved
+      ctx.strokeStyle='#5A3F22'; ctx.lineWidth=5;
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.quadraticCurveTo(m.x+sway*0.5, m.y-h*0.5, m.x+sway, m.y-h);
+      ctx.stroke();
+      // trunk rings
+      ctx.strokeStyle='rgba(30,18,8,.45)'; ctx.lineWidth=1;
+      for(let r=0;r<6;r++){
+        const ry = m.y - h*(r/6);
+        ctx.beginPath();
+        ctx.moveTo(m.x + sway*(r/6)-3, ry);
+        ctx.lineTo(m.x + sway*(r/6)+3, ry);
+        ctx.stroke();
+      }
+      // fronds — long arching
+      const topX = m.x+sway, topY2 = m.y-h;
+      ctx.lineWidth=2;
+      for(let f=0;f<9;f++){
+        const ang = -Math.PI*0.9 + f*(Math.PI*1.8/8) + Math.sin(t*0.8+f)*0.08;
+        const len = 24 + (f%3)*5;
+        const mX = topX+Math.cos(ang)*len*0.55, mY = topY2+Math.sin(ang)*len*0.45;
+        const eX = topX+Math.cos(ang)*len, eY = topY2+Math.sin(ang)*len;
+        const green = f%2===0 ? '#4A7A28' : '#6A9A38';
+        ctx.strokeStyle=green;
+        ctx.beginPath();
+        ctx.moveTo(topX, topY2);
+        ctx.quadraticCurveTo(mX, mY, eX, eY);
+        ctx.stroke();
+      }
+    });
+    // Low ferns/shrubs
+    ctx.fillStyle='rgba(80,110,40,.75)';
+    for(let s=0;s<12;s++){
+      const u=(s*0.103+0.05)%1, v=0.55+((s*0.171)%0.38);
+      const m=mapTop(u,v);
+      ctx.beginPath(); ctx.ellipse(m.x, m.y-3, 9, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(60,90,30,.60)';
+      ctx.beginPath(); ctx.ellipse(m.x+5, m.y-2, 6, 2.5, 0.3, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(80,110,40,.75)';
+    }
+  } else if(veg==='mild'){
+    // Forest patches — tall broadleaf trees + understorey
+    const trees=[[0.08,0.90],[0.32,0.88],[0.58,0.90],[0.82,0.86],[0.20,0.78],[0.68,0.80]];
+    trees.forEach(function(p){
+      const m=mapTop(p[0],p[1]);
+      const h = 38 + p[0]*12;
+      // trunk
+      ctx.strokeStyle='#4A3220'; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x, m.y-h); ctx.stroke();
+      // crown — layered circles
+      ctx.fillStyle='#2E5020';
+      ctx.beginPath(); ctx.arc(m.x, m.y-h-10, 14, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='#3E6A28';
+      ctx.beginPath(); ctx.arc(m.x-6, m.y-h-6, 10, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='#4A7A30';
+      ctx.beginPath(); ctx.arc(m.x+4, m.y-h-5, 9, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='#5A8A38';
+      ctx.beginPath(); ctx.arc(m.x, m.y-h-14, 8, 0, Math.PI*2); ctx.fill();
+    });
+    // Understorey shrubs
+    ctx.fillStyle='rgba(70,100,40,.80)';
+    for(let s=0;s<10;s++){
+      const u=(s*0.137+0.06)%1, v=0.50+((s*0.211)%0.42);
+      const m=mapTop(u,v);
+      ctx.beginPath(); ctx.ellipse(m.x, m.y-4, 11, 5, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(55,80,28,.65)';
+      ctx.beginPath(); ctx.ellipse(m.x+6, m.y-3, 7, 3.5, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(70,100,40,.80)';
+    }
+  } else if(veg==='cool' || veg==='warm'){
+    // Open grassland with scattered trees
+    ctx.fillStyle = veg==='warm' ? 'rgba(90,110,40,.70)' : 'rgba(70,90,40,.65)';
+    for(let s=0;s<16;s++){
+      const u=(s*0.089+0.04)%1, v=0.48+((s*0.197)%0.44);
+      const m=mapTop(u,v);
+      ctx.beginPath(); ctx.ellipse(m.x, m.y-2, 8, 3.5, 0, 0, Math.PI*2); ctx.fill();
+    }
+    // Scattered trees
+    const ts = veg==='warm'
+      ? [[0.12,0.88],[0.55,0.85],[0.82,0.90],[0.35,0.78]]
+      : [[0.18,0.88],[0.65,0.84]];
+    ts.forEach(function(p){
+      const m=mapTop(p[0],p[1]);
+      const h = 28 + p[0]*8;
+      ctx.strokeStyle='#4A3220'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x, m.y-h); ctx.stroke();
+      ctx.fillStyle='#4A6A20';
+      ctx.beginPath(); ctx.arc(m.x, m.y-h-8, 10, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='#5A7A28';
+      ctx.beginPath(); ctx.arc(m.x-4, m.y-h-5, 7, 0, Math.PI*2); ctx.fill();
+    });
+  } else if(veg==='cold'){
+    // Dry steppe — bigger grass tufts + dead shrubs
+    ctx.fillStyle='rgba(140,130,90,.60)';
+    for(let s=0;s<20;s++){
+      const u=(s*0.071+0.04)%1, v=0.46+((s*0.163)%0.47);
+      const m=mapTop(u,v);
+      // grass tuft
+      ctx.beginPath();
+      ctx.moveTo(m.x-4, m.y); ctx.lineTo(m.x-1, m.y-8); ctx.lineTo(m.x, m.y-9);
+      ctx.lineTo(m.x+1, m.y-8); ctx.lineTo(m.x+4, m.y);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle='rgba(90,70,40,.60)'; ctx.lineWidth=1.2;
+    for(let s=0;s<6;s++){
+      const u=(s*0.19+0.08)%1, v=0.52+((s*0.157)%0.38);
+      const m=mapTop(u,v);
+      for(let b=0;b<5;b++){
+        const ang=-Math.PI/2+(b-2)*0.55;
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y);
+        ctx.lineTo(m.x+Math.cos(ang)*9, m.y+Math.sin(ang)*9);
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
+}
+
+function drawFossils(ctx, cx, cy, kind){
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.fillStyle='rgba(245,235,210,.92)';
+  ctx.strokeStyle='rgba(120,100,70,.85)'; ctx.lineWidth=0.5;
+  if(kind==='rib'){
+    // Curved ribs
+    for(let i=0;i<3;i++){
+      ctx.beginPath();
+      ctx.moveTo(-5+i*4, -3);
+      ctx.quadraticCurveTo(-5+i*4-1, 1, -5+i*4-2, 4);
+      ctx.lineWidth=1.4;
+      ctx.strokeStyle='rgba(245,235,210,.92)';
+      ctx.stroke();
+    }
+  } else if(kind==='skull'){
+    // Small skull-like shape
+    ctx.beginPath();
+    ctx.ellipse(0,0,4,2.8,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(60,45,25,.7)';
+    ctx.beginPath(); ctx.arc(-1.5,-0.5,0.7,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(1.5,-0.5,0.7,0,Math.PI*2); ctx.fill();
+  } else if(kind==='plate'){
+    // Glyptodon shell plate (hexagonal-ish)
+    ctx.beginPath();
+    for(let a=0;a<6;a++){
+      const ang=a*Math.PI/3;
+      const px=Math.cos(ang)*3, py=Math.sin(ang)*2.5;
+      if(a===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='rgba(120,90,60,.6)';
+    ctx.beginPath(); ctx.arc(0,0,1,0,Math.PI*2); ctx.fill();
+  } else if(kind==='bone-small'){
+    // Long bone fragment
+    ctx.beginPath();
+    ctx.ellipse(0,0,3,1,0.3,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(2.5,0.5,2,0.8,0.4,0,Math.PI*2); ctx.fill();
+  } else if(kind==='vertebra'){
+    // Vertebra — round body with spinous process
+    ctx.beginPath();
+    ctx.ellipse(0,0.5,2.5,2,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-1,-1); ctx.lineTo(0,-3); ctx.lineTo(1,-1);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle='rgba(80,60,40,.6)';
+    ctx.beginPath(); ctx.arc(0,0.5,0.8,0,Math.PI*2); ctx.fill();
+  } else if(kind==='jaw'){
+    // Jaw fragment with teeth
+    ctx.beginPath();
+    ctx.moveTo(-4,0); ctx.quadraticCurveTo(-3,2.5, 0,2.5); ctx.quadraticCurveTo(3,2.5, 4,0);
+    ctx.lineTo(3.5,-0.3); ctx.quadraticCurveTo(2.5,1.5, 0,1.5); ctx.quadraticCurveTo(-2.5,1.5, -3.5,-0.3);
+    ctx.closePath(); ctx.fill();
+    // Teeth pegs
+    ctx.fillStyle='rgba(220,210,180,.95)';
+    for(let i=-2;i<=2;i++){
+      ctx.fillRect(i*1.2-0.3, 1.8, 0.6, 1);
+    }
+  } else if(kind==='tooth'){
+    // Single tooth with root
+    ctx.beginPath();
+    ctx.moveTo(-1.2,-2.5); ctx.lineTo(1.2,-2.5); ctx.lineTo(0.8,1.5); ctx.lineTo(-0.8,1.5);
+    ctx.closePath(); ctx.fill();
+    // Root branches
+    ctx.strokeStyle='rgba(200,180,150,.85)'; ctx.lineWidth=0.7;
+    ctx.beginPath(); ctx.moveTo(-0.5,1.5); ctx.lineTo(-1,3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0.5,1.5); ctx.lineTo(1,3); ctx.stroke();
+  } else if(kind==='claw'){
+    // Curved claw
+    ctx.beginPath();
+    ctx.moveTo(-2,-1.5);
+    ctx.quadraticCurveTo(2,-2, 3,1);
+    ctx.quadraticCurveTo(2,0, 0,-0.5);
+    ctx.quadraticCurveTo(-1,-1, -2,-1.5);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='rgba(120,90,60,.7)'; ctx.lineWidth=0.4;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// ── Animal silhouettes (simple stylized side views) ──
+function drawAnimal(ctx, kind, cx, cy, scale, dir, t){
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(dir*scale, scale);
+  const wob = Math.sin(t*4)*0.5; // body sway
+  ctx.translate(0, wob);
+
+  if(kind==='glyptodon'){
+    // Big domed shell + small head + short tail
+    ctx.fillStyle='#5A4630';
+    // Shell (dome)
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 18, 12, 0, Math.PI, 2*Math.PI);
+    ctx.fill();
+    // Body underneath (legs visible)
+    ctx.fillStyle='#3E2F20';
+    ctx.fillRect(-15,-8,30,11);
+    // Head (forward)
+    ctx.fillStyle='#4A3826';
+    ctx.beginPath(); ctx.ellipse(16, -5, 6, 4, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(18, -6, 0.9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(18.2, -6, 0.5, 0, Math.PI*2); ctx.fill();
+    // Tail (backward, with mace if Doedicurus-style — but plain here)
+    ctx.fillStyle='#3E2F20';
+    ctx.fillRect(-22,-7,8,3);
+    // Legs
+    ctx.fillStyle='#2A2014';
+    [-10,-3,5,12].forEach(function(lx){
+      const lh = 5 + Math.abs(Math.sin(t*5+lx*0.3))*1;
+      ctx.fillRect(lx-1.5, 3, 3, lh);
+    });
+    // Shell pattern (small dots)
+    ctx.fillStyle='rgba(120,90,60,.7)';
+    for(let i=-3;i<=3;i++){
+      for(let j=0;j<3;j++){
+        ctx.beginPath();
+        ctx.arc(i*4.5, -8 - j*3, 1.2, 0, Math.PI*2); ctx.fill();
+      }
+    }
+  } else if(kind==='doedicurus'){
+    // Like glyptodon but bigger + spiked tail mace
+    ctx.fillStyle='#604832';
+    ctx.beginPath();
+    ctx.ellipse(0, -10, 22, 14, 0, Math.PI, 2*Math.PI);
+    ctx.fill();
+    ctx.fillStyle='#42301E';
+    ctx.fillRect(-18,-10,36,14);
+    ctx.fillStyle='#503820';
+    ctx.beginPath(); ctx.ellipse(20, -6, 7, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(22, -7, 1, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(22.3, -7, 0.55, 0, Math.PI*2); ctx.fill();
+    // Tail with mace
+    ctx.fillStyle='#42301E';
+    ctx.fillRect(-26, -8, 8, 3);
+    ctx.fillStyle='#2A1F12';
+    ctx.beginPath(); ctx.arc(-30, -7, 5, 0, Math.PI*2); ctx.fill();
+    // Spikes on mace
+    [-1,0,1].forEach(function(s){
+      ctx.fillStyle='#2A1F12';
+      ctx.beginPath();
+      ctx.moveTo(-30+s*3, -11); ctx.lineTo(-30+s*3-1.2, -14); ctx.lineTo(-30+s*3+1.2, -14);
+      ctx.closePath(); ctx.fill();
+    });
+    // Legs
+    ctx.fillStyle='#2A1F12';
+    [-12,-4,6,14].forEach(function(lx){
+      const lh = 6 + Math.abs(Math.sin(t*5+lx*0.3))*1.2;
+      ctx.fillRect(lx-2, 4, 4, lh);
+    });
+    // Shell pattern
+    ctx.fillStyle='rgba(140,100,60,.7)';
+    for(let i=-4;i<=4;i++){
+      for(let j=0;j<3;j++){
+        ctx.beginPath();
+        ctx.arc(i*4.5, -10 - j*3.5, 1.4, 0, Math.PI*2); ctx.fill();
+      }
+    }
+  } else if(kind==='megatherium'){
+    // Giant ground sloth — bipedal posture with massive haunches
+    // Body
+    ctx.fillStyle='#7A5430';
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 14, 18, 0, 0, Math.PI*2);
+    ctx.fill();
+    // Head (smaller, higher)
+    ctx.fillStyle='#8A6038';
+    ctx.beginPath();
+    ctx.ellipse(8, -22, 6, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Snout
+    ctx.beginPath();
+    ctx.ellipse(13, -22, 3, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(9, -23, 0.9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(9.2, -23, 0.5, 0, Math.PI*2); ctx.fill();
+    // Massive forearms with claws
+    ctx.fillStyle='#6A4828';
+    ctx.fillRect(8, -16, 4, 12);
+    // Claws
+    ctx.fillStyle='#1A1006';
+    [10,12,14].forEach(function(cx2){
+      ctx.beginPath();
+      ctx.moveTo(cx2, -6); ctx.lineTo(cx2+2, -2); ctx.lineTo(cx2-1, -3);
+      ctx.closePath(); ctx.fill();
+    });
+    // Hind legs (massive)
+    ctx.fillStyle='#5A4020';
+    const lift=Math.abs(Math.sin(t*3))*1.5;
+    ctx.fillRect(-10, -2, 6, 12+lift);
+    ctx.fillRect(-2,  -2, 6, 12-lift);
+    // Tail (thick)
+    ctx.fillStyle='#5A4020';
+    ctx.beginPath();
+    ctx.moveTo(-12, -5); ctx.lineTo(-22, 4); ctx.lineTo(-12, 5);
+    ctx.closePath(); ctx.fill();
+    // Fur texture
+    ctx.fillStyle='rgba(60,40,20,.45)';
+    for(let i=0;i<8;i++){
+      ctx.fillRect(-12+i*3.2, -22+(i%2)*2, 1, 6);
+    }
+  } else if(kind==='mesotherium'){
+    // Medium-sized rodent-like ungulate
+    ctx.fillStyle='#7A5A38';
+    ctx.beginPath();
+    ctx.ellipse(0, -4, 12, 6, 0, 0, Math.PI*2); ctx.fill();
+    // Head
+    ctx.fillStyle='#8A6840';
+    ctx.beginPath(); ctx.ellipse(11, -6, 5, 4, 0, 0, Math.PI*2); ctx.fill();
+    // Ears
+    ctx.beginPath(); ctx.ellipse(11, -10, 1.5, 2.2, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(13, -9.5, 1.5, 2, 0, 0, Math.PI*2); ctx.fill();
+    // Legs
+    ctx.fillStyle='#5A4028';
+    [-8,-3,3,8].forEach(function(lx){
+      const lh = 3.5 + Math.abs(Math.sin(t*6+lx))*0.8;
+      ctx.fillRect(lx-1, 2, 2.5, lh);
+    });
+    // Tail
+    ctx.fillStyle='#6A4830';
+    ctx.fillRect(-14, -4, 4, 1.5);
+  } else if(kind==='macrauchenia'){
+    // Camel-like with long neck and short trunk
+    ctx.fillStyle='#A88858';
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 14, 7, 0, 0, Math.PI*2); ctx.fill();
+    // Long neck
+    ctx.fillStyle='#A88858';
+    ctx.beginPath();
+    ctx.moveTo(8,-12); ctx.lineTo(11,-22); ctx.lineTo(15,-22); ctx.lineTo(13,-10);
+    ctx.closePath(); ctx.fill();
+    // Head
+    ctx.beginPath(); ctx.ellipse(15, -23, 5, 3.5, 0.2, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(15, -24, 0.9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(15.1, -24, 0.5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#A88858';
+    // Short trunk
+    ctx.fillStyle='#8A6840';
+    ctx.beginPath(); ctx.ellipse(20, -22, 2.5, 1.5, 0, 0, Math.PI*2); ctx.fill();
+    // Long legs
+    ctx.fillStyle='#6A5036';
+    [-10,-4,4,10].forEach(function(lx){
+      const lh = 9 + Math.abs(Math.sin(t*5+lx*0.3))*1.5;
+      ctx.fillRect(lx-1.5, -1, 3, lh);
+    });
+    // Tail
+    ctx.fillRect(-16, -8, 4, 1.5);
+  } else if(kind==='smilodon'){
+    // Saber-toothed cat
+    ctx.fillStyle='#8A6840';
+    ctx.beginPath();
+    ctx.ellipse(0, -5, 12, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Head (broad)
+    ctx.fillStyle='#9A7848';
+    ctx.beginPath(); ctx.ellipse(11, -7, 5.5, 4.5, 0, 0, Math.PI*2); ctx.fill();
+    // Eye (fierce)
+    ctx.fillStyle='#FFE090';
+    ctx.beginPath(); ctx.arc(13, -8, 1, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath();
+    ctx.ellipse(13.1, -8, 0.3, 0.7, 0, 0, Math.PI*2); ctx.fill();
+    // Ears
+    ctx.beginPath();
+    ctx.moveTo(8,-11); ctx.lineTo(9,-13); ctx.lineTo(10,-11);
+    ctx.closePath(); ctx.fill();
+    // Saber teeth
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath();
+    ctx.moveTo(13.5, -5); ctx.lineTo(14, -1.5); ctx.lineTo(15, -5);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(15.5, -5); ctx.lineTo(16, -1.5); ctx.lineTo(17, -5);
+    ctx.closePath(); ctx.fill();
+    // Legs
+    ctx.fillStyle='#6A5028';
+    [-8,-3,4,9].forEach(function(lx){
+      const lh = 5 + Math.abs(Math.sin(t*6+lx))*1;
+      ctx.fillRect(lx-1.2, 0, 2.5, lh);
+    });
+    // Tail (short)
+    ctx.fillStyle='#8A6840';
+    ctx.fillRect(-15, -5, 5, 1.5);
+    // Spots
+    ctx.fillStyle='rgba(60,40,15,.55)';
+    for(let i=0;i<5;i++){
+      ctx.beginPath();
+      ctx.arc(-8+i*4, -5+(i%2)*3, 1.2, 0, Math.PI*2); ctx.fill();
+    }
+  } else if(kind==='equus'){
+    // Pleistocene horse
+    ctx.fillStyle='#8A6438';
+    ctx.beginPath();
+    ctx.ellipse(0, -6, 13, 6, 0, 0, Math.PI*2); ctx.fill();
+    // Neck + head
+    ctx.beginPath();
+    ctx.moveTo(8,-10); ctx.lineTo(12,-18); ctx.lineTo(16,-18); ctx.lineTo(13,-8);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(16, -19, 5, 3, 0.2, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(16, -19.5, 0.8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(16.1, -19.5, 0.45, 0, Math.PI*2); ctx.fill();
+    // Ears
+    ctx.beginPath();
+    ctx.moveTo(13,-21); ctx.lineTo(13.5,-23); ctx.lineTo(15,-21);
+    ctx.closePath(); ctx.fill();
+    // Mane
+    ctx.fillStyle='#3A2A18';
+    for(let i=0;i<5;i++){
+      ctx.fillRect(8+i*1.2, -16-i*0.5, 1, 4);
+    }
+    // Legs
+    ctx.fillStyle='#5A4028';
+    [-9,-4,3,9].forEach(function(lx){
+      const lh = 8 + Math.abs(Math.sin(t*7+lx*0.3))*1.5;
+      ctx.fillRect(lx-1, -1, 2.5, lh);
+    });
+    // Tail
+    ctx.fillStyle='#3A2A18';
+    ctx.fillRect(-15,-7,5,4);
+    for(let i=0;i<6;i++){
+      ctx.fillRect(-16, -5+i*1.2, 4, 1);
+    }
+  } else if(kind==='hippidion'){
+    // Stockier extinct horse — shorter legs, broader body
+    ctx.fillStyle='#7A5832';
+    ctx.beginPath();
+    ctx.ellipse(0, -6, 14, 7, 0, 0, Math.PI*2); ctx.fill();
+    // Neck shorter than equus
+    ctx.beginPath();
+    ctx.moveTo(8,-10); ctx.lineTo(11,-16); ctx.lineTo(15,-16); ctx.lineTo(13,-8);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(15, -17, 5, 3.2, 0.2, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(15, -17.5, 0.8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(15.1, -17.5, 0.45, 0, Math.PI*2); ctx.fill();
+    // Wider snout (Hippidion characteristic)
+    ctx.beginPath(); ctx.ellipse(19, -16, 2.5, 2, 0, 0, Math.PI*2); ctx.fill();
+    // Ears
+    ctx.beginPath();
+    ctx.moveTo(12,-19); ctx.lineTo(12.5,-21); ctx.lineTo(14,-19);
+    ctx.closePath(); ctx.fill();
+    // Short legs
+    ctx.fillStyle='#4A3520';
+    [-9,-4,3,9].forEach(function(lx){
+      const lh = 6 + Math.abs(Math.sin(t*6+lx*0.3))*1.2;
+      ctx.fillRect(lx-1.2, 0, 2.8, lh);
+    });
+    // Tail
+    ctx.fillStyle='#3A2818';
+    ctx.fillRect(-15,-6,5,3);
+  } else if(kind==='lama'){
+    // Slender camelid (guanaco-like)
+    ctx.fillStyle='#B89868';
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 11, 6, 0, 0, Math.PI*2); ctx.fill();
+    // Long S-curved neck
+    ctx.beginPath();
+    ctx.moveTo(7,-12); ctx.quadraticCurveTo(11,-22, 13,-26); ctx.lineTo(16,-25); ctx.quadraticCurveTo(13,-19, 10,-9);
+    ctx.closePath(); ctx.fill();
+    // Head
+    ctx.beginPath(); ctx.ellipse(15, -27, 4, 2.5, 0.1, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(15, -27.5, 0.7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(15.1, -27.5, 0.4, 0, Math.PI*2); ctx.fill();
+    // Ears (long)
+    ctx.beginPath();
+    ctx.moveTo(13.5,-29); ctx.lineTo(14,-32); ctx.lineTo(15,-29);
+    ctx.closePath(); ctx.fill();
+    // Long thin legs
+    ctx.fillStyle='#8A6840';
+    [-7,-3,3,7].forEach(function(lx){
+      const lh = 10 + Math.abs(Math.sin(t*5+lx*0.3))*1.5;
+      ctx.fillRect(lx-0.8, -2, 1.8, lh);
+    });
+    // Short tail
+    ctx.fillStyle='#A88858';
+    ctx.fillRect(-12, -8, 3, 1.5);
+  } else if(kind==='dusicyon' || kind==='lycalopex'){
+    // Fox — small, slender
+    ctx.fillStyle=kind==='dusicyon'?'#9A7A50':'#B89060';
+    ctx.beginPath();
+    ctx.ellipse(0, -4, 9, 4, 0, 0, Math.PI*2); ctx.fill();
+    // Head pointed
+    ctx.fillStyle=kind==='dusicyon'?'#A88858':'#C8A070';
+    ctx.beginPath();
+    ctx.moveTo(7,-7); ctx.lineTo(13,-6); ctx.lineTo(12,-3); ctx.lineTo(8,-3);
+    ctx.closePath(); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(10, -5.5, 0.6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(10.1, -5.5, 0.35, 0, Math.PI*2); ctx.fill();
+    // Pointy ears
+    ctx.beginPath();
+    ctx.moveTo(8,-9); ctx.lineTo(8.5,-12); ctx.lineTo(10,-8);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(10,-9); ctx.lineTo(10.5,-11.5); ctx.lineTo(12,-8);
+    ctx.closePath(); ctx.fill();
+    // Legs
+    ctx.fillStyle='#5A4028';
+    [-6,-2,2,6].forEach(function(lx){
+      const lh = 4 + Math.abs(Math.sin(t*7+lx))*0.8;
+      ctx.fillRect(lx-0.8, 0, 1.8, lh);
+    });
+    // Bushy tail
+    ctx.fillStyle=kind==='dusicyon'?'#7A5C38':'#9A7048';
+    ctx.beginPath(); ctx.ellipse(-11, -4, 5, 2.2, -0.3, 0, Math.PI*2); ctx.fill();
+  } else if(kind==='platygonus'){
+    // Peccary (tayassuid) — short legs, pig-like
+    ctx.fillStyle='#5A4028';
+    ctx.beginPath();
+    ctx.ellipse(0, -5, 11, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Head with snout
+    ctx.fillStyle='#6A4830';
+    ctx.beginPath();
+    ctx.moveTo(8,-7); ctx.lineTo(15,-6); ctx.lineTo(15,-3); ctx.lineTo(8,-3);
+    ctx.closePath(); ctx.fill();
+    // Snout tip
+    ctx.fillStyle='#3A2818';
+    ctx.beginPath(); ctx.ellipse(15.5, -4.5, 1.5, 1.2, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(11, -6, 0.6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(11.1, -6, 0.35, 0, Math.PI*2); ctx.fill();
+    // Tusks (small)
+    ctx.fillStyle='#FFFFFF';
+    ctx.fillRect(13.5, -3.5, 0.8, 1.5);
+    // Small ears
+    ctx.fillStyle='#6A4830';
+    ctx.beginPath();
+    ctx.moveTo(9,-8); ctx.lineTo(9.5,-10); ctx.lineTo(11,-8);
+    ctx.closePath(); ctx.fill();
+    // Bristly back
+    ctx.strokeStyle='#3A2818'; ctx.lineWidth=0.8;
+    for(let i=0;i<6;i++){
+      ctx.beginPath();
+      ctx.moveTo(-6+i*2.4, -9); ctx.lineTo(-6+i*2.4, -11);
+      ctx.stroke();
+    }
+    // Short legs
+    ctx.fillStyle='#3A2818';
+    [-7,-2,3,7].forEach(function(lx){
+      const lh = 4.5 + Math.abs(Math.sin(t*6+lx*0.3))*0.8;
+      ctx.fillRect(lx-1, 0, 2, lh);
+    });
+    // Tiny tail
+    ctx.fillStyle='#3A2818';
+    ctx.fillRect(-12,-5,2,1.2);
+  } else if(kind==='glossotheridium' || kind==='glossotherium'){
+    // Smaller ground sloth — quadrupedal
+    const big = kind==='glossotherium';
+    const s = big?1.1:1.0;
+    ctx.fillStyle='#6A4828';
+    ctx.beginPath();
+    ctx.ellipse(0, -7*s, 13*s, 7*s, 0, 0, Math.PI*2); ctx.fill();
+    // Head (lower than megatherium, more horizontal)
+    ctx.fillStyle='#7A5430';
+    ctx.beginPath(); ctx.ellipse(13*s, -8*s, 5*s, 4*s, 0.1, 0, Math.PI*2); ctx.fill();
+    // Snout
+    ctx.beginPath(); ctx.ellipse(17*s, -7*s, 2.5*s, 2*s, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(13*s, -9*s, 0.9*s, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(13.2*s, -9*s, 0.5*s, 0, Math.PI*2); ctx.fill();
+    // Front legs with claws
+    ctx.fillStyle='#5A3820';
+    ctx.fillRect(7*s, -3*s, 3.5*s, 7*s);
+    // Claws
+    ctx.fillStyle='#1A1006';
+    [9,11,13].forEach(function(cx2){
+      ctx.beginPath();
+      ctx.moveTo(cx2*s/3+5*s, 4*s); ctx.lineTo(cx2*s/3+6*s, 7*s); ctx.lineTo(cx2*s/3+4*s, 6*s);
+      ctx.closePath(); ctx.fill();
+    });
+    // Hind legs
+    ctx.fillStyle='#5A3820';
+    ctx.fillRect(-9*s, -3*s, 4*s, 8*s);
+    // Tail thick
+    ctx.beginPath();
+    ctx.moveTo(-10*s, -7*s); ctx.lineTo(-18*s, -3*s); ctx.lineTo(-10*s, -3*s);
+    ctx.closePath(); ctx.fill();
+    // Fur texture
+    ctx.fillStyle='rgba(50,30,15,.4)';
+    for(let i=0;i<6;i++){
+      ctx.fillRect(-8*s+i*3*s, -10*s+(i%2)*1.5*s, 1, 4);
+    }
+  } else if(kind==='psilopterus'){
+    // Small phorusrhacid (terror bird)
+    // Body
+    ctx.fillStyle='#8A7048';
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 7, 8, 0, 0, Math.PI*2); ctx.fill();
+    // Long S-curve neck
+    ctx.fillStyle='#9A8058';
+    ctx.beginPath();
+    ctx.moveTo(2,-14); ctx.quadraticCurveTo(0,-22, 4,-26); ctx.lineTo(7,-25); ctx.quadraticCurveTo(4,-19, 5,-10);
+    ctx.closePath(); ctx.fill();
+    // Head
+    ctx.beginPath(); ctx.ellipse(7, -27, 4, 3, 0.2, 0, Math.PI*2); ctx.fill();
+    // Hooked beak
+    ctx.fillStyle='#3A2818';
+    ctx.beginPath();
+    ctx.moveTo(10,-27); ctx.lineTo(13,-26); ctx.lineTo(13,-25); ctx.lineTo(10,-25.5);
+    ctx.closePath(); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(7, -28, 0.8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(7, -28, 0.4, 0, Math.PI*2); ctx.fill();
+    // Long thin legs
+    ctx.fillStyle='#7A5830';
+    [-2,3].forEach(function(lx){
+      const lh = 12 + Math.abs(Math.sin(t*8+lx))*1.5;
+      ctx.fillRect(lx-0.6, 0, 1.4, lh);
+    });
+    // Feathers on body
+    ctx.fillStyle='rgba(60,40,20,.6)';
+    for(let i=0;i<5;i++){
+      ctx.beginPath();
+      ctx.ellipse(-4+i*2, -8+(i%2)*2, 1.5, 0.7, 0.3, 0, Math.PI*2); ctx.fill();
+    }
+    // Tail tuft
+    ctx.fillStyle='#6A4828';
+    ctx.beginPath();
+    ctx.ellipse(-7, -6, 3, 2, 0.3, 0, Math.PI*2); ctx.fill();
+  } else if(kind==='chapadmalania'){
+    // Procyonid (raccoon-like) — small, ringed tail
+    ctx.fillStyle='#7A5838';
+    ctx.beginPath();
+    ctx.ellipse(0, -3, 9, 3.5, 0, 0, Math.PI*2); ctx.fill();
+    // Head
+    ctx.fillStyle='#8A6840';
+    ctx.beginPath(); ctx.ellipse(8, -4, 4, 3.2, 0, 0, Math.PI*2); ctx.fill();
+    // Snout
+    ctx.fillStyle='#3A2818';
+    ctx.beginPath(); ctx.ellipse(12, -3.5, 1.8, 1.2, 0, 0, Math.PI*2); ctx.fill();
+    // Mask (raccoon-like)
+    ctx.fillStyle='#1A1006';
+    ctx.beginPath(); ctx.ellipse(8, -5, 3.5, 1.2, 0, 0, Math.PI*2); ctx.fill();
+    // Eyes (inside the mask)
+    ctx.fillStyle='#FFE090';
+    ctx.beginPath(); ctx.arc(7, -5, 0.5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(9.5, -5, 0.5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(7, -5, 0.25, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(9.5, -5, 0.25, 0, Math.PI*2); ctx.fill();
+    // Ears
+    ctx.fillStyle='#8A6840';
+    ctx.beginPath();
+    ctx.moveTo(6,-7); ctx.lineTo(6.5,-9); ctx.lineTo(8,-7);
+    ctx.closePath(); ctx.fill();
+    // Legs (short)
+    ctx.fillStyle='#4A3220';
+    [-6,-2,2,6].forEach(function(lx){
+      const lh = 3.5 + Math.abs(Math.sin(t*7+lx))*0.7;
+      ctx.fillRect(lx-0.8, 0, 1.6, lh);
+    });
+    // Ringed tail
+    ctx.fillStyle='#7A5838';
+    ctx.beginPath(); ctx.ellipse(-11, -3, 4, 1.5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1A1006';
+    for(let i=0;i<3;i++){
+      ctx.beginPath(); ctx.ellipse(-9-i*1.8, -3, 0.4, 1.3, 0, 0, Math.PI*2); ctx.fill();
+    }
+  } else if(kind==='eutatus'){
+    // Giant armadillo — elongated armored body
+    ctx.fillStyle='#5A4630';
+    ctx.beginPath();
+    ctx.ellipse(0, -4, 14, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Head
+    ctx.fillStyle='#6A5238';
+    ctx.beginPath(); ctx.ellipse(13, -4, 4.5, 3, 0, 0, Math.PI*2); ctx.fill();
+    // Snout
+    ctx.beginPath(); ctx.ellipse(17, -3.5, 2, 1.5, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(13, -5, 0.7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(13.1, -5, 0.4, 0, Math.PI*2); ctx.fill();
+    // Tail (long, segmented)
+    ctx.fillStyle='#5A4630';
+    ctx.fillRect(-22, -4, 10, 2.5);
+    // Legs
+    ctx.fillStyle='#3A2A18';
+    [-8,-3,3,8].forEach(function(lx){
+      const lh = 4 + Math.abs(Math.sin(t*6+lx*0.3))*0.8;
+      ctx.fillRect(lx-1, 1, 2.2, lh);
+    });
+    // Bands on shell
+    ctx.strokeStyle='rgba(40,28,16,.7)'; ctx.lineWidth=0.6;
+    for(let i=-4;i<=4;i++){
+      ctx.beginPath();
+      ctx.moveTo(i*2.5, -8); ctx.lineTo(i*2.5, 0);
+      ctx.stroke();
+    }
+    // Tail rings
+    for(let i=0;i<5;i++){
+      ctx.beginPath();
+      ctx.moveTo(-21+i*1.8, -4); ctx.lineTo(-21+i*1.8, -1.5);
+      ctx.stroke();
+    }
+  } else if(kind==='arctotherium'){
+    // Giant short-faced bear
+    ctx.fillStyle='#4A3422';
+    ctx.beginPath();
+    ctx.ellipse(0, -10, 16, 9, 0, 0, Math.PI*2); ctx.fill();
+    // Head — broad and short
+    ctx.fillStyle='#5A4028';
+    ctx.beginPath(); ctx.ellipse(13, -14, 6, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Snout (short — short-faced bear)
+    ctx.beginPath(); ctx.ellipse(17, -13, 3, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    // Ears (small, rounded)
+    ctx.beginPath(); ctx.arc(11, -19, 1.8, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(15, -19, 1.8, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(14.5, -15, 0.7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(14.5, -15, 0.4, 0, Math.PI*2); ctx.fill();
+    // Powerful legs
+    ctx.fillStyle='#3A2818';
+    // Belly underside — covers the curved-body gap at leg positions
+    ctx.fillStyle='#4A3422';
+    ctx.beginPath();
+    ctx.ellipse(0, -2.5, 14, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#3A2818';
+    [-10,-3,5,11].forEach(function(lx){
+      const lh = 6 + Math.abs(Math.sin(t*4+lx*0.3))*1.0;
+      ctx.fillRect(lx-2, -3, 4, lh+3);
+    });
+    // Claws
+    ctx.fillStyle='#0A0604';
+    [-10,-3,5,11].forEach(function(lx){
+      ctx.fillRect(lx-1.5, 5, 0.8, 1.5);
+      ctx.fillRect(lx, 5, 0.8, 1.5);
+      ctx.fillRect(lx+1.5, 5, 0.8, 1.5);
+    });
+    // Fur shading
+    ctx.fillStyle='rgba(20,12,6,.4)';
+    for(let i=0;i<8;i++){
+      ctx.fillRect(-12+i*3, -12+(i%2)*2, 1, 5);
+    }
+  } else if(kind==='stegomastodon'){
+    // Mastodon with curved tusks
+    ctx.fillStyle='#6A5848';
+    ctx.beginPath();
+    ctx.ellipse(0, -12, 18, 11, 0, 0, Math.PI*2); ctx.fill();
+    // Head (large)
+    ctx.fillStyle='#7A6850';
+    ctx.beginPath(); ctx.ellipse(15, -15, 8, 7, 0, 0, Math.PI*2); ctx.fill();
+    // Trunk
+    ctx.fillStyle='#5A4838';
+    ctx.beginPath();
+    ctx.moveTo(20, -14); ctx.quadraticCurveTo(26, -10, 22, -2); ctx.quadraticCurveTo(20, -8, 17, -12);
+    ctx.closePath(); ctx.fill();
+    // Tusks (curved upward)
+    ctx.fillStyle='#F0E8D0';
+    ctx.beginPath();
+    ctx.moveTo(17, -10); ctx.quadraticCurveTo(24, -8, 26, -14); ctx.quadraticCurveTo(22, -10, 18, -11);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(17, -12); ctx.quadraticCurveTo(23, -10, 25, -16); ctx.quadraticCurveTo(21, -12, 18, -13);
+    ctx.closePath(); ctx.fill();
+    // Ears (small)
+    ctx.fillStyle='#5A4838';
+    ctx.beginPath(); ctx.ellipse(9, -19, 4, 5, 0.3, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(15, -16, 0.6, 0, Math.PI*2); ctx.fill();
+    // Massive pillar legs
+    // Belly underside — fills the curved gap at outer leg positions
+    ctx.fillStyle='#6A5848';
+    ctx.beginPath();
+    ctx.ellipse(0, -2.5, 15, 5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#4A3828';
+    [-12,-4,5,13].forEach(function(lx){
+      const lh = 10 + Math.abs(Math.sin(t*3+lx*0.3))*0.8;
+      ctx.fillRect(lx-2.5, -4, 5, lh+4);
+    });
+    // Tail (small)
+    ctx.fillStyle='#5A4838';
+    ctx.fillRect(-19, -10, 4, 1.5);
+  } else if(kind==='toxodon'){
+    // Rhino-like notoungulate
+    ctx.fillStyle='#7A6048';
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 16, 8, 0, 0, Math.PI*2); ctx.fill();
+    // Head — large, low
+    ctx.fillStyle='#8A6850';
+    ctx.beginPath(); ctx.ellipse(14, -8, 7, 5, 0, 0, Math.PI*2); ctx.fill();
+    // Snout
+    ctx.beginPath(); ctx.ellipse(20, -7, 3, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    // Small ears
+    ctx.fillStyle='#7A6048';
+    ctx.beginPath(); ctx.ellipse(10, -13, 1.8, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(13, -13, 1.8, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    // Eye
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(14, -10, 0.6, 0, Math.PI*2); ctx.fill();
+    // Stocky legs
+    ctx.fillStyle='#5A4030';
+    [-10,-4,4,10].forEach(function(lx){
+      const lh = 6 + Math.abs(Math.sin(t*4+lx*0.3))*0.8;
+      ctx.fillRect(lx-2, 0, 4, lh);
+    });
+    // Tail (short)
+    ctx.fillStyle='#5A4030';
+    ctx.fillRect(-17, -8, 3, 1.5);
+  } else if(kind==='homo'){
+    // Homo sapiens — paleo-indigenous hunter (~1.7m, scale 1.0 = reference)
+    // Body proportions calibrated so other animals scaled to real-world size relative to humans
+    // Scale base: head ~3px wide, total height ~24px
+    // Legs
+    ctx.fillStyle='#4A2818';
+    const lwalk = Math.sin(t*4)*1.5;
+    ctx.fillRect(-1.8, -2, 1.8, 9 + lwalk);
+    ctx.fillRect(0.2,  -2, 1.8, 9 - lwalk);
+    // Loincloth / fur wrap
+    ctx.fillStyle='#7A5A38';
+    ctx.fillRect(-2.5, -4, 5, 3);
+    // Torso
+    ctx.fillStyle='#9C6B42';
+    ctx.beginPath();
+    ctx.moveTo(-2.2, -4); ctx.lineTo(-2.5, -12); ctx.lineTo(2.5, -12); ctx.lineTo(2.2, -4);
+    ctx.closePath(); ctx.fill();
+    // Shoulders
+    ctx.fillStyle='#A87850';
+    ctx.beginPath(); ctx.ellipse(0, -12, 3, 1.3, 0, 0, Math.PI*2); ctx.fill();
+    // Arms
+    ctx.fillStyle='#9C6B42';
+    const armSwing = Math.sin(t*4)*1.2;
+    // Right arm holding spear forward
+    ctx.fillRect(2, -12, 1.4, 6);
+    ctx.fillRect(3, -7, 1.4, 4);
+    // Left arm swinging
+    ctx.fillRect(-3.4, -12, 1.4, 5+armSwing);
+    // Spear
+    ctx.strokeStyle='#5A3820'; ctx.lineWidth=0.7;
+    ctx.beginPath();
+    ctx.moveTo(3.5, -10); ctx.lineTo(11, -16);
+    ctx.stroke();
+    // Spear tip (stone)
+    ctx.fillStyle='#3A3A3E';
+    ctx.beginPath();
+    ctx.moveTo(11, -16); ctx.lineTo(13, -18); ctx.lineTo(12, -16); ctx.lineTo(13, -15);
+    ctx.closePath(); ctx.fill();
+    // Neck
+    ctx.fillStyle='#A87850';
+    ctx.fillRect(-0.7, -14, 1.4, 2);
+    // Head
+    ctx.fillStyle='#B88458';
+    ctx.beginPath(); ctx.arc(0, -16, 2.2, 0, Math.PI*2); ctx.fill();
+    // Hair (dark)
+    ctx.fillStyle='#1A0E06';
+    ctx.beginPath();
+    ctx.arc(0, -17.2, 2.3, Math.PI, Math.PI*2);
+    ctx.fill();
+    ctx.fillRect(-2.2, -17, 4.4, 1.5);
+    // Long hair down back
+    ctx.fillRect(-2.5, -16, 1.2, 4);
+    // Eye (single, prominent for stylized look)
+    ctx.fillStyle='#FFFFFF';
+    ctx.beginPath(); ctx.arc(0.8, -16, 0.5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(0.9, -16, 0.28, 0, Math.PI*2); ctx.fill();
+    // Mouth hint
+    ctx.strokeStyle='rgba(60,30,15,.7)'; ctx.lineWidth=0.4;
+    ctx.beginPath(); ctx.moveTo(0.4, -14.8); ctx.lineTo(1.4, -14.8); ctx.stroke();
+  }
+  ctx.restore();
+}
+
 </script>
 </body>
 </html>
