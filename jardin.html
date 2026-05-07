@@ -305,6 +305,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   position:fixed;inset:0;z-index:400;
   display:none;background:#000;
 }
+#mapa-container{width:100%;height:100%;}
 #mapa-screen{
   position:fixed;inset:0;z-index:400;
   display:none;background:#1a1a2e;
@@ -847,6 +848,9 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div id="mapa-leaflet" style="position:absolute;inset:0;z-index:1;"></div>
 
   <!-- geositio popup -->
+  <!-- Map container -->
+  <div id="mapa-container" style="position:absolute;inset:0;z-index:1;"></div>
+
   <div id="mapa-popup" style="
     position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
     z-index:20;display:none;
@@ -869,7 +873,7 @@ let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
 
 function openMapa(){
   document.getElementById('mapa-screen').classList.add('open');
-  gtag('event','open_panel',{panel:'mapa'});
+  if(typeof gtag==='function') gtag('event','open_panel',{panel:'mapa'});
   if(typeof L !== 'undefined'){
     if(!_mapaInited) setTimeout(initMapa,100);
   } else {
