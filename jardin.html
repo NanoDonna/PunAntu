@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+  <!-- PWA / Fullscreen mobile -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+  <meta name="apple-mobile-web-app-title" content="Pun Antü">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0E0603">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1A0A04">
+<title>Jardín de Plantas Nativas · Pun Antü</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<style>
+/* ── Reset ── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:#0E0402;}
+body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
+
+/* ── CSS vars — written as literals to avoid iOS autocorrect breaking -- ── */
+
+@keyframes frogBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-9px)}}
+/* ════════════════════════════
+   MAIN SCREEN
+════════════════════════════ */
+#main{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  background:radial-gradient(circle at 50% 30%,#5A2008 0%,#0E0402 100%);
+  overflow:hidden;
+}
+/* sway animation when panel open */
+@keyframes mvSway{
+  0%{--mv-orbit-theta:175deg}
+  50%{--mv-orbit-theta:185deg}
+  100%{--mv-orbit-theta:175deg}
+}
+#mv-zone{
+  flex:1;
+  position:relative;
+  min-height:0;
+  overflow:hidden;
+  transition:height .4s cubic-bezier(.3,1,.3,1);
+  margin-top:6%;
+  margin-bottom:6%;
+}
+/* when panel open */
+.panel-half-open .bottom-bar{display:none;}
+.panel-half-open #ar-photo-btn{display:none!important;}
+.panel-half-open #geo-tag{display:flex!important;}
+.panel-half-open #geo-title{display:none;}
+.panel-half-open #mv-zone{
+  flex:none;
+  height:34vh;
+  margin-top:0;
+  margin-bottom:0;
+}
+
+/* Top bar */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px 10px;
+  background:linear-gradient(to bottom,rgba(14,4,2,.95) 60%,transparent);
+  flex-shrink:0;
+}
+.logo-area{display:flex;align-items:center;gap:10px;}
+.logo-area img{width:40px;height:40px;object-fit:contain;}
+.logo-txt .l1{font-size:9px;letter-spacing:3px;color:#C8841E;text-transform:uppercase;font-weight:800;}
+.logo-txt .l2{font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;line-height:1;}
+.logo-txt .l3{font-size:8px;letter-spacing:2px;color:#9B8A6E;text-transform:uppercase;}
+.ar-photo-btn{
+  background:#C8841E;color:#FDF8EE;border:none;
+  border-radius:20px;padding:9px 14px;
+  font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  letter-spacing:.3px;white-space:nowrap;
+  box-shadow:0 2px 12px rgba(200,132,30,.4);
+}
+.ar-photo-btn:active{background:#A86A10;transform:scale(.97);}
+
+/* Site tag */
+.site-tag{
+  display:flex;align-items:center;gap:8px;
+  padding:0 18px 10px;flex-shrink:0;
+}
+.site-num{background:#7A1A0A;color:#fff;font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+.site-name{font-family:'Playfair Display',serif;font-size:14px;color:rgba(255,255,255,.8);}
+
+/* 3D model area */
+/* mv-main is now position:absolute inside its wrapper */
+
+/* Bottom pills */
+.bottom-bar{
+  flex-shrink:0;
+  position:relative;
+  z-index:20;
+  padding:10px 16px max(28px,env(safe-area-inset-bottom));
+  background:rgba(14,4,2,.98);
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.bar-label{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:#9B8A6E;font-weight:700;margin-bottom:8px;text-align:center;
+}
+.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.pills::-webkit-scrollbar{display:none;}
+.pill{
+  flex-shrink:0;
+  background:rgba(200,132,30,.15);
+  border:1.5px solid rgba(200,132,30,.3);
+  border-radius:22px;padding:11px 18px;
+  color:#FDF8EE;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:7px;
+  transition:all .18s;white-space:nowrap;
+}
+.pill:active,.pill.active{
+  background:rgba(200,132,30,.55);
+  border-color:#C8841E;
+}
+.pill .pi{font-size:18px;}
+
+/* ════════════
+   SPEECH BUBBLE
+════════════ */
+/* speech bubble — inline styles */
+
+/* ════════════
+   EDAD HALF-PANEL
+════════════ */
+#edad-panel{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:200;
+  background:rgba(14,4,2,.96);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:24px 24px 0 0;
+  padding:0 0 max(28px,env(safe-area-inset-bottom));
+  transform:translateY(100%);
+  transition:transform .4s cubic-bezier(.3,1,.3,1);
+  /* height: about 48% of screen */
+  max-height:52vh;
+  overflow:hidden;
+}
+#edad-panel.open{transform:translateY(0);}
+#meta-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
+#meta-panel.open{transform:translateY(0);}
+.plant-tab{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:5px 9px;border-radius:14px;font-size:10px;cursor:pointer;white-space:nowrap;font-family:sans-serif;}
+.plant-tab.active{background:#5A8030;border-color:#5A8030;color:#fff;font-weight:700;}
+#plantas-panel,#nativas-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:60vh;overflow:hidden;}
+#plantas-panel.open,#nativas-panel.open{transform:translateY(0);}
+
+
+
+.ep-handle{width:34px;height:4px;border-radius:2px;background:rgba(255,255,255,.18);margin:10px auto 0;}
+.ep-head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 8px;}
+.ep-head h3{font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;}
+.ep-close{background:rgba(255,255,255,.1);border:none;color:#FDF8EE;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ep-body{padding:4px 18px 8px;overflow-y:auto;}
+
+/* hitos markers */
+.hitos-row{position:relative;height:28px;margin-bottom:4px;}
+.hito{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;}
+.hito-dot{width:6px;height:6px;border-radius:50%;background:#C8841E;flex-shrink:0;}
+.hito-dot.special{background:#F0C070;width:8px;height:8px;box-shadow:0 0 6px #F0C070;}
+.hito-label{font-size:8px;color:#9B8A6E;white-space:nowrap;font-weight:700;letter-spacing:.3px;}
+
+
+
+/* ════════════════════════════
+   INFO PANEL (slides up)
+════════════════════════════ */
+/* ════════════════════════════
+   INFO PANEL (slides up)
+════════════════════════════ */
+#info-panel{
+  position:fixed;inset:0;top:auto;
+  width:100%;z-index:300;
+  background:rgba(18,6,2,.95);
+  border-radius:22px 22px 0 0;
+  padding:0 0 44px;
+  max-height:78vh;overflow-y:auto;
+  transform:translateY(100%);
+  transition:transform .38s cubic-bezier(.3,1,.3,1);
+}
+#info-panel.open{transform:translateY(0);}
+.panel-handle{width:34px;height:4px;border-radius:2px;background:rgba(255,255,255,.18);margin:12px auto 0;}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  position:sticky;top:0;background:rgba(18,6,2,.98);z-index:1;
+}
+.panel-head h2{font-family:'Playfair Display',serif;font-size:20px;color:#FDF8EE;}
+.panel-close{
+  background:rgba(255,255,255,.1);border:none;color:#FDF8EE;
+  width:32px;height:32px;border-radius:50%;font-size:16px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.panel-body{padding:16px 18px 8px;}
+
+/* Content cards */
+.xcard{
+  border-left:3px solid #C8841E;
+  border-radius:0 10px 10px 0;
+  background:rgba(255,255,255,.05);
+  padding:12px 14px;margin-bottom:12px;
+  color:rgba(255,255,255,.85);font-size:13px;line-height:1.7;
+}
+.xcard h4{
+  font-size:9px;text-transform:uppercase;letter-spacing:1.5px;
+  color:#C8841E;font-weight:800;margin-bottom:7px;
+}
+.xhi{
+  background:rgba(200,132,30,.12);
+  border:1px solid rgba(200,132,30,.28);
+  border-radius:12px;padding:14px;margin-bottom:12px;
+  color:rgba(255,255,255,.88);font-size:13px;line-height:1.6;
+}
+.xhi .xi{font-size:24px;margin-bottom:6px;}
+.xhi strong{color:#F0C070;}
+.bnum{font-family:'Playfair Display',serif;font-size:46px;color:#C8841E;line-height:1;}
+.tli{display:flex;gap:10px;margin-bottom:9px;align-items:flex-start;}
+.tld{width:9px;height:9px;border-radius:50%;background:#C8841E;flex-shrink:0;margin-top:5px;}
+.tld.o{background:#9B8A6E;}
+.tli strong{display:block;font-size:13px;color:#FDF8EE;font-weight:700;}
+.tli span{font-size:12px;color:#9B8A6E;}
+
+/* Decay slider */
+.decay-bar-wrap{
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;
+}
+.decay-bar{
+  flex:1;height:22px;border-radius:11px;
+  overflow:hidden;background:rgba(255,255,255,.08);position:relative;
+}
+.decay-u{
+  position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg,#F0C070,#C8841E);
+  border-radius:11px;transition:width .08s;width:100%;
+}
+.decay-pb{
+  position:absolute;right:0;top:0;height:100%;
+  background:linear-gradient(90deg,#7A90A8,#B0B8C8);
+  border-radius:11px;transition:width .08s;width:0%;
+}
+.decay-labels{display:flex;justify-content:space-between;font-size:11px;margin-bottom:16px;}
+.decay-result{
+  background:rgba(200,132,30,.15);border:1px solid rgba(200,132,30,.3);
+  border-radius:10px;padding:14px;text-align:center;margin-bottom:16px;
+}
+.decay-result-label{font-size:11px;color:#9B8A6E;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.decay-result-age{font-family:'Playfair Display',serif;font-size:36px;color:#C8841E;line-height:1;}
+.decay-result-unit{font-size:11px;color:#9B8A6E;margin-top:2px;}
+.decay-result-event{font-size:12px;color:rgba(255,255,255,.75);margin-top:8px;min-height:18px;font-weight:600;}
+.decay-slider{
+  width:100%;height:8px;border-radius:4px;
+  background:rgba(255,255,255,.15);outline:none;cursor:pointer;
+  margin-bottom:6px;
+  -webkit-appearance:none;appearance:none;
+}
+.decay-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:26px;height:26px;border-radius:50%;
+  background:#C8841E;cursor:pointer;
+  box-shadow:0 2px 8px rgba(200,132,30,.5);
+}
+.decay-slider::-moz-range-thumb{
+  width:26px;height:26px;border-radius:50%;
+  background:#C8841E;cursor:pointer;border:none;
+}
+.decay-scale{display:flex;justify-content:space-between;font-size:10px;color:#9B8A6E;}
+
+/* Quiz */
+.qq{
+  background:rgba(122,26,10,.28);border:1px solid rgba(122,26,10,.45);
+  border-radius:12px;padding:16px;margin-bottom:14px;
+  font-family:'Playfair Display',serif;font-size:17px;
+  color:#FDF8EE;line-height:1.4;
+}
+.qq .ql{
+  font-family:'Nunito',sans-serif;font-size:9px;letter-spacing:1px;
+  text-transform:uppercase;color:#C8841E;display:block;margin-bottom:6px;font-weight:700;
+}
+.qo{
+  background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:9px;padding:12px 14px;margin-bottom:8px;
+  cursor:pointer;font-size:13px;font-family:'Nunito',sans-serif;
+  font-weight:600;width:100%;text-align:left;color:#FDF8EE;transition:all .15s;
+}
+.qo.ok{background:rgba(78,138,42,.22);border-color:#4E8A2A;color:#90D060;}
+.qo.no{background:rgba(196,58,58,.18);border-color:#C43A3A;color:#F08080;}
+.qfb{
+  display:none;border-radius:9px;padding:11px 14px;
+  margin-top:3px;font-size:12.5px;line-height:1.6;
+}
+.qfb.ok{background:rgba(78,138,42,.12);color:#90D060;display:block;}
+.qfb.no{background:rgba(196,58,58,.12);color:#F08080;display:block;}
+
+/* ════════════════════════════
+   AR PHOTO SCREEN
+════════════════════════════ */
+#ar-screen{
+  position:fixed;inset:0;z-index:400;
+  display:none;background:#000;
+}
+#mapa-screen{
+  position:fixed;inset:0;z-index:400;
+  display:none;background:#1a1a2e;
+}
+#mapa-screen.open{display:block;}
+#ar-screen.open{display:block;}
+#ar-shutter-btn:active{transform:translateX(-50%) scale(.92);}
+.panel-half-open #ar-shutter-btn{display:none!important;}
+
+#cam-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;z-index:0;
+}
+#ar-model{
+  position:absolute;inset:0;z-index:5;
+  width:100%;height:100%;
+  background:transparent;
+  --poster-color:transparent;
+  /* model sits in bottom half */
+  top:30%;
+}
+/* photo booth — no camera needed */
+
+/* ── Fullscreen splash ── */
+#fs-splash{
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(ellipse at 50% 60%,#2A1A0A 0%,#0E0603 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:32px;
+  transition:opacity .5s ease;
+}
+#fs-splash.hide{opacity:0;pointer-events:none;}
+#fs-splash .fs-logo{
+  font-family:'Playfair Display',serif;font-size:42px;
+  color:#FDF8EE;letter-spacing:1px;line-height:1;text-align:center;
+  margin-bottom:6px;
+}
+#fs-splash .fs-sub{
+  font-size:11px;letter-spacing:4px;color:#C8841E;
+  text-transform:uppercase;font-weight:800;text-align:center;
+  margin-bottom:40px;
+}
+#fs-splash .fs-tagline{
+  font-size:13px;color:rgba(253,248,238,.55);
+  text-align:center;margin-bottom:52px;line-height:1.6;max-width:260px;
+}
+#fs-btn{
+  padding:16px 36px;border-radius:32px;
+  background:linear-gradient(135deg,#C8841E,#A86A10);
+  border:none;color:#FDF8EE;font-weight:800;font-size:15px;
+  letter-spacing:.5px;cursor:pointer;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  display:flex;align-items:center;gap:10px;
+}
+#fs-btn:active{transform:scale(.97);}
+#fs-skip{
+  margin-top:20px;font-size:12px;color:rgba(253,248,238,.35);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+}
+/* ── Fullscreen exit button ── */
+#fs-exit-btn{
+  position:fixed;top:14px;right:14px;z-index:9000;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,.45);border:none;color:#fff;
+  font-size:16px;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+#fs-exit-btn.visible{display:flex;}
+:fullscreen #fs-exit-btn.visible{display:flex;}
+:-webkit-full-screen #fs-exit-btn.visible{display:flex;}
+
+</style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
+  
+<div id="paleo-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head"><h3>Paleoambiente · 480 Ma</h3><button class="ep-close" onclick="closeExtraPanel('paleo')">✕</button></div>
+  <div class="ep-body" style="padding:8px 14px 10px;">
+    <!-- Isometric aquarium scene -->
+    <div style="border-radius:10px;overflow:hidden;background:#0C0908;position:relative;aspect-ratio:5/2.6;max-height:180px;margin-bottom:10px;">
+      <canvas id="paleo-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.80);line-height:1.55;margin-bottom:8px;">
+      Un mar somero del <strong>Cámbrico-Ordovícico</strong> cubre la región. Las corrientes forman <strong>ondulitas</strong> en la arena, mientras <strong>trilobites</strong> se desplazan por el fondo dejando trazas fósiles (icnofacies de <em>Cruziana</em>).
+    </p>
+    <p style="font-size:11px;color:rgba(200,180,140,.75);line-height:1.5;">
+      🔍 Estas estructuras hoy están preservadas en las <strong>ortocuarcitas de la Fm. Balcarce</strong> que forman la Jardín de Plantas Nativas.
+    </p>
+  </div>
+</div>
+
+<!-- PANEL PLANTAS -->
+<div id="plantas-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>Plantas nativas del jardín</h3>
+    <button class="ep-close" onclick="closeExtraPanel('plantas')">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 14px 12px;">
+    <div style="display:flex;gap:5px;margin-bottom:8px;overflow-x:auto;padding-bottom:4px;flex-wrap:nowrap;">
+      <button class="plant-tab active" onclick="showPlant(0,this)">Teyú</button>
+<button class="plant-tab" onclick="showPlant(1,this)">Cromolaena</button>
+<button class="plant-tab" onclick="showPlant(2,this)">Gomfrena</button>
+<button class="plant-tab" onclick="showPlant(3,this)">Pilarcito</button>
+<button class="plant-tab" onclick="showPlant(4,this)">Eupatório blanco</button>
+<button class="plant-tab" onclick="showPlant(5,this)">Senecio pampeano</button>
+<button class="plant-tab" onclick="showPlant(6,this)">Senecio gris</button>
+<button class="plant-tab" onclick="showPlant(7,this)">Stevia</button>
+<button class="plant-tab" onclick="showPlant(8,this)">Verbena</button>
+<button class="plant-tab" onclick="showPlant(9,this)">Vernonia</button>
+    </div>
+    <!-- Foto -->
+    <div style="border-radius:10px;overflow:hidden;background:#1A1A10;position:relative;aspect-ratio:4/3;max-height:180px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;">
+      <img id="plant-img" src="plantas_teyu.jpg" alt=""
+        style="width:100%;height:100%;object-fit:cover;display:block;"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div style="display:none;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.3);position:absolute;">
+        <div style="font-size:28px;">🌿</div>
+        <div style="font-size:10px;letter-spacing:1px;">imagen próximamente</div>
+      </div>
+    </div>
+    <!-- Info -->
+    <div id="plant-sci" style="font-family:'Playfair Display',serif;font-size:13px;color:rgba(200,180,120,.85);font-style:italic;margin-bottom:2px;"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+      <div id="plant-zone-badge" style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:10px;"></div>
+    </div>
+    <div id="plant-desc" style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.6;"></div>
+  </div>
+</div>
+
+<!-- PANEL NATIVAS -->
+<div id="nativas-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>¿Por qué plantas nativas?</h3>
+    <button class="ep-close" onclick="closeExtraPanel('nativas')">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 18px 12px;overflow-y:auto;max-height:calc(78vh - 60px);">
+    <p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:10px;">
+      Las plantas nativas son aquellas que evolucionaron en la región durante miles de años, formando redes ecológicas complejas con insectos, aves y hongos locales. A diferencia de las <strong>plantas exóticas</strong>, las nativas no necesitan riego adicional, plaguicidas ni fertilizantes: están perfectamente adaptadas al clima, suelo y ciclos del pastizal pampeano.
+    </p>
+    <div style="border-left:3px solid #6A8A40;padding-left:12px;margin-bottom:12px;">
+      <div style="font-size:10px;color:#8AB050;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Beneficios ecológicos</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.75;">
+        🦋 Alimentan mariposas, abejas y colibríes nativos<br>
+        🐦 Refugio y nidificación para aves del pastizal<br>
+        🌾 Sostienen la biodiversidad del suelo<br>
+        💧 Retienen el agua y previenen la erosión<br>
+        🌡️ Más resistentes a sequías y heladas que las exóticas
+      </div>
+    </div>
+    <div style="border-left:3px solid #C8841E;padding-left:12px;margin-bottom:12px;">
+      <div style="font-size:10px;color:#C8841E;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">El pastizal pampeano en peligro</div>
+      <p style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.65;margin:0;">
+        El pastizal pampeano es uno de los ecosistemas más amenazados del mundo: más del <strong>90% fue reemplazado</strong> por agricultura y urbanización. Este jardín recupera 10 especies nativas como una pequeña isla de biodiversidad en el paisaje de Balcarce.
+      </p>
+    </div>
+    <p style="font-size:11px;color:rgba(180,200,120,.70);line-height:1.6;">
+      🌿 Cada planta nativa que plantás en tu jardín es un acto de geoconservación.
+    </p>
+  </div>
+</div>
+
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-F6ZCDHTFSN');
+  </script>
+<script>
+// Embed trilobite image — fallback to external file, preload base64 for offline
+(function(){
+  const d='data:image/png;base64,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';
+  if(typeof _trilobiteImg!=='undefined') _trilobiteImg.src=d;
+  // Also set pill image
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('.tri-pill-img').forEach(function(el){el.src=d;});
+  });
+})();
+</script>
+</head>
+<body>
+
+<!-- ════════════════════════════
+     MAIN SCREEN
+════════════════════════════ -->
+<!-- Fullscreen splash -->
+<div id="fs-splash">
+  <div class="fs-logo">Pun Antü</div>
+  <div class="fs-sub">Geoparque · Balcarce</div>
+  <div class="fs-tagline">Recorré 4.500 millones de años<br>de historia geológica</div>
+  <button id="fs-btn" onclick="enterFullscreen()">
+    <span style="font-size:18px;">⛶</span> Abrir en pantalla completa
+  </button>
+  <div class="fs-skip" onclick="skipFullscreen()">Continuar sin pantalla completa</div>
+</div>
+
+<!-- Fullscreen exit button (visible only in fullscreen) -->
+<button id="fs-exit-btn" onclick="exitFullscreen()" title="Salir de pantalla completa">✕</button>
+
+<div id="main">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="logo-area">
+      <div class="logo-txt">
+        <div class="l1">Geoparque</div>
+        <div class="l2">Pun Antü</div>
+        <div class="l3">Balcarce</div>
+      </div>
+    </div>
+    <!-- photo btn: visible at start, hidden when panel open -->
+    <button class="ar-photo-btn" id="ar-photo-btn" onclick="openAR()">📷 Foto con la mascota</button>
+    <!-- geositio tag: hidden at start, visible when panel open -->
+    <div id="geo-tag" style="display:none;flex-direction:column;align-items:flex-end;gap:1px;">
+      <span style="background:#7A1A0A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;">Jardín</span>
+      <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:600;">Jardín Nativo</span>
+    </div>
+  </div>
+
+  <!-- 3D viewer -->
+  <div id="mv-zone">
+    <!-- geositio title: centered above frog, shown at start, hidden when panel open -->
+    <div id="geo-title" style="
+      position:absolute;top:10px;left:0;right:0;z-index:10;
+      text-align:center;pointer-events:none;">
+      <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Jardín</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">Jardín Nativo</div>
+    </div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
+      <img src="logo.png" id="logo-bg" alt="" style="width:88%;max-width:380px;opacity:0.18;filter:brightness(2) saturate(0.4);">
+    </div>
+    <model-viewer id="mv-idle"
+      src="PunAntuMascot.glb"
+      auto-rotate rotation-per-second="18deg"
+      camera-controls touch-action="pan-y"
+      shadow-intensity="1.2" exposure="1.2"
+      camera-orbit="180deg 82deg 7.5m"
+      camera-target="0m 0.5m 0m"
+      field-of-view="36deg"
+      style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
+    </model-viewer>
+    <model-viewer id="mv-focus"
+      src="PunAntuMascot.glb"
+      shadow-intensity="1.2" exposure="1.2"
+      camera-orbit="180deg 85deg 10.0m"
+      camera-target="0m 0.5m 0m"
+      field-of-view="36deg"
+      style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
+    </model-viewer>
+  </div>
+
+  <!-- Speech bubbles -->
+  <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
+    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+    <div id="trophy-bubble" style="
+  position:relative;
+  background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
+  border:1.5px solid rgba(240,192,112,.7);
+  border-radius:22px;
+  padding:28px 18px 14px;
+  color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;
+  backdrop-filter:blur(12px);display:none;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  text-align:center;width:100%;
+  margin-top:22px;">
+  <!-- trophy icon floating above top border -->
+  <div style="
+    position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(135deg,#C8841E,#F0C070);
+    border:2px solid rgba(240,192,112,.8);
+    box-shadow:0 4px 12px rgba(200,132,30,.6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;">🏆</div>
+  <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Jardín de Plantas Nativas es una de las rocas más antiguas de Argentina.</div>
+</div>
+  </div>
+
+  <!-- Bottom pills -->
+  <div class="bottom-bar">
+    <div class="bar-label">¿Qué querés descubrir?</div>
+    <div class="pills">
+      <button class="pill" onclick="openPanel('plantas',this)"><span class="pi">🌿</span>Las plantas</button>
+      <button class="pill" onclick="openPanel('nativas',this)"><span class="pi">🌱</span>¿Por qué nativas?</button>
+      <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Geocircuito</button>
+      <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🎯</span>Quiz</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════
+     INFO PANEL
+════════════════════════════ -->
+<div id="info-panel">
+  <div class="panel-handle"></div>
+  <div class="panel-head">
+    <h2 id="panel-title"></h2>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<!-- ════════════════════════════
+     FOTO CON LA MASCOTA — AR
+     Diseñado para foto horizontal:
+     el usuario rota el teléfono,
+     mascota centrada, texto abajo
+════════════════════════════ -->
+<div id="ar-screen">
+
+  <!-- cámara de fondo -->
+  <video id="cam-video" autoplay playsinline muted
+    style="position:absolute;inset:0;width:100%;height:100%;
+           object-fit:cover;z-index:0;"></video>
+
+  <!-- mascota centrada — ocupa toda la pantalla como fondo 3D -->
+  <model-viewer id="ar-model"
+    src="PunAntuMascot.glb"
+    auto-rotate rotation-per-second="10deg"
+    camera-controls touch-action="none"
+    shadow-intensity="0.6"
+    exposure="1.4"
+    camera-orbit="180deg 82deg 2.8m"
+    camera-target="0m 0.5m 0m"
+    style="position:absolute;inset:0;width:100%;height:100%;
+           z-index:5;background:transparent;--poster-color:transparent;">
+  </model-viewer>
+
+  <!-- botón cerrar — arriba izquierda -->
+  <button onclick="closeAR()"
+    style="position:absolute;top:16px;left:16px;z-index:30;
+      background:rgba(0,0,0,.5);border:none;color:#fff;
+      width:40px;height:40px;border-radius:50%;font-size:17px;
+      cursor:pointer;backdrop-filter:blur(8px);
+      display:flex;align-items:center;justify-content:center;">✕</button>
+
+  <!-- botón obturador (foto) — abajo centro -->
+  <button id="ar-shutter-btn" onclick="capturePhoto()"
+    style="position:absolute;bottom:120px;left:50%;transform:translateX(-50%);z-index:30;
+      width:64px;height:64px;border-radius:50%;
+      background:rgba(255,255,255,.95);border:4px solid rgba(255,255,255,.4);
+      box-shadow:0 4px 16px rgba(0,0,0,.5);
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:transform .15s ease;">
+    <div style="width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.1);"></div>
+  </button>
+
+  <!-- flash overlay para feedback al disparar -->
+  <div id="ar-flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .3s ease;"></div>
+
+  <!-- preview de foto capturada -->
+  <div id="ar-preview" style="position:absolute;inset:0;background:#000;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+    <img id="ar-preview-img" style="max-width:100%;max-height:75%;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.6);" />
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button onclick="discardPhoto()"
+        style="padding:12px 22px;border-radius:24px;border:none;
+          background:rgba(255,255,255,.15);color:#fff;font-weight:700;
+          font-size:14px;cursor:pointer;backdrop-filter:blur(8px);">↺ Otra</button>
+      <a id="ar-download-link" download="punantu-foto.jpg"
+        style="padding:12px 22px;border-radius:24px;
+          background:#C8841E;color:#fff;font-weight:700;text-decoration:none;
+          font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+        ⬇ Guardar
+      </a>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:14px;text-align:center;max-width:280px;">
+      Tocá <strong>Guardar</strong> para descargar la foto en alta calidad.
+    </div>
+  </div>
+
+
+  <!-- instrucción rotación — arriba derecha, solo en portrait -->
+  <div id="ar-rotate-hint"
+    style="position:absolute;top:16px;right:16px;z-index:30;
+      background:rgba(0,0,0,.5);border-radius:20px;
+      padding:6px 12px;backdrop-filter:blur(8px);
+      display:flex;align-items:center;gap:6px;">
+    <span style="font-size:16px;">🔄</span>
+    <span style="font-size:10px;color:#FDF8EE;font-weight:700;letter-spacing:.5px;">Rotá el teléfono</span>
+  </div>
+
+  <!-- texto — abajo, ancho completo, funciona en landscape y portrait -->
+  <div style="position:absolute;bottom:0;left:0;right:0;z-index:20;
+    padding:20px 24px max(20px,env(safe-area-inset-bottom));
+    background:linear-gradient(to top,rgba(10,3,1,.9) 40%,transparent);
+    display:flex;align-items:flex-end;justify-content:space-between;gap:16px;">
+
+    <!-- texto izquierda -->
+    <div>
+      <div style="font-size:9px;letter-spacing:3px;color:#C8841E;
+        text-transform:uppercase;font-weight:800;margin-bottom:4px;">Geoparque</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;
+        color:#FDF8EE;line-height:1;margin-bottom:4px;">Pun Antü</div>
+      <div style="font-size:10px;color:#9B8A6E;letter-spacing:.5px;">
+        Jardín de Plantas Nativas · Balcarce</div>
+    </div>
+
+    <!-- separador vertical -->
+    <div style="width:1px;height:48px;background:rgba(200,132,30,.4);flex-shrink:0;"></div>
+
+    <!-- texto derecha -->
+    <div style="text-align:right;">
+      <div style="font-family:'Playfair Display',serif;font-size:14px;
+        color:#FDF8EE;line-height:1.4;margin-bottom:2px;">¡Gracias por<br>visitar!</div>
+      <div style="font-size:10px;color:#F0C070;font-weight:700;letter-spacing:.5px;margin-top:3px;">@Pun_Antu</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════
+     EDAD HALF-PANEL
+════════════ -->
+<div id="edad-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>¿Cuántos años tiene?</h3>
+    <button class="ep-close" onclick="closeEdadPanel()">✕</button>
+  </div>
+  <div class="ep-body">
+    <!-- age + event: TOP so thumb never covers it -->
+    <div style="text-align:center;margin-bottom:10px;">
+      <span style="font-family:'Playfair Display',serif;font-size:36px;color:#C8841E;" id="decay-age">0</span>
+      <span style="font-size:12px;color:#9B8A6E;"> millones de años</span>
+    </div>
+    <div id="decay-event" style="text-align:center;font-size:13px;color:#F0C070;font-weight:700;min-height:18px;margin-bottom:10px;"></div>
+
+    <!-- decay bar -->
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+      <span style="font-size:14px;">⚛️</span>
+      <div style="flex:1;height:18px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08);position:relative;">
+        <div class="decay-u" id="decay-u" style="position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#F0C070,#C8841E);border-radius:9px;transition:width .08s;width:100%;"></div>
+        <div class="decay-pb" id="decay-pb" style="position:absolute;right:0;top:0;height:100%;background:linear-gradient(90deg,#7A90A8,#B0B8C8);border-radius:9px;transition:width .08s;width:0%;"></div>
+      </div>
+      <span style="font-size:14px;">🪨</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:14px;">
+      <span style="color:#C8841E;font-weight:700;">⚛️ Uranio: <span id="decay-u-pct">100</span>%</span>
+      <span style="color:#B0B8C8;font-weight:700;">Plomo: <span id="decay-pb-pct">0</span>% 🪨</span>
+    </div>
+
+    <!-- slider: BOTTOM -->
+    <input class="decay-slider" type="range" id="decay-slider"
+      min="0" max="4600" value="0" step="10"
+      style="width:100%;margin-bottom:5px;transform:scaleX(-1);">
+    <div style="display:flex;justify-content:space-between;font-size:9px;color:#9B8A6E;">
+      <span>← Formación de la Tierra</span><span>Hoy →</span>
+    </div>
+  
+  </div>
+</div>
+
+<!-- META PANEL -->
+<div id="meta-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>De protolito a Gneis</h3>
+    <button class="ep-close" onclick="closeMetaPanel()">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 18px 12px;">
+    <div style="border-radius:10px;overflow:hidden;height:160px;margin-bottom:14px;position:relative;background:rgba(0,0,0,.3);">
+      <div style="position:absolute;inset:-20%;display:flex;align-items:center;justify-content:center;">
+        <video id="meta-vid" src="metamorfismo.webm" muted playsinline preload="auto"
+          style="width:100%;height:100%;object-fit:contain;display:block;transform:scale(2.2);transform-origin:center center;"></video>
+      </div>
+      <div id="meta-proxy" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:13px;pointer-events:none;">Cargando...</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#9B8A6E;margin-bottom:8px;font-weight:700;">
+      <span>← Protolito</span><span>Gneis foliado →</span>
+    </div>
+    <div id="meta-bar" style="width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:7px;cursor:pointer;position:relative;touch-action:none;"
+      onmousedown="startMetaScrub(event)" ontouchstart="startMetaScrub(event)">
+      <div id="meta-prog" style="height:100%;width:0%;background:linear-gradient(90deg,#C8841E,#9ABA5A);border-radius:7px;pointer-events:none;"></div>
+      <div id="meta-thumb" style="position:absolute;top:50%;left:0%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#C8841E;border:2px solid rgba(255,255,255,.35);box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Speech bubbles -->
+<div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
+  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+  <div id="trophy-bubble" style="
+  position:relative;
+  background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
+  border:1.5px solid rgba(240,192,112,.7);
+  border-radius:22px;
+  padding:28px 18px 14px;
+  color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;
+  backdrop-filter:blur(12px);display:none;
+  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  text-align:center;width:100%;
+  margin-top:22px;">
+  <!-- trophy icon floating above top border -->
+  <div style="
+    position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(135deg,#C8841E,#F0C070);
+    border:2px solid rgba(240,192,112,.8);
+    box-shadow:0 4px 12px rgba(200,132,30,.6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;">🏆</div>
+  <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Jardín de Plantas Nativas es una de las rocas más antiguas de Argentina.</div>
+</div>
+</div>
+
+<!-- MAPA GEOCIRCUITO -->
+<div id="mapa-screen">
+  <!-- top bar -->
+  <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+    padding:14px 16px 10px;
+    background:linear-gradient(to bottom,rgba(14,4,2,.95) 60%,transparent);
+    display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:9px;letter-spacing:3px;color:#C8841E;text-transform:uppercase;font-weight:800;">Geocircuito</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;line-height:1;">La Barrosa</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button id="mapa-gps-btn" onclick="mapaGPS()" style="
+        background:rgba(200,132,30,.2);border:1.5px solid rgba(200,132,30,.5);
+        color:#FDF8EE;border-radius:50%;width:38px;height:38px;
+        font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        📍
+      </button>
+      <button onclick="closeMapa()" style="
+        background:rgba(255,255,255,.15);border:none;color:#FDF8EE;
+        width:38px;height:38px;border-radius:50%;font-size:17px;
+        cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+  </div>
+
+  <!-- map container -->
+  <div id="mapa-leaflet" style="position:absolute;inset:0;z-index:1;"></div>
+
+  <!-- geositio popup -->
+  <div id="mapa-popup" style="
+    position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+    z-index:20;display:none;
+    background:rgba(14,4,2,.92);border:1.5px solid rgba(200,132,30,.5);
+    border-radius:16px;padding:12px 20px;text-align:center;
+    backdrop-filter:blur(12px);min-width:180px;">
+    <div id="mapa-popup-num" style="font-size:10px;letter-spacing:2px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:3px;"></div>
+    <div id="mapa-popup-name" style="font-family:'Playfair Display',serif;font-size:16px;color:#FDF8EE;"></div>
+  </div>
+</div>
+
+<script>
+
+/* ════════════
+   MAPA GEOCIRCUITO
+════════════ */
+const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Jardín de Plantas Nativas", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
+const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
+let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
+
+function openMapa(){
+  document.getElementById('mapa-screen').classList.add('open');
+  gtag('event','open_panel',{panel:'mapa'});
+  if(typeof L !== 'undefined'){
+    if(!_mapaInited) setTimeout(initMapa,100);
+  } else {
+    // Load Leaflet dynamically
+    const s=document.createElement('script');
+    s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload=()=>{ if(!_mapaInited) initMapa(); };
+    document.head.appendChild(s);
+  }
+}
+function closeMapa(){
+  document.getElementById('mapa-screen').classList.remove('open');
+  document.getElementById('mapa-popup').style.display='none';
+  if(_mapaWatch){ navigator.geolocation.clearWatch(_mapaWatch); _mapaWatch=null; }
+}
+function initMapa(){
+  if(typeof L==='undefined') return;
+  if(window._mapaInited) return; window._mapaInited=true;
+
+  const map=L.map('mapa-container',{zoomControl:false,attributionControl:false})
+    .setView([-37.870,-58.255],13);
+
+  // Base tile
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    {maxZoom:19}).addTo(map);
+
+  // ── Altitude zone polygons (approximate for Sierra La Barrosa area) ──
+  // CIMA (>250m) — summit area
+  const cimaZone=[
+    [-37.852,-58.270],[-37.845,-58.252],[-37.848,-58.238],
+    [-37.858,-58.230],[-37.870,-58.235],[-37.875,-58.258],[-37.865,-58.272]
+  ];
+  // LADERA (100-250m) — slopes around the summit
+  const laderaZone=[
+    [-37.840,-58.285],[-37.832,-58.255],[-37.836,-58.225],
+    [-37.848,-58.218],[-37.862,-58.220],[-37.878,-58.228],
+    [-37.885,-58.260],[-37.880,-58.285],[-37.865,-58.290]
+  ];
+  // LLANURA (<100m) — plains around
+  const llanuaZone=[
+    [-37.825,-58.300],[-37.818,-58.240],[-37.820,-58.210],
+    [-37.835,-58.200],[-37.855,-58.195],[-37.895,-58.200],
+    [-37.900,-58.270],[-37.895,-58.305],[-37.860,-58.312]
+  ];
+
+  L.polygon(llanuaZone,{color:'#6A9A40',fillColor:'#6A9A40',fillOpacity:0.12,weight:1.5,dashArray:'4,3'})
+    .addTo(map).bindPopup('<b>Llanura · &lt;100 m</b><br>Gomphrena · Senecio pampeano · Verbena · Teyú');
+  L.polygon(laderaZone,{color:'#B08840',fillColor:'#B08840',fillOpacity:0.15,weight:1.5,dashArray:'4,3'})
+    .addTo(map).bindPopup('<b>Ladera · 100–250 m</b><br>Cromolaena · Pilarcito · Senecio gris · Vernonia');
+  L.polygon(cimaZone,{color:'#C8A878',fillColor:'#C8A878',fillOpacity:0.20,weight:2})
+    .addTo(map).bindPopup('<b>Cima · &gt;250 m</b><br>Eupatório blanco · Stevia');
+
+  // Zone legend
+  const legend=L.control({position:'bottomleft'});
+  legend.onAdd=function(){
+    const d=L.DomUtil.create('div','');
+    d.style.cssText='background:rgba(14,4,2,.85);padding:8px 10px;border-radius:8px;font-size:11px;color:#FDF8EE;line-height:1.8;border:1px solid rgba(200,132,30,.3);';
+    d.innerHTML='<div style="font-weight:700;margin-bottom:4px;color:#C8841E;">Zonas altitudinales</div>'+
+      '<span style="color:#8ABB55;">■</span> Llanura &lt;100 m<br>'+
+      '<span style="color:#C8A055;">■</span> Ladera 100–250 m<br>'+
+      '<span style="color:#E0C090;">■</span> Cima &gt;250 m';
+    return d;
+  };
+  legend.addTo(map);
+
+  // Geositio markers
+  const GEOSITIOS=[{"n":1,"name":"Cerro El Triunfo","lat":-37.86065,"lon":-58.2548},
+    {"n":2,"name":"Sierra La Barrosa","lat":-37.8728,"lon":-58.26},
+    {"n":3,"name":"Mordisco del Diablo","lat":-37.875,"lon":-58.258},
+    {"n":4,"name":"El Mirador","lat":-37.868,"lon":-58.263},
+    {"n":5,"name":"La Tosquera","lat":-37.872,"lon":-58.252},
+    {"n":6,"name":"Antropoceno","lat":-37.875,"lon":-58.248},
+    {"n":0,"name":"Jardín Nativo","lat":-37.869,"lon":-58.255}];
+
+  GEOSITIOS.forEach(function(g){
+    const isGarden=g.n===0;
+    const icon=L.divIcon({className:'',html:
+      '<div style="width:'+(isGarden?28:22)+'px;height:'+(isGarden?28:22)+'px;border-radius:50%;'+
+      'background:'+(isGarden?'#5A8030':'#C8841E')+';border:2px solid '+(isGarden?'#8AB050':'#FDF8EE')+';'+
+      'display:flex;align-items:center;justify-content:center;'+
+      'font-size:'+(isGarden?'14':'10')+'px;font-weight:700;color:#fff;">'+
+      (isGarden?'🌿':g.n)+'</div>',
+      iconSize:[isGarden?28:22,isGarden?28:22],iconAnchor:[isGarden?14:11,isGarden?14:11]});
+    L.marker([g.lat,g.lon],{icon}).addTo(map)
+      .bindPopup('<b>'+(isGarden?'📍 '+g.name:'Geositio '+g.n+' · '+g.name)+'</b>');
+  });
+
+  // KML geocircuito trail
+  if(typeof omnivore!=='undefined'){
+    omnivore.kml('geocircuito.kml').addTo(map);
+  } else {
+    // Fallback: draw approximate trail
+    const trail=[[-37.862,-58.270],[-37.860,-58.263],[-37.862,-58.255],[-37.868,-58.248],
+                 [-37.872,-58.250],[-37.875,-58.258],[-37.872,-58.265],[-37.869,-58.272]];
+    L.polyline(trail,{color:'#C8841E',weight:2.5,opacity:0.8,dashArray:'6,4'}).addTo(map);
+  }
+
+  window._mapaRef=map;
+}
+
+function mapaGPS(){
+  if(!_mapaMap)return;
+  const btn=document.getElementById('mapa-gps-btn');
+  if(!navigator.geolocation){btn.textContent='❌';return;}
+  if(_mapaWatch){
+    navigator.geolocation.clearWatch(_mapaWatch);_mapaWatch=null;
+    if(_mapaUserMarker){_mapaMap.removeLayer(_mapaUserMarker);_mapaUserMarker=null;}
+    btn.textContent='📍';return;
+  }
+  btn.textContent='⏳';
+  _mapaWatch=navigator.geolocation.watchPosition(pos=>{
+    const ll=[pos.coords.latitude,pos.coords.longitude];
+    btn.textContent='🔵';
+    if(_mapaUserMarker) _mapaUserMarker.setLatLng(ll);
+    else{
+      const ic=L.divIcon({className:'',html:`<div style="width:16px;height:16px;border-radius:50%;background:#3b82f6;border:3px solid #fff;box-shadow:0 0 0 4px rgba(59,130,246,.3);"></div>`,iconSize:[16,16],iconAnchor:[8,8]});
+      _mapaUserMarker=L.marker(ll,{icon:ic}).addTo(_mapaMap);
+      _mapaMap.setView(ll,16);
+    }
+  },()=>{btn.textContent='📍';},{enableHighAccuracy:true});
+}
+
+
+/* ════════════
+   LOGO — remove black bg via canvas
+════════════ */
+function removeBlackBg(img){
+  if(!img.complete||img.naturalWidth===0){img.onload=()=>removeBlackBg(img);return;}
+  try{
+    const c=document.createElement('canvas');
+    c.width=img.naturalWidth;c.height=img.naturalHeight;
+    const ctx=c.getContext('2d');ctx.drawImage(img,0,0);
+    const d=ctx.getImageData(0,0,c.width,c.height);
+    for(let i=0;i<d.data.length;i+=4){
+      if(d.data[i]<50&&d.data[i+1]<50&&d.data[i+2]<50)d.data[i+3]=0;
+    }
+    ctx.putImageData(d,0,0);img.src=c.toDataURL('image/png');
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('img[src="logo.png"]').forEach(removeBlackBg);
+});
+
+/* ════════════
+   PANELS
+════════════ */
+const QUIZ=[
+  {q:'¿Qué porcentaje del pastizal pampeano fue reemplazado por agricultura?',opts:['Menos del 50%','Más del 90%','Alrededor del 70%'],ok:1},
+  {q:'¿Cuál de estas plantas nativas es pariente silvestre de la stevia comercial?',opts:['Verbena bonariensis','Gomphrena perennis','Stevia satureiifolia'],ok:2},
+  {q:'¿Qué especie de este jardín habita en cimas rocosas con vientos fuertes?',opts:['Hatschbachiella tweediana','Senecio pampeanus','Verbena bonariensis'],ok:0},
+  {q:'¿Por qué las plantas nativas no necesitan riego adicional?',opts:['Porque son muy pequeñas','Porque están adaptadas al clima local','Porque crecen cerca de ríos'],ok:1},
+  {q:'¿Qué animal se beneficia especialmente de Verbena bonariensis?',opts:['Peces','Mariposas','Tortugas'],ok:1},
+];
+const panels={
+  quiz:{title:'¡Poné a prueba tu saber!',html:'<div id="qwrap"></div>'}
+};
+let activeBtn=null;
+
+let _swayTimer = null;
+function mascotFocus(){
+  const idle  = document.getElementById('mv-idle');
+  const focus = document.getElementById('mv-focus');
+  if(idle)  { idle.style.opacity='0';  idle.style.pointerEvents='none'; }
+  if(focus) { focus.style.opacity='1'; focus.style.pointerEvents='none'; }
+  // Gentle sway ±5deg on focus instance
+  clearInterval(_swayTimer);
+  let angle = 180, dir = 1;
+  _swayTimer = setInterval(()=>{
+    angle += dir * 0.35;
+    if(angle >= 185) dir = -1;
+    if(angle <= 175) dir = 1;
+    const f = document.getElementById('mv-focus');
+    if(f) f.setAttribute('camera-orbit', angle+'deg 85deg 10.0m');
+  }, 50);
+}
+function mascotRelax(){
+  clearInterval(_swayTimer);
+  const idle  = document.getElementById('mv-idle');
+  const focus = document.getElementById('mv-focus');
+  if(idle)  { idle.style.opacity='1';  idle.style.pointerEvents='auto'; }
+  if(focus) { focus.style.opacity='0'; focus.style.pointerEvents='none'; }
+}
+
+function showSpeechBubble(txt){
+  const sb=document.getElementById('speech-bubble');
+  if(sb){sb.innerHTML=txt;sb.style.display='block';}
+}
+function hideSpeechBubble(){
+  const sb=document.getElementById('speech-bubble');
+  if(sb)sb.style.display='none';
+  const tb=document.getElementById('trophy-bubble');
+  if(tb)tb.style.display='none';
+}
+
+function openPanel(id,btn){
+  document.getElementById('edad-panel').classList.remove('open');
+  document.getElementById('meta-panel').classList.remove('open');
+  document.getElementById('info-panel').classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeBtn=btn;
+  mascotFocus();
+  gtag('event','open_panel',{panel:id});
+
+  if(id==='edad'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Averiguemos cuántos años<br>tiene esta roca...');
+    document.getElementById('edad-panel').classList.add('open');
+    initEdadPanel();
+    return;
+  }
+  if(id==='meta'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Arrastrá para ver cómo<br>se forma el Gneis');
+    document.getElementById('meta-panel').classList.add('open');
+    setTimeout(initMetaPanel,80);
+    return;
+  }
+
+
+  if(id==='estrat'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Este contacto representa 1.700 Ma sin registro');
+    document.getElementById('estrat-panel').classList.add('open');
+    return;
+  }
+  if(id==='plantas'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Conocé las plantas del pastizal pampeano');
+    document.getElementById('plantas-panel').classList.add('open');
+    setTimeout(function(){showPlant(0,document.querySelector('.plant-tab'));},80);
+    return;
+  }
+  if(id==='nativas'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    showSpeechBubble('🐸 Las nativas sostienen todo el ecosistema');
+    document.getElementById('nativas-panel').classList.add('open');
+    return;
+  }
+  document.getElementById('panel-title').textContent=panels[id].title;
+  document.getElementById('panel-body').innerHTML=panels[id].html;
+  document.getElementById('info-panel').classList.add('open');
+  if(id==='quiz')initQuiz();
+}
+
+function closeEdadPanel(){
+  document.getElementById('edad-panel').classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  activeBtn=null;
+  mascotRelax();
+}
+function closeMetaPanel(){
+  document.getElementById('meta-panel').classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  activeBtn=null;
+  mascotRelax();
+}
+function closePanel(){
+  document.getElementById('edad-panel').classList.remove('open');
+  document.getElementById('meta-panel').classList.remove('open');
+  document.getElementById('info-panel').classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  activeBtn=null;
+  mascotRelax();
+}
+
+/* ════════════
+   EDAD HALF-PANEL
+════════════ */
+const HITOS=[
+  {ma:0.3,  txt:'🧑 Aparece el Homo sapiens'},
+  {ma:66,   txt:'🦕 Se extinguieron los dinosaurios',  maxMa:130},
+  {ma:252,  txt:'💀 La mayor extinción masiva de la historia'},
+  {ma:541,  txt:'🐚 Aparecen los primeros animales con esqueleto'},
+  {ma:2200, txt:'🪨 ¡Aquí se formaron las rocas del Cerro El Triunfo!'},
+  {ma:3800, txt:'🦠 Aparece la primera vida en la Tierra'},
+  {ma:4600, txt:'💫 La Tierra recién se está formando'},
+];
+let _trophyShown=false;
+
+function initEdadPanel(){
+  const s=document.getElementById('decay-slider');
+  if(!s)return;
+  s.value=0;updateEdad(0);
+  s.oninput=()=>updateEdad(parseInt(s.value));
+}
+
+function updateEdad(ma){
+  const u=Math.round(Math.pow(0.5,ma/4468)*100);
+  const pb=100-u;
+  const du=document.getElementById('decay-u');
+  const dp=document.getElementById('decay-pb');
+  if(du)du.style.width=u+'%';
+  if(dp)dp.style.width=pb+'%';
+  document.getElementById('decay-u-pct').textContent=u;
+  document.getElementById('decay-pb-pct').textContent=pb;
+  document.getElementById('decay-age').textContent=ma.toLocaleString('es-AR');
+  let best=null,dist=Infinity;
+  HITOS.forEach(h=>{
+    if(h.maxMa && ma > h.maxMa) return; // hide after maxMa
+    const d=Math.abs(h.ma-ma);
+    if(d<dist){dist=d;best=h;}
+  });
+  const evt=document.getElementById('decay-event');
+  if(evt)evt.textContent=(best&&dist<160)?best.txt:'';
+  const tb=document.getElementById('trophy-bubble');
+  const sb=document.getElementById('speech-bubble');
+  if(Math.abs(ma-2200)<120){
+    if(!_trophyShown){
+      _trophyShown=true;
+      if(sb)sb.style.display='none';
+      if(tb){tb.style.display='block';tb.style.animation='none';requestAnimationFrame(()=>{tb.style.animation='fadeUp .5s ease';});}
+    }
+  } else {
+    if(tb)tb.style.display='none';
+    if(sb&&_trophyShown)sb.style.display='block';
+    _trophyShown=false;
+  }
+}
+
+/* ════════════
+   META PANEL
+════════════ */
+let _metaReady=false,_metaScrubbing=false;
+function initMetaPanel(){
+  const vid=document.getElementById('meta-vid');
+  const proxy=document.getElementById('meta-proxy');
+  if(!vid)return;
+  if(_metaReady){vid.currentTime=0;updateMetaBar(0);return;}
+  vid.addEventListener('loadeddata',()=>{
+    _metaReady=true;vid.pause();vid.currentTime=0;
+    if(proxy)proxy.style.display='none';
+    updateMetaBar(0);
+  },{once:true});
+  vid.load();
+}
+function updateMetaBar(pct){
+  const p=document.getElementById('meta-prog');
+  const t=document.getElementById('meta-thumb');
+  if(p)p.style.width=(pct*100)+'%';
+  if(t)t.style.left=(pct*100)+'%';
+}
+function startMetaScrub(e){
+  e.preventDefault();_metaScrubbing=true;doMetaScrub(e);
+  const mv=ev=>{if(_metaScrubbing)doMetaScrub(ev);};
+  const up=()=>{_metaScrubbing=false;document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);};
+  document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);
+}
+function doMetaScrub(e){
+  const bar=document.getElementById('meta-bar');
+  if(!bar)return;
+  const r=bar.getBoundingClientRect();
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const pct=Math.max(0,Math.min(1,(cx-r.left)/r.width));
+  updateMetaBar(pct);
+  const vid=document.getElementById('meta-vid');
+  if(vid&&_metaReady&&vid.duration)vid.currentTime=pct*vid.duration;
+}
+
+/* ════════════
+   QUIZ
+════════════ */
+
+let qIdx=0,qScore=0,qAns=[];
+function initQuiz(){qIdx=0;qScore=0;qAns=[false,false,false];renderQ();}
+function renderQ(){
+  const w=document.getElementById('qwrap');
+  if(!w)return;
+  if(qIdx>=QUIZ.length){
+    w.innerHTML=`<div style="text-align:center;padding:20px;">
+      <div style="font-size:40px;margin-bottom:10px;">${qScore===3?'🏆':qScore>=2?'⭐':'🌱'}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#F0C070;margin-bottom:8px;">${qScore}/3 correctas</div>
+      <button onclick="initQuiz()" style="background:#C8841E;border:none;color:#fff;padding:12px 28px;border-radius:22px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">Intentar de nuevo</button>
+    </div>`;return;
+  }
+  const q=QUIZ[qIdx];
+  w.innerHTML=`<div style="font-size:10px;letter-spacing:1.5px;color:#C8841E;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Pregunta ${qIdx+1} de ${QUIZ.length}</div>
+  <div style="font-size:15px;color:#FDF8EE;line-height:1.5;margin-bottom:16px;font-weight:600;">${q.q}</div>
+  ${q.opts.map((o,i)=>`<button onclick="ansQ(${i})" style="display:block;width:100%;text-align:left;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-bottom:8px;color:#FDF8EE;font-size:13px;cursor:pointer;">${o}</button>`).join('')}`;
+}
+function ansQ(i){
+  const q=QUIZ[qIdx];
+  const btns=document.getElementById('qwrap').querySelectorAll('button');
+  btns.forEach((b,idx)=>{
+    b.disabled=true;
+    if(idx===q.ok)b.style.background='rgba(78,138,42,.35)';
+    if(idx===i&&i!==q.ok)b.style.background='rgba(196,58,58,.3)';
+  });
+  if(i===q.ok)qScore++;
+  setTimeout(()=>{qIdx++;renderQ();},800);
+}
+
+/* ════════════
+   AR PHOTO
+════════════ */
+let camStream=null;
+async function openAR(){
+  document.getElementById('ar-screen').classList.add('open');
+  gtag('event','open_ar_photo');
+  // Request fullscreen
+  const el = document.getElementById('ar-screen');
+  if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  const video=document.getElementById('cam-video');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    video.srcObject=camStream;await video.play();
+  }catch(e){console.warn('Camera:',e.name);}
+  function updateHint(){const h=document.getElementById('ar-rotate-hint');if(h)h.style.display=window.innerWidth>window.innerHeight?'none':'flex';}
+  updateHint();window.addEventListener('resize',updateHint);
+}
+function closeAR(){
+  document.getElementById('ar-screen').classList.remove('open');
+  if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  const video=document.getElementById('cam-video');
+  if(video)video.srcObject=null;
+}
+
+
+/* ════════════
+   FULLSCREEN
+════════════ */
+function enterFullscreen(){
+  const el = document.documentElement;
+  const p = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true;
+
+  if(isStandalone){
+    // Already running as PWA — just dismiss
+    dismissSplash(); return;
+  }
+  if(isIOS){
+    // iOS Safari can't go fullscreen — show instructions to add to Home Screen
+    showIOSTip(); return;
+  }
+  if(p){
+    p.call(el).then(()=>{ dismissSplash(); }).catch(()=>{ dismissSplash(); });
+  } else {
+    dismissSplash();
+  }
+}
+
+function showIOSTip(){
+  const splash = document.getElementById('fs-splash');
+  if(!splash) return;
+  splash.innerHTML = `
+    <div style="text-align:center;padding:0 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">📲</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:#FDF8EE;margin-bottom:8px;">
+        Pantalla completa en iOS
+      </div>
+      <div style="font-size:13px;color:rgba(253,248,238,.65);line-height:1.7;margin-bottom:32px;">
+        Para una experiencia sin barras de navegador:<br>
+        Tocá <strong style="color:#F0C070;">Compartir</strong> <span style="font-size:16px;">⬆</span>
+        y luego<br>
+        <strong style="color:#F0C070;">"Agregar a Inicio"</strong> <span style="font-size:16px;">➕</span>
+      </div>
+      <button onclick="dismissSplash()"
+        style="padding:14px 32px;border-radius:28px;background:linear-gradient(135deg,#C8841E,#A86A10);
+          border:none;color:#FDF8EE;font-weight:800;font-size:14px;cursor:pointer;
+          box-shadow:0 4px 20px rgba(200,132,30,.35);margin-bottom:12px;width:100%;max-width:260px;">
+        Continuar en Safari
+      </button>
+      <div style="font-size:11px;color:rgba(253,248,238,.35);margin-top:4px;">
+        (Sin pantalla completa)
+      </div>
+    </div>`;
+}
+function exitFullscreen(){
+  const p = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+  if(p) p.call(document).catch(()=>{});
+}
+function skipFullscreen(){
+  // Try to hide Android URL bar by scrolling
+  try{ window.scrollTo(0,1); }catch(e){}
+  dismissSplash();
+}
+function dismissSplash(){
+  const sp = document.getElementById('fs-splash');
+  if(sp){ sp.classList.add('hide'); setTimeout(()=>sp.remove(), 600); }
+}
+// Show/hide exit button based on fullscreen state
+function onFSChange(){
+  const inFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+  const btn = document.getElementById('fs-exit-btn');
+  if(btn){ btn.classList.toggle('visible', inFS); }
+}
+document.addEventListener('fullscreenchange',      onFSChange);
+document.addEventListener('webkitfullscreenchange',onFSChange);
+document.addEventListener('mozfullscreenchange',   onFSChange);
+
+
+/* ════════════
+   HISTORIA GEOLÓGICA — v9
+════════════ */
+
+// Timeline anchors [ma, pct]
+const MA_ANCHORS=[
+  [4500,0.00],[4200,0.05],[3800,0.10],[3000,0.16],
+  [2500,0.20],[2200,0.26],[2100,0.40],[1000,0.56],
+  [500,0.68],[485,0.74],[440,0.84],[8,0.92],[0,1.00]
+];
+function maToPct(ma){for(let i=0;i<MA_ANCHORS.length-1;i++){const[m0,p0]=MA_ANCHORS[i],[m1,p1]=MA_ANCHORS[i+1];if(ma<=m0&&ma>=m1)return p0+(p1-p0)*(m0-ma)/(m0-m1);}return 1;}
+function pctToMa(pct){for(let i=0;i<MA_ANCHORS.length-1;i++){const[m0,p0]=MA_ANCHORS[i],[m1,p1]=MA_ANCHORS[i+1];if(pct>=p0&&pct<=p1)return m0+(m1-m0)*(pct-p0)/(p1-p0);}return 0;}
+
+const P_GN_S=maToPct(2200),P_GN_E=maToPct(2100);
+const P_QZ_S=maToPct(485), P_QZ_E=maToPct(440);
+const P_LO_S=maToPct(7.1);
+const P_ER_S=maToPct(2100),P_ER_E=maToPct(500);
+
+const HIST_LABELS=[
+  {maxMa:4500,title:'4.500 Ma · Hádico — Tierra incandescente',  desc:'La Tierra recién formada. La superficie es roca fundida incandescente. No hay corteza estable ni océanos.'},
+  {maxMa:4200,title:'4.200 Ma · Enfriamiento',                   desc:'La superficie comienza a solidificarse. La corteza primitiva se oscurece y endurece desde arriba hacia abajo.'},
+  {maxMa:3800,title:'3.800 Ma · Océano primitivo',               desc:'Las temperaturas bajan lo suficiente para que el agua persista. El océano primitivo comienza a acumularse sobre la corteza solidificada.'},
+  {maxMa:3000,title:'3.000 Ma · Océano primitivo máximo',        desc:'El océano alcanza su mayor extensión sobre la región. La vida más primitiva comienza a aparecer en estas aguas.'},
+  {maxMa:2500,title:'2.500 Ma · Retiro del océano',              desc:'El océano retrocede. Queda expuesto el Cratón del Río de la Plata: la corteza continental más antigua de la región.'},
+  {maxMa:2200,title:'2.200 Ma · Cratón del Río de la Plata',     desc:'El cratón está completamente expuesto. Una plataforma continental rígida y estable que abarca gran parte de la provincia de Buenos Aires.'},
+  {maxMa:2100,title:'2.100 Ma · Ciclo Transamazónico',           desc:'Comienza la colisión de placas. Las rocas estratificadas se pliegan. El granito se transforma en gneis a >20 km de profundidad.'},
+  {maxMa:800, title:'~800 Ma · Exhumación',                      desc:'La roca plegada se erosiona progresivamente, exponiendo el gneis en superficie.'},
+  {maxMa:500, title:'~500 Ma · Peneplano granítico',             desc:'El gneis queda completamente expuesto. Una inconformidad de ~1.700 Ma separa las dos unidades.'},
+  {maxMa:485, title:'485 Ma · Transgresión marina',              desc:'Un mar somero avanza sobre el peneplano. Arenas y conglomerados silíceos se depositan en aguas someras.'},
+  {maxMa:440, title:'440 Ma · Fm. Balcarce',                     desc:'La ortocuarcita completa su deposición. Al retirarse el mar queda en inconformidad sobre el gneis.'},
+  {maxMa:8,   title:'~8 Ma · Mioceno–Plioceno',                  desc:'El paisaje serrano toma su forma actual.'},
+  {maxMa:7.1, title:'7,1 Ma · Loess pampeano',                   desc:'Depósitos eólicos volcaniclásticos se acumulan (Fm. Barker, Vela, Las Ánimas).'},
+  {maxMa:0,   title:'Hoy · Jardín de Plantas Nativas',                   desc:'Secuencia: Gneis (2.200 Ma) — Ortocuarcita (480 Ma) — Loess — Suelo actual.'},
+];
+let _histScrubbing=false;
+
+const F_GN=0.50,F_FOLD=0.18,F_QZ=0.46,F_LO=0.38,F_SOIL=0.04,F_FILM=0.05;
+
+function getColConfig(pct){
+  const ma=pctToMa(pct);
+  if(ma>4200) return {mode:'lava',   t:(4500-ma)/(4500-4200)};  // t:0=hottest,1=crust forming
+  if(ma>3800) return {mode:'cooling',t:(4200-ma)/(4200-3800)};  // t:0=all lava surface,1=all dark
+  if(ma>3000) return {mode:'ocean',  phase:'grow',  t:(3800-ma)/(3800-3000)}; // ocean grows
+  if(ma>2500) return {mode:'ocean',  phase:'shrink',t:(3000-ma)/(3000-2500)}; // ocean shrinks
+  // Craton + sediment deposition: 2500→2200 Ma
+  if(ma>2200){
+    const sedT=Math.min(1,(2500-ma)/(2500-2200)); // 0=no sediment, 1=full sediment layer
+    return {mode:'craton', sedT:sedT};
+  }
+  if(pct>=P_GN_S&&pct<P_GN_E) return {mode:'transamazonic',t:(pct-P_GN_S)/(P_GN_E-P_GN_S),sedT:1};
+  // post
+  let cfg={mode:'post',erosion:0,qH:0,seaF:0,lH:0,paleoF:0,soilH:0};
+  cfg.erosion=pct<P_ER_E?(pct-P_ER_S)/(P_ER_E-P_ER_S):1;
+  if(ma<485&&ma>440){cfg.qH=F_QZ*(485-ma)/(485-440);cfg.seaF=F_FILM;}
+  else if(ma<=440) cfg.qH=F_QZ;
+  if(ma<7.1){const g=(7.1-ma)/7.1;cfg.lH=F_LO*g;if(g<0.99)cfg.paleoF=F_FILM;}
+  if(ma<0.05){cfg.soilH=F_SOIL;cfg.paleoF=0;}
+  return cfg;
+}
+
+function colorHistBar(){
+  const bar=document.getElementById('hist-bar');if(!bar)return;
+  const g0=P_GN_S*100,g1=P_GN_E*100;
+  const q0=P_QZ_S*100,q1=P_QZ_E*100;
+  const l0=P_LO_S*100;
+  bar.style.background='linear-gradient(to right,'+
+    'rgba(255,100,20,.40) 0%,rgba(255,100,20,.40) 5%,'+
+    'rgba(60,110,170,.30) 5%,rgba(60,110,170,.30) 20%,'+
+    'rgba(255,255,255,.08) 20%,rgba(255,255,255,.08) '+g0+'%,'+
+    '#7A6A58 '+g0+'%,#7A6A58 '+g1+'%,'+
+    'rgba(255,255,255,.08) '+g1+'%,rgba(255,255,255,.08) '+q0+'%,'+
+    '#BEA870 '+q0+'%,#BEA870 '+q1+'%,'+
+    'rgba(255,255,255,.08) '+q1+'%,rgba(255,255,255,.08) '+l0+'%,'+
+    '#B8903A '+l0+'%,#B8903A 100%)';
+}
+
+// ── Helper: draw one isometric slab face-by-face ──
+function fillPrism3D(ctx,yBot,h,x0,x1,iX,iY,cFront,cSide,cTop,showTop){
+  if(h<=0.3)return;
+  const yTop=yBot-h;
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=cFront;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=cSide;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=cTop;ctx.fill();}
+}
+function fillGradPrism3D(ctx,yBot,h,x0,x1,iX,iY,makeGrads,showTop){
+  if(h<=0.3)return;
+  const yTop=yBot-h;
+  const[gF,gS,gT]=makeGrads(ctx,yBot,yTop,x0,x1,iX,iY);
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=gF;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=gS;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=gT;ctx.fill();}
+}
+
+// ─── RENDERER ────────────────────────────────────────────
+function drawIsoColumn(canvas,cfg){
+  const DPR=window.devicePixelRatio||1;
+  const S=canvas.offsetWidth||200;
+  canvas.width=Math.round(S*DPR); canvas.height=Math.round(S*DPR);
+  const ctx=canvas.getContext('2d');
+  ctx.scale(DPR,DPR);
+  ctx.clearRect(0,0,S,S);
+  ctx.fillStyle='#0C0908';ctx.fillRect(0,0,S,S);
+
+  const fW=S*0.44,iX=fW*0.52,iY=fW*0.28;
+  const maxH=S*0.74,bY=S*0.92,x0=S*0.10,x1=x0+fW;
+  const gTop=bY-maxH;
+  const MID=bY-maxH*0.5; // midpoint of column
+
+  const P={FL:{x:x0,y:bY},FR:{x:x1,y:bY},TL:{x:x0,y:gTop},TR:{x:x1,y:gTop},
+           BRR:{x:x1+iX,y:bY-iY},BTR:{x:x1+iX,y:gTop-iY},BTL:{x:x0+iX,y:gTop-iY}};
+
+  ctx.fillStyle='rgba(0,0,0,.2)';
+  ctx.beginPath();ctx.ellipse(x0+fW*0.5+iX*0.3,bY+5,fW*0.48,iY*0.4,0,0,Math.PI*2);ctx.fill();
+
+  // Clip to full prism silhouette
+  ctx.save();
+  ctx.beginPath();ctx.moveTo(P.FL.x,P.FL.y);ctx.lineTo(P.FR.x,P.FR.y);ctx.lineTo(P.BRR.x,P.BRR.y);ctx.lineTo(P.BTR.x,P.BTR.y);ctx.lineTo(P.BTL.x,P.BTL.y);ctx.lineTo(P.TL.x,P.TL.y);ctx.closePath();ctx.clip();
+
+  const mode=cfg.mode;
+
+  if(mode==='lava'){
+    const t=cfg.t; // 0=hottest, 1=crust forming
+    // Top half: EMPTY (glass only) — nothing drawn
+    // Bottom half: magma fixed
+    fillGradPrism3D(ctx,bY,maxH*0.5,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);
+      gF.addColorStop(0,`rgba(255,${Math.round(130-t*40)},${Math.round(t*10)},1)`);
+      gF.addColorStop(0.5,`rgba(245,${Math.round(75-t*15)},0,1)`);
+      gF.addColorStop(1,'rgba(190,50,0,1)');
+      const gS=ctx.createLinearGradient(0,yT,0,yB);
+      gS.addColorStop(0,`rgba(175,${Math.round(65-t*20)},0,1)`);gS.addColorStop(1,'rgba(110,22,0,1)');
+      const gT=ctx.createLinearGradient(x0,yT,x1+iX,yT-iY);
+      gT.addColorStop(0,`rgba(255,${Math.round(220-t*80)},${Math.round(t*12)},1)`);
+      gT.addColorStop(1,`rgba(225,${Math.round(105-t*30)},0,1)`);
+      return[gF,gS,gT];
+    },true);
+    // Glow blob inside bottom half
+    const rg=ctx.createRadialGradient(x0+fW*0.38,MID-maxH*0.22,0,x0+fW*0.38,MID-maxH*0.22,fW*0.42);
+    rg.addColorStop(0,`rgba(255,240,120,${0.22-t*0.07})`);rg.addColorStop(1,'rgba(255,100,0,0)');
+    ctx.fillStyle=rg;
+    ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,MID);ctx.lineTo(x0,MID);ctx.closePath();ctx.fill();
+    // Crust forming at top of bottom half (t>0.4)
+    if(t>0.4){
+      const crH=(t-0.4)/0.6*maxH*0.08;
+      fillGradPrism3D(ctx,MID,crH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'rgba(38,24,16,.95)');gF.addColorStop(1,'rgba(38,24,16,.05)');
+        return[gF,'rgba(26,16,10,.88)','rgba(36,22,14,.90)'];
+      },true);
+    }
+  }
+
+  else if(mode==='cooling'){
+    const t=cfg.t; // 0=surface lava, 1=all dark lithosphere
+    // Bottom half: magma cools — darkens from top downward, FIXED volume
+    const darkH=t*maxH*0.5;
+    const lavH =maxH*0.5-darkH;
+    // Remaining lava at bottom of bottom-half
+    if(lavH>1){
+      fillGradPrism3D(ctx,bY,lavH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'rgba(235,70,0,1)');gF.addColorStop(1,'rgba(190,45,0,1)');
+        return[gF,'rgba(125,30,0,1)','rgba(220,80,5,1)'];
+      },false);
+    }
+    // Dark cooled lithosphere above
+    if(darkH>1){
+      const yDarkBot=bY-lavH;
+      fillGradPrism3D(ctx,yDarkBot,darkH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+        return[gF,'#2A2A2A','#6A6A6A'];
+      },true);
+      // Granular texture on cooled lithosphere (front face)
+      // Front face dots
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,yDarkBot);ctx.lineTo(x1,yDarkBot);ctx.lineTo(x1,yDarkBot-darkH);ctx.lineTo(x0,yDarkBot-darkH);ctx.closePath();ctx.clip();
+      for(let gi=0;gi<55;gi++){
+        const gx=x0+2+(Math.abs(Math.sin(gi*41.3))*0.92)*fW;
+        const gy=(yDarkBot-darkH)+2+(Math.abs(Math.cos(gi*27.7))*0.92)*darkH;
+        const gr=0.8+Math.abs(Math.sin(gi*13))*0.9;
+        const wa=0.35+Math.abs(Math.sin(gi*7))*0.25;
+        ctx.fillStyle=`rgba(220,220,220,${wa})`;
+        ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+      // Side face dots
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x1,yDarkBot);ctx.lineTo(x1+iX,yDarkBot-iY);ctx.lineTo(x1+iX,yDarkBot-darkH-iY);ctx.lineTo(x1,yDarkBot-darkH);ctx.closePath();ctx.clip();
+      for(let gi=0;gi<30;gi++){
+        const gf=Math.abs(Math.sin(gi*37.1))*0.88;
+        const gsx=x1+iX*gf+2;
+        const gsy=(yDarkBot-darkH)+iY*gf+3+(Math.abs(Math.cos(gi*29.3))*0.88)*darkH;
+        const gr=0.7+Math.abs(Math.sin(gi*13))*0.7;
+        const wa=0.28+Math.abs(Math.sin(gi*7))*0.20;
+        ctx.fillStyle=`rgba(200,200,200,${wa})`;
+        ctx.beginPath();ctx.arc(gsx,gsy,gr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+    }
+    // Top half: empty while cooling
+  }
+
+  else if(mode==='ocean'){
+    const phase=cfg.phase, t=cfg.t;
+    // Bottom half: fully cooled lithosphere — same grey as gneiss
+    fillGradPrism3D(ctx,bY,maxH*0.5,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+      return[gF,'#2A2A2A','#6A6A6A'];
+    },false);
+    // Granular texture on lithosphere — front face
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,MID);ctx.lineTo(x0,MID);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<60;gi++){
+      const gx=x0+2+(Math.abs(Math.sin(gi*41.3))*0.92)*fW;
+      const gy=MID+2+(Math.abs(Math.cos(gi*27.7))*0.92)*(bY-MID);
+      const gr=0.8+Math.abs(Math.sin(gi*13))*0.9;
+      const wa=0.35+Math.abs(Math.sin(gi*7))*0.25;
+      ctx.fillStyle=`rgba(220,220,220,${wa})`;
+      ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Side face dots
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x1,bY);ctx.lineTo(x1+iX,bY-iY);ctx.lineTo(x1+iX,MID-iY);ctx.lineTo(x1,MID);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<35;gi++){
+      const gf=Math.abs(Math.sin(gi*37.1))*0.88;
+      const gsx=x1+iX*gf+2;
+      const gsy=MID+iY*gf+3+(Math.abs(Math.cos(gi*29.3))*0.88)*(bY-MID);
+      const gr=0.7+Math.abs(Math.sin(gi*13))*0.7;
+      const wa=0.28+Math.abs(Math.sin(gi*7))*0.20;
+      ctx.fillStyle=`rgba(200,200,200,${wa})`;
+      ctx.beginPath();ctx.arc(gsx,gsy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Ocean grows from MID upward, then shrinks
+    // Grow quickly to 20%, stay, then shrink
+    const rawH = phase==='grow' ? t : (1-t);
+    const oceanH = rawH * maxH * 0.20;
+    if(oceanH>1){
+      fillGradPrism3D(ctx,MID,oceanH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);
+        gF.addColorStop(0,'rgba(28,95,185,.90)');gF.addColorStop(1,'rgba(12,52,125,.92)');
+        const gT=ctx.createLinearGradient(x0,yT,x1+iX,yT-iY);
+        gT.addColorStop(0,'rgba(55,142,218,.55)');gT.addColorStop(1,'rgba(20,82,163,.55)');
+        return[gF,'rgba(8,38,102,.88)',gT];
+      },true);
+      // Wave lines
+      ctx.strokeStyle='rgba(80,168,238,.28)';ctx.lineWidth=0.8;
+      const nw=Math.max(2,Math.floor(oceanH/12));
+      for(let wi=0;wi<nw;wi++){
+        const wy=MID-(oceanH/(nw+1))*(wi+1);
+        ctx.beginPath();ctx.moveTo(x0,wy);
+        for(let xi=0;xi<=fW;xi+=9)ctx.lineTo(x0+xi,wy+Math.sin(xi*0.13+wi*1.2)*3);
+        ctx.stroke();
+      }
+    }
+  }
+
+  else if(mode==='craton'){
+    const sedT=cfg.sedT||0;
+    const sedH=sedT*maxH*0.18;   // thin sedimentary layer growing on top
+    const granitH=maxH*0.5;      // granite bottom half (fixed)
+
+    // Bottom half: granular lithosphere — same texture always
+    fillGradPrism3D(ctx,bY,granitH,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+      return[gF,'#2A2A2A','#6A6A6A'];
+    },sedH<=0);
+    // Granular texture
+    // Front face dots
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,bY-granitH);ctx.lineTo(x0,bY-granitH);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<60;gi++){
+      const gx=x0+2+(Math.abs(Math.sin(gi*41.3))*0.92)*fW;
+      const gy=(bY-granitH)+2+(Math.abs(Math.cos(gi*27.7))*0.92)*granitH;
+      const gr=0.8+Math.abs(Math.sin(gi*13))*0.9;
+      const wa=0.35+Math.abs(Math.sin(gi*7))*0.25;
+      ctx.fillStyle=`rgba(220,220,220,${wa})`;
+      ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    // Side face dots
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x1,bY);ctx.lineTo(x1+iX,bY-iY);ctx.lineTo(x1+iX,bY-granitH-iY);ctx.lineTo(x1,bY-granitH);ctx.closePath();ctx.clip();
+    for(let gi=0;gi<35;gi++){
+      const gf=Math.abs(Math.sin(gi*37.1))*0.88;
+      const gsx=x1+iX*gf+2;
+      const gsy=(bY-granitH)+iY*gf+3+(Math.abs(Math.cos(gi*29.3))*0.88)*granitH;
+      const gr=0.7+Math.abs(Math.sin(gi*13))*0.7;
+      const wa=0.28+Math.abs(Math.sin(gi*7))*0.20;
+      ctx.fillStyle=`rgba(200,200,200,${wa})`;
+      ctx.beginPath();ctx.arc(gsx,gsy,gr,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+
+    // Thin sedimentary layer growing on top of granite
+    if(sedH>1){
+      const sedBot=bY-maxH*0.5;
+      fillGradPrism3D(ctx,sedBot,sedH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#9A9282');gF.addColorStop(1,'#7A7268');
+        return[gF,'#5E5850','#A09080'];
+      },true);
+      // Exactly 3 horizontal strata lines (flat, deposited by rivers)
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,sedBot);ctx.lineTo(x1,sedBot);ctx.lineTo(x1,sedBot-sedH);ctx.lineTo(x0,sedBot-sedH);ctx.closePath();ctx.clip();
+      for(let s=0;s<3;s++){
+        const sy=sedBot-(sedH/3)*(s+0.5);
+        ctx.strokeStyle=s%2===0?'rgba(165,155,138,.45)':'rgba(85,78,65,.42)';
+        ctx.lineWidth=1.1;
+        ctx.beginPath();ctx.moveTo(x0,sy);ctx.lineTo(x1,sy);ctx.stroke();
+      }
+      ctx.restore();
+      // River/dune ripples on TOP face — moving lines suggesting fluvial transport
+      const topY=sedBot-sedH;
+      ctx.save();
+      // Top face rhombus clip
+      ctx.beginPath();ctx.moveTo(x0,topY);ctx.lineTo(x1,topY);ctx.lineTo(x1+iX,topY-iY);ctx.lineTo(x0+iX,topY-iY);ctx.closePath();ctx.clip();
+      // Draw 4-5 curved channels across the top, spaced diagonally
+      const nRiv=4;
+      for(let ri=0;ri<nRiv;ri++){
+        const progress=sedT; // 0→1 as layer grows
+        const rx0=x0+iX*(ri/nRiv)*0.9;
+        const ry0=topY-iY*(ri/nRiv)*0.9;
+        const rxW=fW*0.85;
+        ctx.strokeStyle=`rgba(120,108,85,${0.28+ri*0.04})`;
+        ctx.lineWidth=1.4;
+        ctx.beginPath();
+        ctx.moveTo(rx0,ry0);
+        // Meander: gentle sinusoidal curve across the top face
+        for(let xi=0;xi<=rxW;xi+=4){
+          // Top face maps x→ x0+xi (front) + iso_x*(xi/fW) (depth offset)
+          const tx=rx0+xi;
+          const ty=ry0-iY*(xi/rxW)*0.5 + Math.sin(xi*0.18+ri*1.4)*2.5;
+          ctx.lineTo(tx,ty);
+        }
+        ctx.stroke();
+      }
+      // Small dune arcs — crescent shapes suggesting aeolian/fluvial bedforms
+      ctx.strokeStyle='rgba(155,142,118,.30)'; ctx.lineWidth=0.8;
+      for(let di=0;di<6;di++){
+        const dx=x0+iX*0.1+(Math.abs(Math.sin(di*41))*0.7)*(fW+iX*0.4);
+        const dy=topY-iY*0.15-(Math.abs(Math.cos(di*27))*0.6)*iY*0.7;
+        const dw=6+Math.abs(Math.sin(di*17))*8;
+        ctx.beginPath();ctx.arc(dx,dy,dw,Math.PI,Math.PI*2);ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  else if(mode==='transamazonic'){
+    const t=cfg.t; // 0=start, 1=complete — affects BOTH rocks simultaneously
+    const sedH=maxH*0.18;
+    const sedBot=bY-maxH*0.5;
+
+    // Bottom half: grey gneiss with white dashes — identical to post-transam,
+    // all dashes appear together with contrast growing as t increases
+    const gnH2=maxH*0.5;
+    const gnAlpha=t*0.82;
+    // Base fill: grey from the start
+    fillGradPrism3D(ctx,bY,gnH2,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#5A5A5A');gF.addColorStop(1,'#3C3C3C');
+      return[gF,'#2A2A2A','#6A6A6A'];
+    },false);
+    // Granular dots (same as craton/ocean modes) fading out as dashes appear
+    if(t<0.5){
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,bY-gnH2);ctx.lineTo(x0,bY-gnH2);ctx.closePath();ctx.clip();
+      for(let gi=0;gi<30;gi++){
+        const gx=x0+3+(Math.abs(Math.sin(gi*41.3))*0.88)*fW;
+        const gy=(bY-gnH2)+4+(Math.abs(Math.cos(gi*27.7))*0.88)*gnH2;
+        const gr=1.2+Math.abs(Math.sin(gi*13))*1.6;
+        const dotA=(1-t*2)*0.50;
+        ctx.fillStyle=`rgba(${Math.round(65+Math.abs(Math.sin(gi*7))*50)},${Math.round(42+Math.abs(Math.sin(gi*11))*32)},${Math.round(26+Math.abs(Math.sin(gi*17))*18)},${dotA})`;
+        ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+    }
+    // White dashes — front face + side face, alternating rows, same as drawSlab gneiss
+    {
+      const nb=Math.max(8,Math.floor(gnH2/4));
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,bY);ctx.lineTo(x1,bY);ctx.lineTo(x1,bY-gnH2);ctx.lineTo(x0,bY-gnH2);ctx.closePath();ctx.clip();
+      for(let b=0;b<nb;b++){
+        const by2=bY-(gnH2/nb)*(b+0.5);
+        const rowShift=(b%2===0)?0:6;
+        const rowOff=Math.sin(b*17.3)*2;
+        const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+        const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+        ctx.strokeStyle=`rgba(235,235,235,${gnAlpha})`;
+        ctx.lineWidth=0.9+Math.abs(Math.sin(b*3.1))*0.35;
+        let xi=x0+1+rowShift; let di=0;
+        while(xi<x1-2){
+          const dl=dashL+Math.abs(Math.sin(di*11+b*2.3))*2;
+          const gl=gapL +Math.abs(Math.sin(di*7.7+b*4.1))*2;
+          ctx.beginPath();ctx.moveTo(xi,by2+rowOff);ctx.lineTo(Math.min(xi+dl,x1-1),by2+rowOff);ctx.stroke();
+          xi+=dl+gl; di++;
+        }
+      }
+      ctx.restore();
+      // Side face dashes
+      for(let b=0;b<nb;b++){
+        const by2=bY-(gnH2/nb)*(b+0.5);
+        const rowShift=(b%2===0)?0:6;
+        const rowOff=Math.sin(b*17.3)*2;
+        const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+        const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+        ctx.strokeStyle=`rgba(200,200,200,${gnAlpha*0.65})`;
+        ctx.lineWidth=0.85;
+        const sideFrac=iX>0?1/iX:1;
+        let sf=rowShift*sideFrac*0.5; let si2=0;
+        while(sf<1.0){
+          const dl2=(dashL*sideFrac*0.9)+Math.abs(Math.sin(si2*11+b*2.3))*sideFrac*1.5;
+          const gl2=(gapL *sideFrac*0.8)+Math.abs(Math.sin(si2*7.7+b*4.1))*sideFrac*1.5;
+          const ex=x1+iX*sf,        ey=by2-iY*sf+rowOff*0.5;
+          const ex2=x1+iX*(sf+dl2), ey2=by2-iY*(sf+dl2)+rowOff*0.5;
+          ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(Math.min(ex2,x1+iX-1),ey2);ctx.stroke();
+          sf+=dl2+gl2; si2++;
+        }
+      }
+    }
+
+    // Sedimentary layer base fill
+    fillGradPrism3D(ctx,sedBot,sedH,x0,x1,iX,iY,function(ctx,yB,yT){
+      const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#9A9282');gF.addColorStop(1,'#7A7268');
+      return[gF,'#5E5850','#A09080'];
+    },true);
+
+    // 3 strata lines: straight → 2 anticline+syncline folds, amplitude grows with t
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(x0,sedBot);ctx.lineTo(x1,sedBot);ctx.lineTo(x1,sedBot-sedH);ctx.lineTo(x0,sedBot-sedH);ctx.closePath();ctx.clip();
+    const foldAmp=t*7;
+    for(let s=0;s<3;s++){
+      const sy=sedBot-(sedH/3)*(s+0.5);
+      ctx.strokeStyle=s%2===0?'rgba(165,155,138,.48)':'rgba(85,78,65,.45)';
+      ctx.lineWidth=1.1;
+      ctx.beginPath(); ctx.moveTo(x0,sy);
+      for(let xi=0;xi<=fW;xi+=4){
+        // 2 complete sine cycles = 1 anticline + 1 syncline across the width
+        ctx.lineTo(x0+xi, sy + foldAmp*Math.sin((xi/fW)*4*Math.PI));
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  else { // post
+    // Gneiss ALWAYS at bottom half — fixed at maxH*0.5
+    const gnH=maxH*0.5;
+    // Fold erodes on top of gneiss
+    const foldH=maxH*0.18*(1-cfg.erosion); // same thickness as original sed layer, erodes away
+    let curY=bY;
+    const hasQ=cfg.qH>0||cfg.seaF>0,hasL=cfg.lH>0||cfg.paleoF>0,hasO=cfg.soilH>0;
+    const hasFold=foldH>1;
+    drawSlab(ctx,curY,gnH,x0,x1,iX,iY,'gneiss',!hasFold&&!hasQ&&!hasL&&!hasO,'Gneis','2.200 Ma');curY-=gnH;
+    if(hasFold){
+      // Eroding folded sediment: same 3 wavy strata as end of transamazonic (full amplitude)
+      fillGradPrism3D(ctx,curY,foldH,x0,x1,iX,iY,function(ctx,yB,yT){
+        const gF=ctx.createLinearGradient(0,yT,0,yB);gF.addColorStop(0,'#9A9282');gF.addColorStop(1,'#7A7268');
+        return[gF,'#5E5850',(!hasQ&&!hasL&&!hasO)?'#A09080':'#9A9282'];
+      },!hasQ&&!hasL&&!hasO);
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(x0,curY);ctx.lineTo(x1,curY);ctx.lineTo(x1,curY-foldH);ctx.lineTo(x0,curY-foldH);ctx.closePath();ctx.clip();
+      for(let s=0;s<3;s++){
+        const sy=(curY)-(foldH/3)*(s+0.5);
+        ctx.strokeStyle=s%2===0?'rgba(165,155,138,.48)':'rgba(85,78,65,.45)';
+        ctx.lineWidth=1.1;
+        ctx.beginPath(); ctx.moveTo(x0,sy);
+        for(let xi=0;xi<=fW;xi+=4) ctx.lineTo(x0+xi, sy + 7*Math.sin((xi/fW)*4*Math.PI));
+        ctx.stroke();
+      }
+      ctx.restore();
+      curY-=foldH;
+    }
+    if(cfg.qH>0){const qH=cfg.qH*maxH*0.46;drawSlab(ctx,curY,qH,x0,x1,iX,iY,'quartzite',!hasL&&!hasO&&!(cfg.seaF>0),'Ortocuarcita','Fm. Balcarce');curY-=qH;}
+    if(cfg.seaF>0){const sf=cfg.seaF*maxH*0.46;drawFilmSlab(ctx,curY,sf,x0,x1,iX,iY,'sea');curY-=sf;}
+    // Discontinuity line before loess (wavy dashed, marks unconformity)
+    if(cfg.lH>0&&cfg.qH>=F_QZ){
+      ctx.strokeStyle='rgba(240,200,80,.75)'; ctx.lineWidth=1.8; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(x0,curY);
+      for(let xi=0;xi<=fW;xi+=6) ctx.lineTo(x0+xi, curY+Math.sin(xi*0.18)*3);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,curY); ctx.lineTo(x1+iX,curY-iY); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if(cfg.lH>0){const lH=cfg.lH*maxH*0.38;drawSlab(ctx,curY,lH,x0,x1,iX,iY,'loess',!hasO&&!(cfg.paleoF>0),'Loess','Cuaternario');curY-=lH;}
+    if(cfg.paleoF>0){const pf=cfg.paleoF*maxH*0.38;drawFilmSlab(ctx,curY,pf,x0,x1,iX,iY,'paleo');curY-=pf;}
+    if(cfg.soilH>0){drawSoilSlab(ctx,curY,cfg.soilH*maxH*0.38,x0,x1,iX,iY);}
+  }
+
+  ctx.restore();
+  drawGlassFrame(ctx,P);
+
+  // ── Layer labels: recompute heights from cfg (no scope issues) ──
+  (function(){
+    const lx=x1+iX+10;
+    if(lx+60>S) return;
+    ctx.font='8px sans-serif';
+    ctx.textAlign='left';
+
+    // Collect {top, bot, txt, col} for each visible layer
+    const labs=[];
+    const m=cfg.mode;
+
+    if(m==='cooling'){
+      const t2=cfg.t||0;
+      const dkH=t2*maxH*0.5;   // dark crust growing from MID downward
+      // Label grows from MID down: top=MID, bot=MID+dkH (i.e. bY at t=1)
+      if(dkH>6) labs.push({top:MID, bot:MID+dkH, txt:'Litosfera (enfriando)', col:'rgba(220,220,220,.75)'});
+    }
+    else if(m==='ocean'){
+      const rawH2=(cfg.phase==='grow'?cfg.t:(1-cfg.t));
+      const ocH=rawH2*maxH*0.20;
+      const litoBot=MID, litoTop=bY-maxH*0.5;
+      labs.push({top:bY-maxH*0.5, bot:bY, txt:'Granitoide (protolito)', col:'rgba(220,220,220,.75)'});
+      if(ocH>4) labs.push({top:MID-ocH, bot:MID, txt:'Océano primitivo', col:'rgba(100,185,240,.85)'});
+    }
+    else if(m==='craton'){
+      const sdT=cfg.sedT||0;
+      const sdH2=sdT*maxH*0.18;
+      const gnTop=bY-maxH*0.5;
+      labs.push({top:gnTop, bot:bY, txt:'Granitoide (protolito)', col:'rgba(220,220,220,.75)'});
+      if(sdH2>4){
+        labs.push({top:gnTop-sdH2, bot:gnTop, txt:'Sed. continental', col:'rgba(200,190,165,.82)'});
+
+      }
+    }
+    else if(m==='transamazonic'){
+      const sdH2=maxH*0.18;
+      const gnTop=bY-maxH*0.5;
+      labs.push({top:gnTop, bot:bY, txt:'Gneis', col:'rgba(230,230,230,.80)'});
+      labs.push({top:gnTop-sdH2, bot:gnTop, txt:'Roca plegada', col:'rgba(195,188,170,.82)'});
+
+    }
+    else if(m==='post'){
+      let cur=bY;
+      const gnH2=maxH*0.5;
+      labs.push({top:cur-gnH2, bot:cur, txt:'Gneis', col:'rgba(230,230,230,.80)'}); cur-=gnH2;
+      const fdH=maxH*0.18*(1-(cfg.erosion||0));
+      if(fdH>4){labs.push({top:cur-fdH, bot:cur, txt:'Roca plegada', col:'rgba(195,188,170,.82)', disc_bot:true}); cur-=fdH;}
+      if((cfg.qH||0)>0){
+        const qH2=cfg.qH*maxH*0.46;
+        // disc_bot: unconformity at base of Fm. Balcarce — only when deposition starts
+        labs.push({top:cur-qH2,bot:cur,txt:'Fm. Balcarce',col:'rgba(230,225,200,.85)',disc_bot:true}); cur-=qH2;
+      }
+      if((cfg.seaF||0)>0) cur-=cfg.seaF*maxH*0.46;
+      if((cfg.lH||0)>0){
+        const lH2=cfg.lH*maxH*0.38;
+        // disc_bot: contact between Fm. Balcarce and Loess = unconformity
+        labs.push({top:cur-lH2,bot:cur,txt:'Loess',col:'rgba(210,180,80,.85)',disc_bot:true}); cur-=lH2;
+      }
+      if((cfg.soilH||0)>0){const sH2=cfg.soilH*maxH*0.38;labs.push({top:cur-sH2,bot:cur,txt:'Suelo',col:'rgba(130,210,60,.85)'}); cur-=sH2;}
+    }
+
+    // Draw only unconformity lines (disc_top or disc_bot flagged)
+    labs.forEach(function(lb){
+      const tY=lb.top-iY, bY2=lb.bot-iY;
+      ctx.strokeStyle='rgba(240,196,60,.82)'; ctx.lineWidth=1.6; ctx.setLineDash([5,3]);
+      if(lb.disc_top){
+        ctx.beginPath();ctx.moveTo(lx,tY);ctx.lineTo(lx+S*0.38,tY);ctx.stroke();
+      }
+      if(lb.disc_bot){
+        ctx.beginPath();ctx.moveTo(lx,bY2);ctx.lineTo(lx+S*0.38,bY2);ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    });
+
+    // Draw vertical bracket + label per layer
+    const bracketX=lx+S*0.20;  // bracket further right to avoid overlap
+    labs.forEach(function(lb){
+      const tY=lb.top-iY, bY2=lb.bot-iY;
+      const midY=(tY+bY2)/2;
+      if(lb.bracket){
+        // Bracket: outer vertical line with top+bot serifs, label at mid
+        ctx.strokeStyle=lb.col; ctx.lineWidth=1.0;
+        ctx.beginPath();ctx.moveTo(bracketX,tY);ctx.lineTo(bracketX,bY2);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(bracketX,tY);ctx.lineTo(bracketX-4,tY);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(bracketX,bY2);ctx.lineTo(bracketX-4,bY2);ctx.stroke();
+        ctx.fillStyle=lb.col;
+        ctx.save();
+        ctx.translate(bracketX+10, midY);
+        ctx.rotate(-Math.PI/2);
+        ctx.textAlign='center';
+        ctx.fillText(lb.txt, 0, 0);
+        ctx.restore();
+        ctx.textAlign='start';
+      } else {
+        ctx.strokeStyle=lb.col; ctx.lineWidth=0.9;
+        ctx.beginPath();ctx.moveTo(lx+1,tY);ctx.lineTo(lx+1,bY2);ctx.stroke();
+        ctx.fillStyle=lb.col;
+        ctx.fillText(lb.txt, lx+6, midY+3);
+      }
+    });
+    ctx.textAlign='start';
+  })();
+}
+
+// ── Blend slab ──
+function drawBlendSlab(ctx,yBot,h,x0,x1,iX,iY,typeA,typeB,t,showTop){
+  if(h<=0.5)return;
+  const yTop=yBot-h,fW=x1-x0;
+  function lerpC(a,b,t){const ah=parseInt(a.replace('#',''),16),bh=parseInt(b.replace('#',''),16);const r=Math.round(((ah>>16)&0xff)*(1-t)+((bh>>16)&0xff)*t);const g=Math.round(((ah>>8)&0xff)*(1-t)+((bh>>8)&0xff)*t);const bl=Math.round((ah&0xff)*(1-t)+(bh&0xff)*t);return'#'+[r,g,bl].map(v=>v.toString(16).padStart(2,'0')).join('');}
+  const C={granite:{fl:'#3A3230',fr:'#252020',sr:'#1A1515',tr:'#4A4240'},gneiss:{fl:'#5A5A5A',fr:'#3C3C3C',sr:'#2A2A2A',tr:'#6A6A6A'},sediment:{fl:'#8A8A7A',fr:'#6A6A5A',sr:'#4A4A3A',tr:'#9A9A8A'},folded:{fl:'#7A7A68',fr:'#5A5A48',sr:'#3E3E2E',tr:'#8A8A78'}};
+  const cA=C[typeA],cB=C[typeB];
+  const c={fl:lerpC(cA.fl,cB.fl,t),fr:lerpC(cA.fr,cB.fr,t),sr:lerpC(cA.sr,cB.sr,t),tr:lerpC(cA.tr,cB.tr,t)};
+  const fg=ctx.createLinearGradient(0,yTop,0,yBot);fg.addColorStop(0,c.fl);fg.addColorStop(1,c.fr);
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=fg;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=c.sr;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=c.tr;ctx.fill();}
+  ctx.save();ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.clip();
+  if(typeA==='sediment'){const ns=Math.max(5,Math.floor(h/7));for(let s=0;s<ns;s++){const sy=yBot-(h/ns)*(s+0.5);const amp=t*6*(1+0.5*Math.sin(s*1.2));const freq=0.08+t*0.12;ctx.strokeStyle=s%2===0?'rgba(180,175,160,.35)':'rgba(80,75,60,.40)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x0,sy);for(let xi=0;xi<=fW;xi+=6)ctx.lineTo(x0+xi,sy+Math.sin(xi*freq+s*1.7)*amp+Math.sin(xi*freq*0.5+s)*amp*0.4);ctx.stroke();}}
+  else if(typeA==='granite'&&t>0.0){
+    const nb=Math.max(7,Math.floor(h/5));
+    const alpha=t*0.85;
+    // Draw front and side together per row
+    for(let b=0;b<nb;b++){
+      const by2=yBot-(h/nb)*(b+0.5);
+      // Row-level randomness seeded by b
+      const rowOff=Math.sin(b*17.3)*3;  // vertical jitter per row
+      const dashBase=4+Math.abs(Math.sin(b*7.1))*4;  // dash length varies 4-8px
+      const gapBase=5+Math.abs(Math.sin(b*13.7))*6;  // gap varies 5-11px
+      // FRONT FACE — horizontal dashes with irregular length+gap
+      ctx.strokeStyle=`rgba(235,235,235,${alpha})`;
+      ctx.lineWidth=0.9+Math.abs(Math.sin(b*3.1))*0.4;
+      let xi=x0+1+Math.abs(Math.sin(b*5.3))*4;  // staggered start
+      let di=0;
+      while(xi<x1-2){
+        const dl=dashBase+Math.abs(Math.sin(di*11.1+b*2.3))*3;
+        const gl=gapBase+Math.abs(Math.sin(di*7.7+b*4.1))*4;
+        ctx.beginPath();ctx.moveTo(xi,by2+rowOff);ctx.lineTo(Math.min(xi+dl,x1-1),by2+rowOff);ctx.stroke();
+        xi+=dl+gl; di++;
+      }
+      // SIDE FACE — foreshortened dashes along side direction, same row
+      ctx.strokeStyle=`rgba(200,200,200,${alpha*0.65})`;
+      ctx.lineWidth=0.85;
+      const sideSteps=5;
+      let si=0;
+      while(si<sideSteps){
+        const frac=si/sideSteps;
+        const dl2=0.06+Math.abs(Math.sin(si*9.3+b*3.7))*0.04; // fraction of side width
+        const gl2=0.04+Math.abs(Math.sin(si*6.1+b*2.9))*0.04;
+        const ex=x1+iX*frac, ey=by2-iY*frac+rowOff*0.5;
+        const ex2=x1+iX*(frac+dl2), ey2=by2-iY*(frac+dl2)+rowOff*0.5;
+        ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex2,ey2);ctx.stroke();
+        si+=dl2+gl2>0?(1+Math.abs(Math.sin(si*4.1))):1;
+        si++;
+      }
+    }
+  }
+  ctx.restore();
+}
+
+// ── Solid slab ──
+function drawSlab(ctx,yBot,h,x0,x1,iX,iY,type,showTop,label,age){
+  if(h<=0.5)return;
+  const yTop=yBot-h,fW=x1-x0;
+  const C={gneiss:{fl:'#5A5A5A',fr:'#3C3C3C',sr:'#2A2A2A',tr:'#6A6A6A'},quartzite:{fl:'#E8E0D0',fr:'#C8C0B0',sr:'#A8A098',tr:'#F0EAE0'},loess:{fl:'#B8903A',fr:'#8A6820',sr:'#6A5015',tr:'#C8A048'},folded:{fl:'#7A7A68',fr:'#5A5A48',sr:'#3E3E2E',tr:'#8A8A78'}};
+  const c=C[type]||C.gneiss;
+  const fg=ctx.createLinearGradient(0,yTop,0,yBot);fg.addColorStop(0,c.fl);fg.addColorStop(1,c.fr);
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=fg;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=c.sr;ctx.fill();
+  if(showTop){ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=c.tr;ctx.fill();}
+  ctx.save();ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.clip();
+  if(type==='gneiss'){
+    const nb=Math.max(8,Math.floor(h/4));
+    for(let b=0;b<nb;b++){
+      const by2=yBot-(h/nb)*(b+0.5);
+      const rowShift=(b%2===0)?0:6;
+      const rowOff=Math.sin(b*17.3)*2;
+      const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+      const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+      ctx.strokeStyle='rgba(235,235,235,.82)';
+      ctx.lineWidth=0.9+Math.abs(Math.sin(b*3.1))*0.35;
+      let xi2=x0+1+rowShift; let di=0;
+      while(xi2<x1-2){
+        const dl=dashL+Math.abs(Math.sin(di*11+b*2.3))*2;
+        const gl=gapL +Math.abs(Math.sin(di*7.7+b*4.1))*2;
+        ctx.beginPath();ctx.moveTo(xi2,by2+rowOff);ctx.lineTo(Math.min(xi2+dl,x1-1),by2+rowOff);ctx.stroke();
+        xi2+=dl+gl; di++;
+      }
+    }
+  }
+  else if(type==='folded'){const ns=Math.max(4,Math.floor(h/6));for(let s=0;s<ns;s++){const sy=yBot-(h/ns)*(s+0.5);ctx.strokeStyle=s%2===0?'rgba(180,175,160,.35)':'rgba(80,75,60,.40)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x0,sy);for(let xi=0;xi<=fW;xi+=6)ctx.lineTo(x0+xi,sy+Math.sin(xi*0.18+s*1.7)*5+Math.sin(xi*0.10+s)*3);ctx.stroke();}}
+  else if(type==='quartzite'){
+    // Parallel horizontal strata
+    const ns=Math.max(4,Math.floor(h/9));
+    for(let s=0;s<ns;s++){
+      const sy=yBot-(h/ns)*(s+0.5);
+      ctx.strokeStyle='rgba(100,90,75,.55)'; ctx.lineWidth=1.1;
+      ctx.beginPath();ctx.moveTo(x0,sy);ctx.lineTo(x1,sy);ctx.stroke();
+    }
+    // Cross-bedding sets between strata
+    const nSets=Math.max(2,Math.floor(h/18));
+    for(let set=0;set<nSets;set++){
+      const setBot=yBot-(h/nSets)*set;
+      const setTop=yBot-(h/nSets)*(set+1);
+      const setH=setBot-setTop;
+      const setW=fW*0.28;
+      // Alternate foreset direction per set
+      const dir=(set%2===0)?1:-1;
+      const nForeset=5;
+      for(let f=0;f<nForeset;f++){
+        const fx=x0+fW*(0.05+set*0.32)+(f/nForeset)*setW*0.9;
+        ctx.strokeStyle='rgba(130,115,90,.38)'; ctx.lineWidth=0.7;
+        ctx.beginPath();
+        if(dir>0){
+          ctx.moveTo(fx, setTop+setH*0.1);
+          ctx.lineTo(fx-setW*0.3, setBot-setH*0.1);
+        } else {
+          ctx.moveTo(fx, setTop+setH*0.1);
+          ctx.lineTo(fx+setW*0.3, setBot-setH*0.1);
+        }
+        ctx.stroke();
+      }
+    }
+  }
+  else if(type==='loess'){ctx.fillStyle='rgba(148,102,22,.32)';for(let di=0;di<16;di++){const dx=x0+3+(Math.abs(Math.sin(di*41))*0.88)*fW;const dy=yTop+2+(Math.abs(Math.cos(di*27))*0.88)*h;ctx.beginPath();ctx.arc(dx,dy,2,0,Math.PI*2);ctx.fill();}}
+  ctx.restore();
+  // Gneiss: side face dashes, alternating rows
+  if(type==='gneiss'){
+    const nb2=Math.max(8,Math.floor(h/4));
+    for(let b=0;b<nb2;b++){
+      const by2=yBot-(h/nb2)*(b+0.5);
+      const rowShift=(b%2===0)?0:6;
+      const rowOff=Math.sin(b*17.3)*2;
+      const dashL=5+Math.abs(Math.sin(b*7.1))*2;
+      const gapL =4+Math.abs(Math.sin(b*13.7))*3;
+      ctx.strokeStyle='rgba(200,200,200,.62)'; ctx.lineWidth=0.85;
+      const sideFrac=iX>0?1/iX:1;
+      let sf=rowShift*sideFrac*0.5; let si2=0;
+      while(sf<1.0){
+        const dl2=(dashL*sideFrac*0.9)+Math.abs(Math.sin(si2*11+b*2.3))*sideFrac*1.5;
+        const gl2=(gapL *sideFrac*0.8)+Math.abs(Math.sin(si2*7.7+b*4.1))*sideFrac*1.5;
+        const ex=x1+iX*sf,        ey=by2-iY*sf+rowOff*0.5;
+        const ex2=x1+iX*(sf+dl2), ey2=by2-iY*(sf+dl2)+rowOff*0.5;
+        ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(Math.min(ex2,x1+iX-1),ey2);ctx.stroke();
+        sf+=dl2+gl2; si2++;
+      }
+    }
+  }
+  if(type==='quartzite'){ctx.strokeStyle='#E8A020';ctx.lineWidth=2.2;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.stroke();ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.stroke();ctx.setLineDash([]);}
+}
+function drawFilmSlab(ctx,yBot,h,x0,x1,iX,iY,kind){
+  if(h<=0.3)return;
+  const yTop=yBot-h,fW=x1-x0,isSea=kind==='sea';
+  const fl=isSea?'rgba(70,160,220,.55)':'rgba(60,140,40,.55)';
+  const sr=isSea?'rgba(20,90,160,.45)':'rgba(20,70,10,.45)';
+  const tr=isSea?'rgba(110,195,245,.40)':'rgba(80,170,50,.40)';
+  const lc=isSea?'rgba(180,225,255,.55)':'rgba(160,220,100,.55)';
+  ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fillStyle=fl;ctx.fill();
+  ctx.save();ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.clip();
+  ctx.strokeStyle=lc;ctx.lineWidth=0.8;const nw=Math.max(2,Math.floor(h/5));
+  for(let wi=0;wi<nw;wi++){const wy=yBot-(h/(nw+1))*(wi+1);ctx.beginPath();ctx.moveTo(x0,wy);for(let xi=0;xi<=fW;xi+=7)ctx.lineTo(x0+xi,wy+Math.sin(xi*0.18+wi*1.4)*2);ctx.stroke();}
+  ctx.restore();
+  ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fillStyle=sr;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle=tr;ctx.fill();
+}
+function drawSoilSlab(ctx,yBot,h,x0,x1,iX,iY){
+  if(h<=0.3)return;
+  const yTop=yBot-h,gH=h*0.4,yG=yTop+gH;
+  ctx.fillStyle='#1A1410';ctx.beginPath();ctx.moveTo(x0,yBot);ctx.lineTo(x1,yBot);ctx.lineTo(x1,yG);ctx.lineTo(x0,yG);ctx.closePath();ctx.fill();
+  const gg=ctx.createLinearGradient(0,yTop,0,yG);gg.addColorStop(0,'#4A8018');gg.addColorStop(1,'#2A5008');ctx.fillStyle=gg;
+  ctx.beginPath();ctx.moveTo(x0,yG);ctx.lineTo(x1,yG);ctx.lineTo(x1,yTop);ctx.lineTo(x0,yTop);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#0E0A08';ctx.beginPath();ctx.moveTo(x1,yBot);ctx.lineTo(x1+iX,yBot-iY);ctx.lineTo(x1+iX,yG-iY);ctx.lineTo(x1,yG);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#2A5008';ctx.beginPath();ctx.moveTo(x1,yG);ctx.lineTo(x1+iX,yG-iY);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x1,yTop);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x1,yTop);ctx.lineTo(x1+iX,yTop-iY);ctx.lineTo(x0+iX,yTop-iY);ctx.closePath();ctx.fillStyle='#5AB020';ctx.fill();
+  ctx.fillStyle='#78D030';[[x0+5,yTop-3],[x0+13,yTop-5],[x0+22,yTop-2],[x1-8,yTop-4]].forEach(function(g){ctx.fillRect(g[0]-1,g[1],2,4);});
+}
+function drawGlassFrame(ctx,P){
+  ctx.save();
+  ctx.beginPath();ctx.moveTo(P.FL.x,P.FL.y);ctx.lineTo(P.FR.x,P.FR.y);ctx.lineTo(P.TR.x,P.TR.y);ctx.lineTo(P.TL.x,P.TL.y);ctx.closePath();ctx.fillStyle='rgba(200,220,255,.04)';ctx.fill();
+  ctx.beginPath();ctx.moveTo(P.TL.x,P.TL.y);ctx.lineTo(P.TR.x,P.TR.y);ctx.lineTo(P.BTR.x,P.BTR.y);ctx.lineTo(P.BTL.x,P.BTL.y);ctx.closePath();ctx.fillStyle='rgba(200,220,255,.07)';ctx.fill();
+  ctx.restore();
+  ctx.strokeStyle='rgba(200,220,255,.55)';ctx.lineWidth=1.2;
+  [[P.FL,P.TL],[P.FR,P.TR],[P.BRR,P.BTR],[P.FL,P.FR],[P.FR,P.BRR]].forEach(function(e){ctx.beginPath();ctx.moveTo(e[0].x,e[0].y);ctx.lineTo(e[1].x,e[1].y);ctx.stroke();});
+  ctx.strokeStyle='rgba(200,220,255,.7)';
+  [[P.TL,P.TR],[P.TR,P.BTR],[P.BTR,P.BTL],[P.BTL,P.TL]].forEach(function(e){ctx.beginPath();ctx.moveTo(e[0].x,e[0].y);ctx.lineTo(e[1].x,e[1].y);ctx.stroke();});
+  ctx.save();ctx.beginPath();ctx.moveTo(P.FL.x,P.FL.y);ctx.lineTo(P.FR.x,P.FR.y);ctx.lineTo(P.TR.x,P.TR.y);ctx.lineTo(P.TL.x,P.TL.y);ctx.closePath();ctx.clip();
+  const hg=ctx.createLinearGradient(P.TL.x,P.TL.y,P.TL.x+25,P.FL.y);hg.addColorStop(0,'rgba(255,255,255,.10)');hg.addColorStop(0.3,'rgba(255,255,255,.02)');hg.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hg;ctx.fillRect(P.TL.x,P.TL.y,32,P.FL.y-P.TL.y);ctx.restore();
+}
+
+function getHistLabel(pct){const ma=pctToMa(pct);let l=HIST_LABELS[0];HIST_LABELS.forEach(function(x){if(ma<=x.maxMa)l=x;});return l;}
+function updateHist(pct){
+  const prog=document.getElementById('hist-prog'),thumb=document.getElementById('hist-thumb');
+  if(prog)prog.style.width=(pct*100)+'%';if(thumb)thumb.style.left=(pct*100)+'%';
+  const lbl=getHistLabel(pct);
+  const en=document.getElementById('era-name');if(en)en.textContent=lbl.title;
+  const ed=document.getElementById('era-desc');if(ed)ed.textContent=lbl.desc;
+  const canvas=document.getElementById('rock-canvas');
+  if(canvas)drawIsoColumn(canvas,getColConfig(pct));
+}
+/* ════════════
+   JARDÍN DE PLANTAS NATIVAS
+════════════ */
+const PLANTS=[
+  {sci:'Campuloclinium macrocephalum', common:'Teyú',            zone:'llanura',
+   desc:'Hierba perenne de flores blancas-rosadas. Muy visitada por mariposas. Crece en bordes de caminos y pastizales abiertos.', img:'plantas_teyu.jpg'},
+  {sci:'Chromolaena hirsuta',          common:'Cromolaena',      zone:'ladera',
+   desc:'Arbusto ramificado con flores liláceas. Coloniza laderas rocosas y bordes de sierra. Néctar para abejas nativas.', img:'plantas_cromolaena.jpg'},
+  {sci:'Gomphrena perennis',           common:'Gomfrena',        zone:'llanura',
+   desc:'Hierba rastrera de flores globosas rosadas o blancas. Resiste la sequía y la pisada. Florece en verano-otoño.', img:'plantas_gomfrena.jpg'},
+  {sci:'Gyptis tanacetifolia',         common:'Pilarcito',       zone:'ladera',
+   desc:'Hierba de hojas pinnadas y flores amarillas pequeñas. Crece en suelos pedregosos de ladera.', img:'plantas_pilarcito.jpg'},
+  {sci:'Hatschbachiella tweediana',    common:'Eupatório blanco',zone:'cima',
+   desc:'Arbusto con capítulos blancos. Habita en cimas rocosas ventosas. Endémico del Sistema Tandilia.', img:'plantas_eupatono.jpg'},
+  {sci:'Senecio pampeanus',            common:'Senecio pampeano',zone:'llanura',
+   desc:'Hierba anual de flores amarillas. Muy abundante en pastizales húmedos del pie de sierra y llanura.', img:'plantas_senecio_p.jpg'},
+  {sci:'Senecio pterophorus',          common:'Senecio gris',    zone:'ladera',
+   desc:'Subarbusto de hojas grisáceas y flores amarillas. Escandente en laderas rocosas y taludes.', img:'plantas_senecio_g.jpg'},
+  {sci:'Stevia satureiifolia',         common:'Stevia',          zone:'cima',
+   desc:'Hierba perenne con flores blancas diminutas. Crece en fisuras de roca en cimas serranas.', img:'plantas_stevia.jpg'},
+  {sci:'Verbena bonariensis',          common:'Verbena',         zone:'llanura',
+   desc:'Hierba de tallos cuadrangulares y flores violáceas. Muy frecuente en pastizales. Gran atractivo para mariposas.', img:'plantas_verbena.jpg'},
+  {sci:'Vernonia echioides',           common:'Vernonia',        zone:'ladera',
+   desc:'Hierba perenne de flores purpúreas. Crece en laderas soleadas y bordes de afloramientos rocosos.', img:'plantas_vernonia.jpg'},
+];
+
+const ZONE_COLORS={
+  llanura:{bg:'rgba(80,140,60,.25)',  border:'#6A9A40', text:'#8ABB55', label:'Llanura · < 100 m'},
+  ladera: {bg:'rgba(140,110,50,.25)', border:'#B08840', text:'#C8A055', label:'Ladera · 100–250 m'},
+  cima:   {bg:'rgba(180,160,130,.25)',border:'#C8A878', text:'#E0C090', label:'Cima · > 250 m'},
+};
+
+function showPlant(idx, btn){
+  document.querySelectorAll('.plant-tab').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  const p=PLANTS[idx];
+  document.getElementById('plant-sci').textContent=p.sci;
+  document.getElementById('plant-desc').textContent=p.desc;
+  const badge=document.getElementById('plant-zone-badge');
+  const zc=ZONE_COLORS[p.zone];
+  badge.textContent=zc.label;
+  badge.style.background=zc.bg;
+  badge.style.border='1px solid '+zc.border;
+  badge.style.color=zc.text;
+  const img=document.getElementById('plant-img');
+  if(img){img.src=p.img;img.alt=p.common;img.style.display='block';img.nextElementSibling.style.display='none';}
+}
+
+function closeExtraPanel(id){
+  const el=document.getElementById(id+'-panel');
+  if(el) el.classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  activeBtn=null;
+  mascotRelax();
+}
+function closeHistoriaPanel(){
+  if(el) el.classList.remove('open');
+  hideSpeechBubble();
+  document.getElementById('logo-bg').style.opacity='0.18';
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  activeBtn=null;
+  mascotRelax();
+}
+
+
+</script>
+</body>
+</html>
