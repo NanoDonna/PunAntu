@@ -67,18 +67,18 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 .logo-area{display:flex;align-items:center;gap:10px;}
 .logo-area img{width:40px;height:40px;object-fit:contain;}
-.logo-txt .l1{font-size:9px;letter-spacing:3px;color:#C8841E;text-transform:uppercase;font-weight:800;}
+.logo-txt .l1{font-size:9px;letter-spacing:3px;color:#5A8030;text-transform:uppercase;font-weight:800;}
 .logo-txt .l2{font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;line-height:1;}
 .logo-txt .l3{font-size:8px;letter-spacing:2px;color:#9B8A6E;text-transform:uppercase;}
 .ar-photo-btn{
-  background:#C8841E;color:#FDF8EE;border:none;
+  background:#5A8030;color:#FDF8EE;border:none;
   border-radius:20px;padding:9px 14px;
   font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;
   cursor:pointer;display:flex;align-items:center;gap:6px;
   letter-spacing:.3px;white-space:nowrap;
-  box-shadow:0 2px 12px rgba(200,132,30,.4);
+  box-shadow:0 2px 12px rgba(90,128,48,.4);
 }
-.ar-photo-btn:active{background:#A86A10;transform:scale(.97);}
+.ar-photo-btn:active{background:#4A6828;transform:scale(.97);}
 
 /* Site tag */
 .site-tag{
@@ -108,16 +108,16 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .pills::-webkit-scrollbar{display:none;}
 .pill{
   flex-shrink:0;
-  background:rgba(200,132,30,.15);
-  border:1.5px solid rgba(200,132,30,.3);
+  background:rgba(90,128,48,.15);
+  border:1.5px solid rgba(90,128,48,.3);
   border-radius:22px;padding:11px 18px;
   color:#FDF8EE;font-size:13px;font-weight:700;
   cursor:pointer;display:flex;align-items:center;gap:7px;
   transition:all .18s;white-space:nowrap;
 }
 .pill:active,.pill.active{
-  background:rgba(200,132,30,.55);
-  border-color:#C8841E;
+  background:rgba(90,128,48,.55);
+  border-color:#5A8030;
 }
 .pill .pi{font-size:18px;}
 
@@ -154,16 +154,17 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
 
 .ep-handle{width:34px;height:4px;border-radius:2px;background:rgba(255,255,255,.18);margin:10px auto 0;}
+.ep-head,.ep-body *{box-sizing:border-box;}
 .ep-head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 8px;}
 .ep-head h3{font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;}
 .ep-close{background:rgba(255,255,255,.1);border:none;color:#FDF8EE;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.ep-body{padding:4px 18px 8px;overflow-y:auto;}
+.ep-body{padding:4px 18px 8px;overflow-y:auto;display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;}
 
 /* hitos markers */
 .hitos-row{position:relative;height:28px;margin-bottom:4px;}
 .hito{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;}
-.hito-dot{width:6px;height:6px;border-radius:50%;background:#C8841E;flex-shrink:0;}
-.hito-dot.special{background:#F0C070;width:8px;height:8px;box-shadow:0 0 6px #F0C070;}
+.hito-dot{width:6px;height:6px;border-radius:50%;background:#5A8030;flex-shrink:0;}
+.hito-dot.special{background:#A8D060;width:8px;height:8px;box-shadow:0 0 6px #A8D060;}
 .hito-label{font-size:8px;color:#9B8A6E;white-space:nowrap;font-weight:700;letter-spacing:.3px;}
 
 
@@ -202,7 +203,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
 /* Content cards */
 .xcard{
-  border-left:3px solid #C8841E;
+  border-left:3px solid #5A8030;
   border-radius:0 10px 10px 0;
   background:rgba(255,255,255,.05);
   padding:12px 14px;margin-bottom:12px;
@@ -210,19 +211,19 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 .xcard h4{
   font-size:9px;text-transform:uppercase;letter-spacing:1.5px;
-  color:#C8841E;font-weight:800;margin-bottom:7px;
+  color:#5A8030;font-weight:800;margin-bottom:7px;
 }
 .xhi{
-  background:rgba(200,132,30,.12);
-  border:1px solid rgba(200,132,30,.28);
+  background:rgba(90,128,48,.12);
+  border:1px solid rgba(90,128,48,.28);
   border-radius:12px;padding:14px;margin-bottom:12px;
   color:rgba(255,255,255,.88);font-size:13px;line-height:1.6;
 }
 .xhi .xi{font-size:24px;margin-bottom:6px;}
-.xhi strong{color:#F0C070;}
-.bnum{font-family:'Playfair Display',serif;font-size:46px;color:#C8841E;line-height:1;}
+.xhi strong{color:#A8D060;}
+.bnum{font-family:'Playfair Display',serif;font-size:46px;color:#5A8030;line-height:1;}
 .tli{display:flex;gap:10px;margin-bottom:9px;align-items:flex-start;}
-.tld{width:9px;height:9px;border-radius:50%;background:#C8841E;flex-shrink:0;margin-top:5px;}
+.tld{width:9px;height:9px;border-radius:50%;background:#5A8030;flex-shrink:0;margin-top:5px;}
 .tld.o{background:#9B8A6E;}
 .tli strong{display:block;font-size:13px;color:#FDF8EE;font-weight:700;}
 .tli span{font-size:12px;color:#9B8A6E;}
@@ -237,7 +238,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 .decay-u{
   position:absolute;left:0;top:0;height:100%;
-  background:linear-gradient(90deg,#F0C070,#C8841E);
+  background:linear-gradient(90deg,#A8D060,#5A8030);
   border-radius:11px;transition:width .08s;width:100%;
 }
 .decay-pb{
@@ -247,11 +248,11 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 .decay-labels{display:flex;justify-content:space-between;font-size:11px;margin-bottom:16px;}
 .decay-result{
-  background:rgba(200,132,30,.15);border:1px solid rgba(200,132,30,.3);
+  background:rgba(90,128,48,.15);border:1px solid rgba(90,128,48,.3);
   border-radius:10px;padding:14px;text-align:center;margin-bottom:16px;
 }
 .decay-result-label{font-size:11px;color:#9B8A6E;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
-.decay-result-age{font-family:'Playfair Display',serif;font-size:36px;color:#C8841E;line-height:1;}
+.decay-result-age{font-family:'Playfair Display',serif;font-size:36px;color:#5A8030;line-height:1;}
 .decay-result-unit{font-size:11px;color:#9B8A6E;margin-top:2px;}
 .decay-result-event{font-size:12px;color:rgba(255,255,255,.75);margin-top:8px;min-height:18px;font-weight:600;}
 .decay-slider{
@@ -263,12 +264,12 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .decay-slider::-webkit-slider-thumb{
   -webkit-appearance:none;appearance:none;
   width:26px;height:26px;border-radius:50%;
-  background:#C8841E;cursor:pointer;
-  box-shadow:0 2px 8px rgba(200,132,30,.5);
+  background:#5A8030;cursor:pointer;
+  box-shadow:0 2px 8px rgba(90,128,48,.5);
 }
 .decay-slider::-moz-range-thumb{
   width:26px;height:26px;border-radius:50%;
-  background:#C8841E;cursor:pointer;border:none;
+  background:#5A8030;cursor:pointer;border:none;
 }
 .decay-scale{display:flex;justify-content:space-between;font-size:10px;color:#9B8A6E;}
 
@@ -281,7 +282,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 .qq .ql{
   font-family:'Nunito',sans-serif;font-size:9px;letter-spacing:1px;
-  text-transform:uppercase;color:#C8841E;display:block;margin-bottom:6px;font-weight:700;
+  text-transform:uppercase;color:#5A8030;display:block;margin-bottom:6px;font-weight:700;
 }
 .qo{
   background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);
@@ -344,7 +345,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   margin-bottom:6px;
 }
 #fs-splash .fs-sub{
-  font-size:11px;letter-spacing:4px;color:#C8841E;
+  font-size:11px;letter-spacing:4px;color:#5A8030;
   text-transform:uppercase;font-weight:800;text-align:center;
   margin-bottom:40px;
 }
@@ -354,10 +355,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 #fs-btn{
   padding:16px 36px;border-radius:32px;
-  background:linear-gradient(135deg,#C8841E,#A86A10);
+  background:linear-gradient(135deg,#5A8030,#4A6828);
   border:none;color:#FDF8EE;font-weight:800;font-size:15px;
   letter-spacing:.5px;cursor:pointer;
-  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  box-shadow:0 4px 24px rgba(90,128,48,.35);
   display:flex;align-items:center;gap:10px;
 }
 #fs-btn:active{transform:scale(.97);}
@@ -421,7 +422,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 <button class="plant-tab" onclick="showPlant(9,this)">Vernonia</button>
     </div>
     <!-- Foto -->
-    <div style="border-radius:10px;overflow:hidden;background:#1A1A10;position:relative;aspect-ratio:4/3;max-height:180px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;">
+    <div style="border-radius:10px;overflow:hidden;background:#1A1A10;position:relative;aspect-ratio:4/3;max-height:180px;margin-bottom:10px;width:100%;display:flex;align-items:center;justify-content:center;">
       <img id="plant-img" src="plantas_teyu.jpg" alt=""
         style="width:100%;height:100%;object-fit:cover;display:block;"
         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -460,8 +461,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
         🌡️ Más resistentes a sequías y heladas que las exóticas
       </div>
     </div>
-    <div style="border-left:3px solid #C8841E;padding-left:12px;margin-bottom:12px;">
-      <div style="font-size:10px;color:#C8841E;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">El pastizal pampeano en peligro</div>
+    <div style="border-left:3px solid #5A8030;padding-left:12px;margin-bottom:12px;">
+      <div style="font-size:10px;color:#5A8030;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">El pastizal pampeano en peligro</div>
       <p style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.65;margin:0;">
         El pastizal pampeano es uno de los ecosistemas más amenazados del mundo: más del <strong>90% fue reemplazado</strong> por agricultura y urbanización. Este jardín recupera 10 especies nativas como una pequeña isla de biodiversidad en el paisaje de Balcarce.
       </p>
@@ -498,8 +499,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 <!-- Fullscreen splash -->
 <div id="fs-splash">
   <div class="fs-logo">Pun Antü</div>
-  <div class="fs-sub">Geoparque · Balcarce</div>
-  <div class="fs-tagline">Recorré 4.500 millones de años<br>de historia geológica</div>
+  <div class="fs-sub">Jardín Nativo · Geoparque Pun Antü</div>
+  <div class="fs-tagline">Descubrí las plantas nativas<br>del pastizal pampeano</div>
   <button id="fs-btn" onclick="enterFullscreen()">
     <span style="font-size:18px;">⛶</span> Abrir en pantalla completa
   </button>
@@ -535,7 +536,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <div id="geo-title" style="
       position:absolute;top:10px;left:0;right:0;z-index:10;
       text-align:center;pointer-events:none;">
-      <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Jardín</div>
+      <div style="font-size:9px;letter-spacing:2.5px;color:#5A8030;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Jardín</div>
       <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">Jardín Nativo</div>
     </div>
     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
@@ -563,28 +564,28 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
   <!-- Speech bubbles -->
   <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(90,128,48,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
     <div id="trophy-bubble" style="
   position:relative;
-  background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
+  background:linear-gradient(135deg,rgba(90,128,48,.28),rgba(18,6,2,.96));
   border:1.5px solid rgba(240,192,112,.7);
   border-radius:22px;
   padding:28px 18px 14px;
   color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;
   backdrop-filter:blur(12px);display:none;
-  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  box-shadow:0 4px 24px rgba(90,128,48,.35);
   text-align:center;width:100%;
   margin-top:22px;">
   <!-- trophy icon floating above top border -->
   <div style="
     position:absolute;top:-22px;left:50%;transform:translateX(-50%);
     width:44px;height:44px;border-radius:50%;
-    background:linear-gradient(135deg,#C8841E,#F0C070);
+    background:linear-gradient(135deg,#5A8030,#A8D060);
     border:2px solid rgba(240,192,112,.8);
-    box-shadow:0 4px 12px rgba(200,132,30,.6);
+    box-shadow:0 4px 12px rgba(90,128,48,.6);
     display:flex;align-items:center;justify-content:center;
     font-size:22px;">🏆</div>
-  <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
+  <div style="color:#A8D060;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
   <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Jardín de Plantas Nativas es una de las rocas más antiguas de Argentina.</div>
 </div>
   </div>
@@ -673,7 +674,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
           font-size:14px;cursor:pointer;backdrop-filter:blur(8px);">↺ Otra</button>
       <a id="ar-download-link" download="punantu-foto.jpg"
         style="padding:12px 22px;border-radius:24px;
-          background:#C8841E;color:#fff;font-weight:700;text-decoration:none;
+          background:#5A8030;color:#fff;font-weight:700;text-decoration:none;
           font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
         ⬇ Guardar
       </a>
@@ -702,7 +703,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
     <!-- texto izquierda -->
     <div>
-      <div style="font-size:9px;letter-spacing:3px;color:#C8841E;
+      <div style="font-size:9px;letter-spacing:3px;color:#5A8030;
         text-transform:uppercase;font-weight:800;margin-bottom:4px;">Geoparque</div>
       <div style="font-family:'Playfair Display',serif;font-size:26px;
         color:#FDF8EE;line-height:1;margin-bottom:4px;">Pun Antü</div>
@@ -711,13 +712,13 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     </div>
 
     <!-- separador vertical -->
-    <div style="width:1px;height:48px;background:rgba(200,132,30,.4);flex-shrink:0;"></div>
+    <div style="width:1px;height:48px;background:rgba(90,128,48,.4);flex-shrink:0;"></div>
 
     <!-- texto derecha -->
     <div style="text-align:right;">
       <div style="font-family:'Playfair Display',serif;font-size:14px;
         color:#FDF8EE;line-height:1.4;margin-bottom:2px;">¡Gracias por<br>visitar!</div>
-      <div style="font-size:10px;color:#F0C070;font-weight:700;letter-spacing:.5px;margin-top:3px;">@Pun_Antu</div>
+      <div style="font-size:10px;color:#A8D060;font-weight:700;letter-spacing:.5px;margin-top:3px;">@Pun_Antu</div>
     </div>
 
   </div>
@@ -735,22 +736,22 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div class="ep-body">
     <!-- age + event: TOP so thumb never covers it -->
     <div style="text-align:center;margin-bottom:10px;">
-      <span style="font-family:'Playfair Display',serif;font-size:36px;color:#C8841E;" id="decay-age">0</span>
+      <span style="font-family:'Playfair Display',serif;font-size:36px;color:#5A8030;" id="decay-age">0</span>
       <span style="font-size:12px;color:#9B8A6E;"> millones de años</span>
     </div>
-    <div id="decay-event" style="text-align:center;font-size:13px;color:#F0C070;font-weight:700;min-height:18px;margin-bottom:10px;"></div>
+    <div id="decay-event" style="text-align:center;font-size:13px;color:#A8D060;font-weight:700;min-height:18px;margin-bottom:10px;"></div>
 
     <!-- decay bar -->
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
       <span style="font-size:14px;">⚛️</span>
       <div style="flex:1;height:18px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08);position:relative;">
-        <div class="decay-u" id="decay-u" style="position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#F0C070,#C8841E);border-radius:9px;transition:width .08s;width:100%;"></div>
+        <div class="decay-u" id="decay-u" style="position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#A8D060,#5A8030);border-radius:9px;transition:width .08s;width:100%;"></div>
         <div class="decay-pb" id="decay-pb" style="position:absolute;right:0;top:0;height:100%;background:linear-gradient(90deg,#7A90A8,#B0B8C8);border-radius:9px;transition:width .08s;width:0%;"></div>
       </div>
       <span style="font-size:14px;">🪨</span>
     </div>
     <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:14px;">
-      <span style="color:#C8841E;font-weight:700;">⚛️ Uranio: <span id="decay-u-pct">100</span>%</span>
+      <span style="color:#5A8030;font-weight:700;">⚛️ Uranio: <span id="decay-u-pct">100</span>%</span>
       <span style="color:#B0B8C8;font-weight:700;">Plomo: <span id="decay-pb-pct">0</span>% 🪨</span>
     </div>
 
@@ -785,36 +786,36 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     </div>
     <div id="meta-bar" style="width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:7px;cursor:pointer;position:relative;touch-action:none;"
       onmousedown="startMetaScrub(event)" ontouchstart="startMetaScrub(event)">
-      <div id="meta-prog" style="height:100%;width:0%;background:linear-gradient(90deg,#C8841E,#9ABA5A);border-radius:7px;pointer-events:none;"></div>
-      <div id="meta-thumb" style="position:absolute;top:50%;left:0%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#C8841E;border:2px solid rgba(255,255,255,.35);box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none;"></div>
+      <div id="meta-prog" style="height:100%;width:0%;background:linear-gradient(90deg,#5A8030,#9ABA5A);border-radius:7px;pointer-events:none;"></div>
+      <div id="meta-thumb" style="position:absolute;top:50%;left:0%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#5A8030;border:2px solid rgba(255,255,255,.35);box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none;"></div>
     </div>
   </div>
 </div>
 
 <!-- Speech bubbles -->
 <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(90,128,48,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
   <div id="trophy-bubble" style="
   position:relative;
-  background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
+  background:linear-gradient(135deg,rgba(90,128,48,.28),rgba(18,6,2,.96));
   border:1.5px solid rgba(240,192,112,.7);
   border-radius:22px;
   padding:28px 18px 14px;
   color:#FDF8EE;font-size:12.5px;font-weight:700;line-height:1.5;
   backdrop-filter:blur(12px);display:none;
-  box-shadow:0 4px 24px rgba(200,132,30,.35);
+  box-shadow:0 4px 24px rgba(90,128,48,.35);
   text-align:center;width:100%;
   margin-top:22px;">
   <!-- trophy icon floating above top border -->
   <div style="
     position:absolute;top:-22px;left:50%;transform:translateX(-50%);
     width:44px;height:44px;border-radius:50%;
-    background:linear-gradient(135deg,#C8841E,#F0C070);
+    background:linear-gradient(135deg,#5A8030,#A8D060);
     border:2px solid rgba(240,192,112,.8);
-    box-shadow:0 4px 12px rgba(200,132,30,.6);
+    box-shadow:0 4px 12px rgba(90,128,48,.6);
     display:flex;align-items:center;justify-content:center;
     font-size:22px;">🏆</div>
-  <div style="color:#F0C070;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
+  <div style="color:#A8D060;font-size:13px;margin-bottom:3px;">¡La roca más antigua del país!</div>
   <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.5;">Con 2.200 millones de años, el Gneis del Jardín de Plantas Nativas es una de las rocas más antiguas de Argentina.</div>
 </div>
 </div>
@@ -827,12 +828,12 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     background:linear-gradient(to bottom,rgba(14,4,2,.95) 60%,transparent);
     display:flex;align-items:center;justify-content:space-between;">
     <div>
-      <div style="font-size:9px;letter-spacing:3px;color:#C8841E;text-transform:uppercase;font-weight:800;">Geocircuito</div>
+      <div style="font-size:9px;letter-spacing:3px;color:#5A8030;text-transform:uppercase;font-weight:800;">Geocircuito</div>
       <div style="font-family:'Playfair Display',serif;font-size:18px;color:#FDF8EE;line-height:1;">La Barrosa</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center;">
       <button id="mapa-gps-btn" onclick="mapaGPS()" style="
-        background:rgba(200,132,30,.2);border:1.5px solid rgba(200,132,30,.5);
+        background:rgba(90,128,48,.2);border:1.5px solid rgba(90,128,48,.5);
         color:#FDF8EE;border-radius:50%;width:38px;height:38px;
         font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
         📍
@@ -854,10 +855,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div id="mapa-popup" style="
     position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
     z-index:20;display:none;
-    background:rgba(14,4,2,.92);border:1.5px solid rgba(200,132,30,.5);
+    background:rgba(14,4,2,.92);border:1.5px solid rgba(90,128,48,.5);
     border-radius:16px;padding:12px 20px;text-align:center;
     backdrop-filter:blur(12px);min-width:180px;">
-    <div id="mapa-popup-num" style="font-size:10px;letter-spacing:2px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:3px;"></div>
+    <div id="mapa-popup-num" style="font-size:10px;letter-spacing:2px;color:#5A8030;text-transform:uppercase;font-weight:800;margin-bottom:3px;"></div>
     <div id="mapa-popup-name" style="font-family:'Playfair Display',serif;font-size:16px;color:#FDF8EE;"></div>
   </div>
 </div>
@@ -930,8 +931,8 @@ function initMapa(){
   const legend=L.control({position:'bottomleft'});
   legend.onAdd=function(){
     const d=L.DomUtil.create('div','');
-    d.style.cssText='background:rgba(14,4,2,.85);padding:8px 10px;border-radius:8px;font-size:11px;color:#FDF8EE;line-height:1.8;border:1px solid rgba(200,132,30,.3);';
-    d.innerHTML='<div style="font-weight:700;margin-bottom:4px;color:#C8841E;">Zonas altitudinales</div>'+
+    d.style.cssText='background:rgba(14,4,2,.85);padding:8px 10px;border-radius:8px;font-size:11px;color:#FDF8EE;line-height:1.8;border:1px solid rgba(90,128,48,.3);';
+    d.innerHTML='<div style="font-weight:700;margin-bottom:4px;color:#5A8030;">Zonas altitudinales</div>'+
       '<span style="color:#8ABB55;">■</span> Llanura &lt;100 m<br>'+
       '<span style="color:#C8A055;">■</span> Ladera 100–250 m<br>'+
       '<span style="color:#E0C090;">■</span> Cima &gt;250 m';
@@ -952,7 +953,7 @@ function initMapa(){
     const isGarden=g.n===0;
     const icon=L.divIcon({className:'',html:
       '<div style="width:'+(isGarden?28:22)+'px;height:'+(isGarden?28:22)+'px;border-radius:50%;'+
-      'background:'+(isGarden?'#5A8030':'#C8841E')+';border:2px solid '+(isGarden?'#8AB050':'#FDF8EE')+';'+
+      'background:'+(isGarden?'#5A8030':'#5A8030')+';border:2px solid '+(isGarden?'#8AB050':'#FDF8EE')+';'+
       'display:flex;align-items:center;justify-content:center;'+
       'font-size:'+(isGarden?'14':'10')+'px;font-weight:700;color:#fff;">'+
       (isGarden?'🌿':g.n)+'</div>',
@@ -968,7 +969,7 @@ function initMapa(){
     // Fallback: draw approximate trail
     const trail=[[-37.862,-58.270],[-37.860,-58.263],[-37.862,-58.255],[-37.868,-58.248],
                  [-37.872,-58.250],[-37.875,-58.258],[-37.872,-58.265],[-37.869,-58.272]];
-    L.polyline(trail,{color:'#C8841E',weight:2.5,opacity:0.8,dashArray:'6,4'}).addTo(map);
+    L.polyline(trail,{color:'#5A8030',weight:2.5,opacity:0.8,dashArray:'6,4'}).addTo(map);
   }
 
   window._mapaRef=map;
@@ -1263,12 +1264,12 @@ function renderQ(){
   if(qIdx>=QUIZ.length){
     w.innerHTML=`<div style="text-align:center;padding:20px;">
       <div style="font-size:40px;margin-bottom:10px;">${qScore===3?'🏆':qScore>=2?'⭐':'🌱'}</div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#F0C070;margin-bottom:8px;">${qScore}/3 correctas</div>
-      <button onclick="initQuiz()" style="background:#C8841E;border:none;color:#fff;padding:12px 28px;border-radius:22px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">Intentar de nuevo</button>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#A8D060;margin-bottom:8px;">${qScore}/3 correctas</div>
+      <button onclick="initQuiz()" style="background:#5A8030;border:none;color:#fff;padding:12px 28px;border-radius:22px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">Intentar de nuevo</button>
     </div>`;return;
   }
   const q=QUIZ[qIdx];
-  w.innerHTML=`<div style="font-size:10px;letter-spacing:1.5px;color:#C8841E;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Pregunta ${qIdx+1} de ${QUIZ.length}</div>
+  w.innerHTML=`<div style="font-size:10px;letter-spacing:1.5px;color:#5A8030;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Pregunta ${qIdx+1} de ${QUIZ.length}</div>
   <div style="font-size:15px;color:#FDF8EE;line-height:1.5;margin-bottom:16px;font-weight:600;">${q.q}</div>
   ${q.opts.map((o,i)=>`<button onclick="ansQ(${i})" style="display:block;width:100%;text-align:left;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-bottom:8px;color:#FDF8EE;font-size:13px;cursor:pointer;">${o}</button>`).join('')}`;
 }
@@ -1349,14 +1350,14 @@ function showIOSTip(){
       </div>
       <div style="font-size:13px;color:rgba(253,248,238,.65);line-height:1.7;margin-bottom:32px;">
         Para una experiencia sin barras de navegador:<br>
-        Tocá <strong style="color:#F0C070;">Compartir</strong> <span style="font-size:16px;">⬆</span>
+        Tocá <strong style="color:#A8D060;">Compartir</strong> <span style="font-size:16px;">⬆</span>
         y luego<br>
-        <strong style="color:#F0C070;">"Agregar a Inicio"</strong> <span style="font-size:16px;">➕</span>
+        <strong style="color:#A8D060;">"Agregar a Inicio"</strong> <span style="font-size:16px;">➕</span>
       </div>
       <button onclick="dismissSplash()"
-        style="padding:14px 32px;border-radius:28px;background:linear-gradient(135deg,#C8841E,#A86A10);
+        style="padding:14px 32px;border-radius:28px;background:linear-gradient(135deg,#5A8030,#4A6828);
           border:none;color:#FDF8EE;font-weight:800;font-size:14px;cursor:pointer;
-          box-shadow:0 4px 20px rgba(200,132,30,.35);margin-bottom:12px;width:100%;max-width:260px;">
+          box-shadow:0 4px 20px rgba(90,128,48,.35);margin-bottom:12px;width:100%;max-width:260px;">
         Continuar en Safari
       </button>
       <div style="font-size:11px;color:rgba(253,248,238,.35);margin-top:4px;">
