@@ -874,7 +874,7 @@ let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
 
 function openMapa(){
   document.getElementById('mapa-screen').classList.add('open');
-  if(typeof gtag==='function') gtag('event','open_panel',{panel:'mapa'});
+  if(typeof gtag==='function')if(typeof gtag==='function') gtag('event','open_panel',{panel:'mapa'});
   if(typeof L !== 'undefined'){
     if(!_mapaInited) setTimeout(initMapa,100);
   } else {
@@ -895,15 +895,14 @@ const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042
 function initMapa(){
   if(_mapaInited) return;
   _mapaInited=true;
-  const map=L.map('mapa-container',{center:[-37.869,-58.257],zoom:15,zoomControl:false,attributionControl:true});
+  const map=L.map('mapa-container',{center:[-37.871,-58.256],zoom:15,zoomControl:false,attributionControl:true});
   _mapaMap=map;
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
   L.polyline(CIRCUIT_PATH,{color:'#C8841E',weight:4,opacity:.85,dashArray:'6 4'}).addTo(map);
   GEOSITIOS.forEach(g=>{
-    const active=g.n===1;
     const icon=L.divIcon({className:'',
-      html:`<div style="width:32px;height:32px;border-radius:50%;background:${active?'#C8841E':'rgba(200,132,30,.35)'};border:2px solid ${active?'#F0C070':'rgba(200,132,30,.6)'};color:${active?'#fff':'#F0C070'};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">${g.n}</div>`,
-      iconSize:[32,32],iconAnchor:[16,16]});
+      html:`<div style="width:30px;height:30px;border-radius:50%;background:#C8841E;border:2px solid #F0C070;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.5);">${g.n}</div>`,
+      iconSize:[30,30],iconAnchor:[15,15]});
     L.marker([g.lat,g.lon],{icon}).addTo(map).on('click',()=>{
       document.getElementById('mapa-popup-num').textContent='Geositio '+g.n;
       document.getElementById('mapa-popup-name').textContent=g.name;
@@ -911,7 +910,7 @@ function initMapa(){
     });
   });
   map.on('click',()=>{document.getElementById('mapa-popup').style.display='none';});
-}
+
   // ── Altitude zones for native plants ──
   const zonesData=[
     {name:'Cima · >240 m',    color:'#C8A878', plants:'Eupatório blanco · Stevia',
@@ -931,7 +930,7 @@ function initMapa(){
   const gardenIcon=L.divIcon({className:'',html:
     '<div style="width:30px;height:30px;border-radius:50%;background:#5A8030;border:2px solid #A0C860;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.4);">🌿</div>',
     iconSize:[30,30],iconAnchor:[15,15]});
-  L.marker([-37.869,-58.255],{icon:gardenIcon}).addTo(map)
+  L.marker([-37.871319,-58.255844],{icon:gardenIcon}).addTo(map)
     .bindPopup('<b>📍 Jardín de Plantas Nativas</b>');
 
   // Zone legend
@@ -946,6 +945,7 @@ function initMapa(){
     return d;
   };
   legend.addTo(map);
+}
 
 function mapaGPS(){
   if(!_mapaMap)return;
@@ -1053,7 +1053,7 @@ function openPanel(id,btn){
   btn.classList.add('active');
   activeBtn=btn;
   mascotFocus();
-  gtag('event','open_panel',{panel:id});
+if(typeof gtag==='function') gtag('event','open_panel',{panel:id});
 
   if(id==='edad'){
     document.getElementById('logo-bg').style.opacity='0';
@@ -1264,7 +1264,7 @@ function ansQ(i){
 let camStream=null;
 async function openAR(){
   document.getElementById('ar-screen').classList.add('open');
-  gtag('event','open_ar_photo');
+if(typeof gtag==='function') gtag('event','open_ar_photo');
   // Request fullscreen
   const el = document.getElementById('ar-screen');
   if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
