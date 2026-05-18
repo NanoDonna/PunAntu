@@ -381,6 +381,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
   
@@ -869,7 +870,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
    MAPA GEOCIRCUITO
 ════════════ */
 const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Jardín de Plantas Nativas", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
-const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
 let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
 
 function openMapa(){
@@ -890,90 +890,62 @@ function closeMapa(){
   document.getElementById('mapa-popup').style.display='none';
   if(_mapaWatch){ navigator.geolocation.clearWatch(_mapaWatch); _mapaWatch=null; }
 }
+
+const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
 function initMapa(){
-  if(typeof L==='undefined') return;
-  if(window._mapaInited) return; window._mapaInited=true;
-
-  const map=L.map('mapa-container',{zoomControl:false,attributionControl:false})
-    .setView([-37.870,-58.255],13);
-
-  // Base tile
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    {maxZoom:19}).addTo(map);
-
-  // ── Altitude zone polygons (approximate for Sierra La Barrosa area) ──
-  // CIMA (>250m) — summit area
-  const cimaZone=[
-    [-37.852,-58.270],[-37.845,-58.252],[-37.848,-58.238],
-    [-37.858,-58.230],[-37.870,-58.235],[-37.875,-58.258],[-37.865,-58.272]
+  if(_mapaInited) return;
+  _mapaInited=true;
+  const map=L.map('mapa-container',{center:[-37.869,-58.257],zoom:15,zoomControl:false,attributionControl:true});
+  _mapaMap=map;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+  L.polyline(CIRCUIT_PATH,{color:'#C8841E',weight:4,opacity:.85,dashArray:'6 4'}).addTo(map);
+  GEOSITIOS.forEach(g=>{
+    const active=g.n===1;
+    const icon=L.divIcon({className:'',
+      html:`<div style="width:32px;height:32px;border-radius:50%;background:${active?'#C8841E':'rgba(200,132,30,.35)'};border:2px solid ${active?'#F0C070':'rgba(200,132,30,.6)'};color:${active?'#fff':'#F0C070'};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">${g.n}</div>`,
+      iconSize:[32,32],iconAnchor:[16,16]});
+    L.marker([g.lat,g.lon],{icon}).addTo(map).on('click',()=>{
+      document.getElementById('mapa-popup-num').textContent='Geositio '+g.n;
+      document.getElementById('mapa-popup-name').textContent=g.name;
+      document.getElementById('mapa-popup').style.display='block';
+    });
+  });
+  map.on('click',()=>{document.getElementById('mapa-popup').style.display='none';});
+}
+  // ── Altitude zones for native plants ──
+  const zonesData=[
+    {name:'Cima · >240 m',    color:'#C8A878', plants:'Eupatório blanco · Stevia',
+     latlngs:[[-37.852,-58.270],[-37.845,-58.252],[-37.848,-58.238],[-37.858,-58.230],[-37.870,-58.235],[-37.875,-58.258],[-37.865,-58.272]]},
+    {name:'Ladera · 180–240 m',color:'#B08840', plants:'Cromolaena · Pilarcito · Senecio gris · Vernonia',
+     latlngs:[[-37.840,-58.285],[-37.832,-58.255],[-37.836,-58.225],[-37.848,-58.218],[-37.862,-58.220],[-37.878,-58.228],[-37.885,-58.260],[-37.880,-58.285],[-37.865,-58.290]]},
+    {name:'Llanura · <180 m',  color:'#6A9A40', plants:'Gomfrena · Senecio pampeano · Verbena · Teyú',
+     latlngs:[[-37.825,-58.300],[-37.818,-58.240],[-37.820,-58.210],[-37.835,-58.200],[-37.855,-58.195],[-37.895,-58.200],[-37.900,-58.270],[-37.895,-58.305],[-37.860,-58.312]]},
   ];
-  // LADERA (100-250m) — slopes around the summit
-  const laderaZone=[
-    [-37.840,-58.285],[-37.832,-58.255],[-37.836,-58.225],
-    [-37.848,-58.218],[-37.862,-58.220],[-37.878,-58.228],
-    [-37.885,-58.260],[-37.880,-58.285],[-37.865,-58.290]
-  ];
-  // LLANURA (<100m) — plains around
-  const llanuaZone=[
-    [-37.825,-58.300],[-37.818,-58.240],[-37.820,-58.210],
-    [-37.835,-58.200],[-37.855,-58.195],[-37.895,-58.200],
-    [-37.900,-58.270],[-37.895,-58.305],[-37.860,-58.312]
-  ];
+  zonesData.forEach(function(z){
+    L.polygon(z.latlngs,{color:z.color,fillColor:z.color,fillOpacity:0.15,weight:1.5,dashArray:'5,3'})
+      .addTo(map)
+      .bindPopup('<b>'+z.name+'</b><br><span style="font-size:11px;">'+z.plants+'</span>');
+  });
 
-  L.polygon(llanuaZone,{color:'#6A9A40',fillColor:'#6A9A40',fillOpacity:0.12,weight:1.5,dashArray:'4,3'})
-    .addTo(map).bindPopup('<b>Llanura · &lt;100 m</b><br>Gomphrena · Senecio pampeano · Verbena · Teyú');
-  L.polygon(laderaZone,{color:'#B08840',fillColor:'#B08840',fillOpacity:0.15,weight:1.5,dashArray:'4,3'})
-    .addTo(map).bindPopup('<b>Ladera · 100–250 m</b><br>Cromolaena · Pilarcito · Senecio gris · Vernonia');
-  L.polygon(cimaZone,{color:'#C8A878',fillColor:'#C8A878',fillOpacity:0.20,weight:2})
-    .addTo(map).bindPopup('<b>Cima · &gt;250 m</b><br>Eupatório blanco · Stevia');
+  // Garden marker
+  const gardenIcon=L.divIcon({className:'',html:
+    '<div style="width:30px;height:30px;border-radius:50%;background:#5A8030;border:2px solid #A0C860;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.4);">🌿</div>',
+    iconSize:[30,30],iconAnchor:[15,15]});
+  L.marker([-37.869,-58.255],{icon:gardenIcon}).addTo(map)
+    .bindPopup('<b>📍 Jardín de Plantas Nativas</b>');
 
   // Zone legend
   const legend=L.control({position:'bottomleft'});
   legend.onAdd=function(){
-    const d=L.DomUtil.create('div','');
-    d.style.cssText='background:rgba(14,4,2,.85);padding:8px 10px;border-radius:8px;font-size:11px;color:#FDF8EE;line-height:1.8;border:1px solid rgba(90,128,48,.3);';
-    d.innerHTML='<div style="font-weight:700;margin-bottom:4px;color:#5A8030;">Zonas altitudinales</div>'+
-      '<span style="color:#8ABB55;">■</span> Llanura &lt;100 m<br>'+
-      '<span style="color:#C8A055;">■</span> Ladera 100–250 m<br>'+
-      '<span style="color:#E0C090;">■</span> Cima &gt;250 m';
+    const d=L.DomUtil.create('div');
+    d.style.cssText='background:rgba(14,4,2,.88);padding:8px 10px;border-radius:8px;font-size:11px;color:#FDF8EE;line-height:1.9;border:1px solid rgba(90,128,48,.4);';
+    d.innerHTML='<div style="font-weight:700;margin-bottom:3px;color:#8ABB55;">Zonas de plantas</div>'+
+      '<span style="color:#E0C090;">■</span> Cima &gt;240 m<br>'+
+      '<span style="color:#C8A055;">■</span> Ladera 180–240 m<br>'+
+      '<span style="color:#8ABB55;">■</span> Llanura &lt;180 m';
     return d;
   };
   legend.addTo(map);
-
-  // Geositio markers
-  const GEOSITIOS=[{"n":1,"name":"Cerro El Triunfo","lat":-37.86065,"lon":-58.2548},
-    {"n":2,"name":"Sierra La Barrosa","lat":-37.8728,"lon":-58.26},
-    {"n":3,"name":"Mordisco del Diablo","lat":-37.875,"lon":-58.258},
-    {"n":4,"name":"El Mirador","lat":-37.868,"lon":-58.263},
-    {"n":5,"name":"La Tosquera","lat":-37.872,"lon":-58.252},
-    {"n":6,"name":"Antropoceno","lat":-37.875,"lon":-58.248},
-    {"n":0,"name":"Jardín Nativo","lat":-37.869,"lon":-58.255}];
-
-  GEOSITIOS.forEach(function(g){
-    const isGarden=g.n===0;
-    const icon=L.divIcon({className:'',html:
-      '<div style="width:'+(isGarden?28:22)+'px;height:'+(isGarden?28:22)+'px;border-radius:50%;'+
-      'background:'+(isGarden?'#5A8030':'#5A8030')+';border:2px solid '+(isGarden?'#8AB050':'#FDF8EE')+';'+
-      'display:flex;align-items:center;justify-content:center;'+
-      'font-size:'+(isGarden?'14':'10')+'px;font-weight:700;color:#fff;">'+
-      (isGarden?'🌿':g.n)+'</div>',
-      iconSize:[isGarden?28:22,isGarden?28:22],iconAnchor:[isGarden?14:11,isGarden?14:11]});
-    L.marker([g.lat,g.lon],{icon}).addTo(map)
-      .bindPopup('<b>'+(isGarden?'📍 '+g.name:'Geositio '+g.n+' · '+g.name)+'</b>');
-  });
-
-  // KML geocircuito trail
-  if(typeof omnivore!=='undefined'){
-    omnivore.kml('geocircuito.kml').addTo(map);
-  } else {
-    // Fallback: draw approximate trail
-    const trail=[[-37.862,-58.270],[-37.860,-58.263],[-37.862,-58.255],[-37.868,-58.248],
-                 [-37.872,-58.250],[-37.875,-58.258],[-37.872,-58.265],[-37.869,-58.272]];
-    L.polyline(trail,{color:'#5A8030',weight:2.5,opacity:0.8,dashArray:'6,4'}).addTo(map);
-  }
-
-  window._mapaRef=map;
-}
 
 function mapaGPS(){
   if(!_mapaMap)return;
@@ -996,6 +968,7 @@ function mapaGPS(){
     }
   },()=>{btn.textContent='📍';},{enableHighAccuracy:true});
 }
+
 
 
 /* ════════════
@@ -1031,7 +1004,7 @@ const QUIZ=[
 const panels={
   quiz:{title:'¡Poné a prueba tu saber!',html:'<div id="qwrap"></div>'}
 };
-let activeBtn=null;
+var activeBtn=null;
 
 let _swayTimer = null;
 function mascotFocus(){
@@ -2204,9 +2177,9 @@ const PLANTS=[
 ];
 
 const ZONE_COLORS={
-  llanura:{bg:'rgba(80,140,60,.25)',  border:'#6A9A40', text:'#8ABB55', label:'Llanura · < 100 m'},
-  ladera: {bg:'rgba(140,110,50,.25)', border:'#B08840', text:'#C8A055', label:'Ladera · 100–250 m'},
-  cima:   {bg:'rgba(180,160,130,.25)',border:'#C8A878', text:'#E0C090', label:'Cima · > 250 m'},
+  llanura:{bg:'rgba(80,140,60,.25)',  border:'#6A9A40', text:'#8ABB55', label:'Llanura · <180 m'},
+  ladera: {bg:'rgba(140,110,50,.25)', border:'#B08840', text:'#C8A055', label:'Ladera · 180–240 m'},
+  cima:   {bg:'rgba(180,160,130,.25)',border:'#C8A878', text:'#E0C090', label:'Cima · >240 m'},
 };
 
 function showPlant(idx, btn){
