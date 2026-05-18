@@ -869,7 +869,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 /* ════════════
    MAPA GEOCIRCUITO
 ════════════ */
-const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Jardín de Plantas Nativas", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
+const GEOSITIOS = [{"n": 1, "name": "Cerro El Triunfo", "lat": -37.86065, "lon": -58.2548}, {"n": 2, "name": "Sierra La Barrosa", "lat": -37.8728, "lon": -58.2653}, {"n": 3, "name": "Mordisco del Diablo", "lat": -37.87517, "lon": -58.26139}, {"n": 4, "name": "El Mirador", "lat": -37.87335, "lon": -58.25859}, {"n": 5, "name": "La Tosquera / Cuaternario", "lat": -37.87112, "lon": -58.25508}, {"n": 6, "name": "Antropoceno", "lat": -37.87156, "lon": -58.25451}];
 let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
 
 function openMapa(){
@@ -913,12 +913,38 @@ function initMapa(){
 
   // ── Altitude zones for native plants ──
   const zonesData=[
-    {name:'Cima · >240 m',    color:'#C8A878', plants:'Eupatório blanco · Stevia',
-     latlngs:[[-37.852,-58.270],[-37.845,-58.252],[-37.848,-58.238],[-37.858,-58.230],[-37.870,-58.235],[-37.875,-58.258],[-37.865,-58.272]]},
-    {name:'Ladera · 180–240 m',color:'#B08840', plants:'Cromolaena · Pilarcito · Senecio gris · Vernonia',
-     latlngs:[[-37.840,-58.285],[-37.832,-58.255],[-37.836,-58.225],[-37.848,-58.218],[-37.862,-58.220],[-37.878,-58.228],[-37.885,-58.260],[-37.880,-58.285],[-37.865,-58.290]]},
-    {name:'Llanura · <180 m',  color:'#6A9A40', plants:'Gomfrena · Senecio pampeano · Verbena · Teyú',
-     latlngs:[[-37.825,-58.300],[-37.818,-58.240],[-37.820,-58.210],[-37.835,-58.200],[-37.855,-58.195],[-37.895,-58.200],[-37.900,-58.270],[-37.895,-58.305],[-37.860,-58.312]]},
+    // CIMA >240m — the quartzite plateau ridgeline of Sierra La Barrosa
+    // Narrow elongated polygon following the ridge NW-SE, centered on the geocircuito
+    {name:'Cima · >240 m', color:'#C8A878', plants:'Eupatório blanco · Stevia',
+     latlngs:[
+       [-37.861,-58.256],[-37.863,-58.260],[-37.865,-58.264],
+       [-37.868,-58.267],[-37.870,-58.268],[-37.873,-58.268],
+       [-37.875,-58.266],[-37.876,-58.263],[-37.876,-58.259],
+       [-37.874,-58.256],[-37.872,-58.253],[-37.869,-58.251],
+       [-37.866,-58.251],[-37.863,-58.252],[-37.861,-58.256]
+     ]},
+    // LADERA 180-240m — slopes descending from the ridge on both flanks
+    {name:'Ladera · 180–240 m', color:'#B08840', plants:'Cromolaena · Pilarcito · Senecio gris · Vernonia',
+     latlngs:[
+       [-37.856,-58.252],[-37.857,-58.257],[-37.859,-58.263],
+       [-37.861,-58.268],[-37.863,-58.272],[-37.866,-58.275],
+       [-37.869,-58.276],[-37.873,-58.275],[-37.876,-58.272],
+       [-37.879,-58.267],[-37.880,-58.262],[-37.879,-58.256],
+       [-37.877,-58.250],[-37.873,-58.246],[-37.869,-58.244],
+       [-37.865,-58.244],[-37.861,-58.246],[-37.858,-58.249],
+       [-37.856,-58.252]
+     ]},
+    // LLANURA <180m — loess pampa surrounding the sierra
+    {name:'Llanura · <180 m', color:'#6A9A40', plants:'Gomfrena · Senecio pampeano · Verbena · Teyú',
+     latlngs:[
+       [-37.848,-58.244],[-37.848,-58.252],[-37.850,-58.260],
+       [-37.853,-58.270],[-37.856,-58.278],[-37.860,-58.284],
+       [-37.865,-58.287],[-37.870,-58.288],[-37.875,-58.286],
+       [-37.880,-58.281],[-37.884,-58.273],[-37.885,-58.263],
+       [-37.884,-58.252],[-37.881,-58.242],[-37.877,-58.237],
+       [-37.872,-58.234],[-37.866,-58.233],[-37.860,-58.236],
+       [-37.855,-58.240],[-37.851,-58.242],[-37.848,-58.244]
+     ]},
   ];
   zonesData.forEach(function(z){
     L.polygon(z.latlngs,{color:z.color,fillColor:z.color,fillOpacity:0.15,weight:1.5,dashArray:'5,3'})
