@@ -146,10 +146,15 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #edad-panel.open{transform:translateY(0);}
 #meta-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
 #meta-panel.open{transform:translateY(0);}
-.plant-tab{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:5px 9px;border-radius:14px;font-size:10px;cursor:pointer;white-space:nowrap;font-family:sans-serif;}
+.plant-tab{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:5px 9px;border-radius:14px;font-size:10px;cursor:pointer;font-family:sans-serif;text-align:center;line-height:1.3;}
 .plant-tab.active{background:#5A8030;border-color:#5A8030;color:#fff;font-weight:700;}
-#plantas-panel,#nativas-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:60vh;overflow:hidden;}
-#plantas-panel.open,#nativas-panel.open{transform:translateY(0);}
+.zone-pill{font-weight:800;font-size:10px;letter-spacing:.5px;}
+.llanura-pill{background:rgba(90,154,64,.20)!important;border-color:rgba(90,154,64,.50)!important;color:#8ABB55!important;}
+.ladera-pill{background:rgba(176,136,64,.20)!important;border-color:rgba(176,136,64,.50)!important;color:#C8A055!important;}
+.cima-pill{background:rgba(200,168,120,.20)!important;border-color:rgba(200,168,120,.50)!important;color:#E0C090!important;}
+.plant-tab.active{background:#5A8030;border-color:#5A8030;color:#fff;font-weight:700;}
+#biblio-panel,#plantas-panel,#nativas-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:60vh;overflow:hidden;}
+#biblio-panel.open,#plantas-panel.open,#nativas-panel.open{transform:translateY(0);}
 
 
 
@@ -409,90 +414,45 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <h3>Plantas nativas del jardín</h3>
     <button class="ep-close" onclick="closeExtraPanel('plantas')">✕</button>
   </div>
-  <div class="ep-body" style="padding:8px 14px 12px;">
-    <div style="display:flex;gap:5px;margin-bottom:8px;overflow-x:auto;padding-bottom:4px;flex-wrap:nowrap;">
-      <button class="plant-tab active" onclick="showPlant(0,this)">Teyú</button>
-<button class="plant-tab" onclick="showPlant(1,this)">Cromolaena</button>
-<button class="plant-tab" onclick="showPlant(2,this)">Gomfrena</button>
-<button class="plant-tab" onclick="showPlant(3,this)">Pilarcito</button>
-<button class="plant-tab" onclick="showPlant(4,this)">Eupatório blanco</button>
-<button class="plant-tab" onclick="showPlant(5,this)">Senecio pampeano</button>
-<button class="plant-tab" onclick="showPlant(6,this)">Senecio gris</button>
-<button class="plant-tab" onclick="showPlant(7,this)">Stevia</button>
-<button class="plant-tab" onclick="showPlant(8,this)">Verbena</button>
-<button class="plant-tab" onclick="showPlant(9,this)">Vernonia</button>
+  <div class="ep-body" style="padding:8px 14px 10px;overflow-y:auto;max-height:calc(78vh - 60px);">
+
+    <!-- Grid: 10 equal columns. Llanura=4, Ladera=4, Cima=2 -->
+    <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:10px;overflow-x:auto;">
+
+      <!-- Row 1: zone pills spanning columns -->
+      <button class="plant-tab zone-pill llanura-pill" style="grid-column:1/5;pointer-events:none;">Llanura</button>
+      <button class="plant-tab zone-pill ladera-pill"  style="grid-column:5/9;pointer-events:none;">Ladera</button>
+      <button class="plant-tab zone-pill cima-pill"    style="grid-column:9/11;pointer-events:none;">Cima</button>
+
+      <!-- Row 2: species pills, one per column -->
+      <button class="plant-tab" onclick="showPlant(0,this)">Teyú</button>
+      <button class="plant-tab" onclick="showPlant(2,this)">Gomfrena</button>
+      <button class="plant-tab" onclick="showPlant(5,this)">Senecio p.</button>
+      <button class="plant-tab" onclick="showPlant(8,this)">Verbena</button>
+      <button class="plant-tab" onclick="showPlant(1,this)">Cromolaena</button>
+      <button class="plant-tab" onclick="showPlant(3,this)">Pilarcito</button>
+      <button class="plant-tab" onclick="showPlant(6,this)">Senecio g.</button>
+      <button class="plant-tab" onclick="showPlant(9,this)">Vernonia</button>
+      <button class="plant-tab" onclick="showPlant(4,this)">Eupatório</button>
+      <button class="plant-tab" onclick="showPlant(7,this)">Stevia</button>
+
     </div>
-    <!-- Foto -->
-    <div style="border-radius:10px;overflow:hidden;background:#1A1A10;position:relative;aspect-ratio:4/3;max-height:180px;margin-bottom:10px;width:100%;display:flex;align-items:center;justify-content:center;">
-      <img id="plant-img" src="plantas_teyu.jpg" alt=""
-        style="width:100%;height:100%;object-fit:cover;display:block;"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-      <div style="display:none;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.3);position:absolute;">
-        <div style="font-size:28px;">🌿</div>
-        <div style="font-size:10px;letter-spacing:1px;">imagen próximamente</div>
+
+    <!-- Plant detail: photo left, info right -->
+    <div id="plant-detail" style="display:none;flex-direction:row;gap:10px;align-items:flex-start;padding-top:8px;border-top:1px solid rgba(255,255,255,.10);">
+      <div style="flex:0 0 90px;width:90px;height:90px;border-radius:8px;overflow:hidden;background:#1A1A10;display:flex;align-items:center;justify-content:center;position:relative;">
+        <img id="plant-img" src="" alt="" style="width:90px;height:90px;object-fit:cover;display:block;"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;flex-direction:column;align-items:center;position:absolute;color:rgba(255,255,255,.3);font-size:20px;">🌿</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div id="plant-sci" style="font-family:'Playfair Display',serif;font-size:12px;color:rgba(200,180,120,.85);font-style:italic;margin-bottom:3px;line-height:1.3;"></div>
+        <div id="plant-zone-badge" style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:8px;display:inline-block;margin-bottom:5px;"></div>
+        <div id="plant-desc" style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.55;"></div>
       </div>
     </div>
-    <!-- Info -->
-    <div id="plant-sci" style="font-family:'Playfair Display',serif;font-size:13px;color:rgba(200,180,120,.85);font-style:italic;margin-bottom:2px;"></div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-      <div id="plant-zone-badge" style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:10px;"></div>
-    </div>
-    <div id="plant-desc" style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.6;"></div>
   </div>
 </div>
-
-<!-- PANEL NATIVAS -->
-<div id="nativas-panel">
-  <div class="ep-handle"></div>
-  <div class="ep-head">
-    <h3>¿Por qué plantas nativas?</h3>
-    <button class="ep-close" onclick="closeExtraPanel('nativas')">✕</button>
-  </div>
-  <div class="ep-body" style="padding:8px 18px 12px;overflow-y:auto;max-height:calc(78vh - 60px);">
-    <p style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:10px;">
-      Las plantas nativas son aquellas que evolucionaron en la región durante miles de años, formando redes ecológicas complejas con insectos, aves y hongos locales. A diferencia de las <strong>plantas exóticas</strong>, las nativas no necesitan riego adicional, plaguicidas ni fertilizantes: están perfectamente adaptadas al clima, suelo y ciclos del pastizal pampeano.
-    </p>
-    <div style="border-left:3px solid #6A8A40;padding-left:12px;margin-bottom:12px;">
-      <div style="font-size:10px;color:#8AB050;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Beneficios ecológicos</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.75;">
-        🦋 Alimentan mariposas, abejas y colibríes nativos<br>
-        🐦 Refugio y nidificación para aves del pastizal<br>
-        🌾 Sostienen la biodiversidad del suelo<br>
-        💧 Retienen el agua y previenen la erosión<br>
-        🌡️ Más resistentes a sequías y heladas que las exóticas
-      </div>
-    </div>
-    <div style="border-left:3px solid #5A8030;padding-left:12px;margin-bottom:12px;">
-      <div style="font-size:10px;color:#5A8030;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">El pastizal pampeano en peligro</div>
-      <p style="font-size:12px;color:rgba(255,255,255,.78);line-height:1.65;margin:0;">
-        El pastizal pampeano es uno de los ecosistemas más amenazados del mundo: más del <strong>90% fue reemplazado</strong> por agricultura y urbanización. Este jardín recupera 10 especies nativas como una pequeña isla de biodiversidad en el paisaje de Balcarce.
-      </p>
-    </div>
-    <p style="font-size:11px;color:rgba(180,200,120,.70);line-height:1.6;">
-      🌿 Cada planta nativa que plantás en tu jardín es un acto de geoconservación.
-    </p>
-  </div>
-</div>
-
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-F6ZCDHTFSN');
-  </script>
-<script>
-// Embed trilobite image — fallback to external file, preload base64 for offline
-(function(){
-  const d='data:image/png;base64,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';
-  if(typeof _trilobiteImg!=='undefined') _trilobiteImg.src=d;
-  // Also set pill image
-  document.addEventListener('DOMContentLoaded',function(){
-    document.querySelectorAll('.tri-pill-img').forEach(function(el){el.src=d;});
-  });
-})();
-</script>
-</head>
-<body>
 
 <!-- ════════════════════════════
      MAIN SCREEN
@@ -595,10 +555,9 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div class="bottom-bar">
     <div class="bar-label">¿Qué querés descubrir?</div>
     <div class="pills">
-      <button class="pill" onclick="openPanel('plantas',this)"><span class="pi">🌿</span>Las plantas</button>
-      <button class="pill" onclick="openPanel('nativas',this)"><span class="pi">🌱</span>¿Por qué nativas?</button>
+      <button class="pill" onclick="openPanel('plantas',this)"><span class="pi">🌿</span>Plantas Nativas</button>
       <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Geocircuito</button>
-      <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🎯</span>Quiz</button>
+      <button class="pill" onclick="openPanel('biblio',this)"><span class="pi">📚</span>Bibliografía</button>
     </div>
   </div>
 
@@ -630,17 +589,20 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
            object-fit:cover;z-index:0;"></video>
 
   <!-- mascota centrada — ocupa toda la pantalla como fondo 3D -->
-  <model-viewer id="ar-model"
-    src="PunAntuMascot.glb"
-    auto-rotate rotation-per-second="10deg"
-    camera-controls touch-action="none"
-    shadow-intensity="0.6"
-    exposure="1.4"
-    camera-orbit="180deg 82deg 2.8m"
-    camera-target="0m 0.5m 0m"
-    style="position:absolute;inset:0;width:100%;height:100%;
-           z-index:5;background:transparent;--poster-color:transparent;">
-  </model-viewer>
+  <!-- Roki overlay — draggable & scalable -->
+  <div id="ar-roki-wrap" style="position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);z-index:5;width:55vw;max-width:340px;height:55vw;max-height:340px;touch-action:none;">
+    <model-viewer id="ar-model"
+      src="PunAntuMascot.glb"
+      auto-rotate rotation-per-second="12deg"
+      camera-controls touch-action="none"
+      shadow-intensity="0.5"
+      exposure="1.3"
+      camera-orbit="180deg 82deg 2.8m"
+      camera-target="0m 0.5m 0m"
+      interaction-prompt="none"
+      style="width:100%;height:100%;background:transparent;--poster-color:transparent;">
+    </model-viewer>
+  </div>
 
   <!-- botón cerrar — arriba izquierda -->
   <button onclick="closeAR()"
@@ -649,6 +611,13 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       width:40px;height:40px;border-radius:50%;font-size:17px;
       cursor:pointer;backdrop-filter:blur(8px);
       display:flex;align-items:center;justify-content:center;">✕</button>
+
+  <!-- hint arrastrar/escalar -->
+  <div id="ar-drag-hint" style="position:absolute;bottom:200px;left:50%;transform:translateX(-50%);z-index:25;
+    background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:7px 14px;border-radius:20px;
+    backdrop-filter:blur(8px);white-space:nowrap;pointer-events:none;transition:opacity .5s;">
+    👆 Arrastrá a Roki · pellizcá para agrandar
+  </div>
 
   <!-- botón obturador (foto) — abajo centro -->
   <button id="ar-shutter-btn" onclick="capturePhoto()"
@@ -864,6 +833,62 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   </div>
 </div>
 
+<!-- PANEL BIBLIOGRAFÍA -->
+<div id="biblio-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head">
+    <h3>Bibliografía recomendada</h3>
+    <button class="ep-close" onclick="closeExtraPanel('biblio')">✕</button>
+  </div>
+  <div class="ep-body" style="padding:8px 18px 14px;overflow-y:auto;max-height:calc(78vh - 60px);">
+
+    <p style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:14px;">
+      Para seguir conociendo las plantas nativas del pastizal pampeano:
+    </p>
+
+    <!-- Sabatino -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08);">
+      <div style="flex:0 0 36px;height:36px;background:rgba(90,128,48,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🌸</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:13px;color:#A8C870;font-weight:700;margin-bottom:2px;">Flores de Tandilia</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.60);margin-bottom:3px;">Malena Sabatino</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.55;">Guía visual de las flores del Sistema de Tandilia. Referencia fundamental para identificar las especies del Geoparque Pun Antü.</div>
+      </div>
+    </div>
+
+    <!-- Delucchi -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08);">
+      <div style="flex:0 0 36px;height:36px;background:rgba(90,128,48,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📖</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:13px;color:#A8C870;font-weight:700;margin-bottom:2px;">Flora Rioplatense</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.60);margin-bottom:3px;">Delucchi & Correa</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.55;">Guía de identificación de plantas vasculares de la región rioplatense y pampeana. Incluye muchas de las especies del jardín.</div>
+      </div>
+    </div>
+
+    <!-- INTA -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08);">
+      <div style="flex:0 0 36px;height:36px;background:rgba(90,128,48,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🌾</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:13px;color:#A8C870;font-weight:700;margin-bottom:2px;">Publicaciones INTA Balcarce</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.60);margin-bottom:3px;">INTA Balcarce · inta.gob.ar</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.55;">Serie de publicaciones sobre pastizal pampeano, flora nativa y manejo agroecológico del partido de Balcarce. Acceso gratuito online.</div>
+      </div>
+    </div>
+
+    <!-- MAyDS -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:6px;">
+      <div style="flex:0 0 36px;height:36px;background:rgba(90,128,48,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📄</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:13px;color:#A8C870;font-weight:700;margin-bottom:2px;">Guía de Plantas Nativas Bonaerenses</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.60);margin-bottom:3px;">Ministerio de Ambiente PBA</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.55;">Descarga gratuita. Guía ilustrada de especies nativas de la provincia de Buenos Aires con información sobre hábitat y usos.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
 
 /* ════════════
@@ -911,46 +936,37 @@ function initMapa(){
   });
   map.on('click',()=>{document.getElementById('mapa-popup').style.display='none';});
 
-  // ── Altitude zones for native plants ──
-  const zonesData=[
-    // CIMA >240m — the quartzite plateau ridgeline of Sierra La Barrosa
-    // Narrow elongated polygon following the ridge NW-SE, centered on the geocircuito
-    {name:'Cima · >240 m', color:'#C8A878', plants:'Eupatório blanco · Stevia',
-     latlngs:[
-       [-37.861,-58.256],[-37.863,-58.260],[-37.865,-58.264],
-       [-37.868,-58.267],[-37.870,-58.268],[-37.873,-58.268],
-       [-37.875,-58.266],[-37.876,-58.263],[-37.876,-58.259],
-       [-37.874,-58.256],[-37.872,-58.253],[-37.869,-58.251],
-       [-37.866,-58.251],[-37.863,-58.252],[-37.861,-58.256]
-     ]},
-    // LADERA 180-240m — slopes descending from the ridge on both flanks
-    {name:'Ladera · 180–240 m', color:'#B08840', plants:'Cromolaena · Pilarcito · Senecio gris · Vernonia',
-     latlngs:[
-       [-37.856,-58.252],[-37.857,-58.257],[-37.859,-58.263],
-       [-37.861,-58.268],[-37.863,-58.272],[-37.866,-58.275],
-       [-37.869,-58.276],[-37.873,-58.275],[-37.876,-58.272],
-       [-37.879,-58.267],[-37.880,-58.262],[-37.879,-58.256],
-       [-37.877,-58.250],[-37.873,-58.246],[-37.869,-58.244],
-       [-37.865,-58.244],[-37.861,-58.246],[-37.858,-58.249],
-       [-37.856,-58.252]
-     ]},
-    // LLANURA <180m — loess pampa surrounding the sierra
-    {name:'Llanura · <180 m', color:'#6A9A40', plants:'Gomfrena · Senecio pampeano · Verbena · Teyú',
-     latlngs:[
-       [-37.848,-58.244],[-37.848,-58.252],[-37.850,-58.260],
-       [-37.853,-58.270],[-37.856,-58.278],[-37.860,-58.284],
-       [-37.865,-58.287],[-37.870,-58.288],[-37.875,-58.286],
-       [-37.880,-58.281],[-37.884,-58.273],[-37.885,-58.263],
-       [-37.884,-58.252],[-37.881,-58.242],[-37.877,-58.237],
-       [-37.872,-58.234],[-37.866,-58.233],[-37.860,-58.236],
-       [-37.855,-58.240],[-37.851,-58.242],[-37.848,-58.244]
-     ]},
-  ];
-  zonesData.forEach(function(z){
-    L.polygon(z.latlngs,{color:z.color,fillColor:z.color,fillOpacity:0.15,weight:1.5,dashArray:'5,3'})
-      .addTo(map)
-      .bindPopup('<b>'+z.name+'</b><br><span style="font-size:11px;">'+z.plants+'</span>');
+  // ── Real altitude zones from QGIS/DEM (Sierra La Barrosa) ──
+  const sierraZones = {"type":"FeatureCollection","name":"LaBarrosaZonasdeNativas","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"fid":37,"DN":3},"geometry":{"type":"Polygon","coordinates":[[[-58.262775,-37.873611],[-58.262775,-37.874167],[-58.262498,-37.874167],[-58.262498,-37.874444],[-58.26222,-37.874444],[-58.26222,-37.874722],[-58.261664,-37.874722],[-58.261664,-37.875278],[-58.261109,-37.875278],[-58.261109,-37.875],[-58.261386,-37.875],[-58.261386,-37.874444],[-58.261664,-37.874444],[-58.261664,-37.874167],[-58.261942,-37.874167],[-58.261942,-37.873889],[-58.26222,-37.873889],[-58.26222,-37.873611],[-58.262775,-37.873611]]]}},{"type":"Feature","properties":{"fid":67,"DN":3},"geometry":{"type":"Polygon","coordinates":[[[-58.261109,-37.875278],[-58.261109,-37.876667],[-58.260831,-37.876667],[-58.260831,-37.877778],[-58.261109,-37.877778],[-58.261109,-37.878056],[-58.261386,-37.878056],[-58.261386,-37.878889],[-58.261664,-37.878889],[-58.261664,-37.879445],[-58.261942,-37.879445],[-58.261942,-37.88],[-58.26222,-37.88],[-58.26222,-37.880278],[-58.262498,-37.880278],[-58.262498,-37.880834],[-58.262775,-37.880834],[-58.262775,-37.881111],[-58.263053,-37.881111],[-58.263053,-37.881667],[-58.263331,-37.881667],[-58.263331,-37.882222],[-58.263609,-37.882222],[-58.263609,-37.8825],[-58.263886,-37.8825],[-58.263886,-37.882778],[-58.264164,-37.882778],[-58.264164,-37.883334],[-58.264442,-37.883334],[-58.264442,-37.883611],[-58.26472,-37.883611],[-58.26472,-37.884167],[-58.264998,-37.884167],[-58.264998,-37.884723],[-58.265275,-37.884723],[-58.265275,-37.885278],[-58.265553,-37.885278],[-58.265553,-37.885834],[-58.265831,-37.885834],[-58.265831,-37.889167],[-58.266109,-37.889167],[-58.266109,-37.889723],[-58.266386,-37.889723],[-58.266386,-37.890278],[-58.266664,-37.890278],[-58.266664,-37.890834],[-58.266942,-37.890834],[-58.266942,-37.891389],[-58.266664,-37.891389],[-58.266664,-37.891112],[-58.266386,-37.891112],[-58.266386,-37.890834],[-58.266109,-37.890834],[-58.266109,-37.890556],[-58.265553,-37.890556],[-58.265553,-37.890278],[-58.264998,-37.890278],[-58.264998,-37.89],[-58.264442,-37.89],[-58.264442,-37.889723],[-58.263886,-37.889723],[-58.263886,-37.889445],[-58.263609,-37.889445],[-58.263609,-37.889167],[-58.262498,-37.889167],[-58.262498,-37.889445],[-58.26222,-37.889445],[-58.26222,-37.889723],[-58.261942,-37.889723],[-58.261942,-37.89],[-58.261664,-37.89],[-58.261664,-37.891667],[-58.261942,-37.891667],[-58.261942,-37.891945],[-58.26222,-37.891945],[-58.26222,-37.892778],[-58.262498,-37.892778],[-58.262498,-37.893612],[-58.262775,-37.893612],[-58.262775,-37.896945],[-58.262498,-37.896945],[-58.262498,-37.897501],[-58.261942,-37.897501],[-58.261942,-37.897223],[-58.261386,-37.897223],[-58.261386,-37.896945],[-58.261109,-37.896945],[-58.261109,-37.896667],[-58.260831,-37.896667],[-58.260831,-37.896389],[-58.260553,-37.896389],[-58.260553,-37.896112],[-58.260275,-37.896112],[-58.260275,-37.895834],[-58.259998,-37.895834],[-58.259998,-37.895556],[-58.259442,-37.895556],[-58.259442,-37.895278],[-58.258887,-37.895278],[-58.258887,-37.895001],[-58.258331,-37.895001],[-58.258331,-37.894723],[-58.258053,-37.894723],[-58.258053,-37.894445],[-58.257775,-37.894445],[-58.257775,-37.894167],[-58.25722,-37.894167],[-58.25722,-37.893056],[-58.257498,-37.893056],[-58.257498,-37.8925],[-58.257775,-37.8925],[-58.257775,-37.891945],[-58.258053,-37.891945],[-58.258053,-37.891112],[-58.258331,-37.891112],[-58.258331,-37.886945],[-58.258609,-37.886945],[-58.258609,-37.885278],[-58.258887,-37.885278],[-58.258887,-37.884723],[-58.259164,-37.884723],[-58.259164,-37.883889],[-58.259442,-37.883889],[-58.259442,-37.883056],[-58.25972,-37.883056],[-58.25972,-37.882778],[-58.259998,-37.882778],[-58.259998,-37.8825],[-58.260275,-37.8825],[-58.260275,-37.882222],[-58.260553,-37.882222],[-58.260553,-37.879722],[-58.260275,-37.879722],[-58.260275,-37.879167],[-58.260553,-37.879167],[-58.260553,-37.878333],[-58.260275,-37.878333],[-58.260275,-37.8775],[-58.259998,-37.8775],[-58.259998,-37.876111],[-58.260275,-37.876111],[-58.260275,-37.875833],[-58.260553,-37.875833],[-58.260553,-37.875556],[-58.260831,-37.875556],[-58.260831,-37.875278],[-58.261109,-37.875278]]]}},{"type":"Feature","properties":{"fid":70,"DN":3},"geometry":{"type":"Polygon","coordinates":[[[-58.268609,-37.893056],[-58.268609,-37.893334],[-58.268886,-37.893334],[-58.268886,-37.893612],[-58.269164,-37.893612],[-58.269164,-37.893889],[-58.269442,-37.893889],[-58.269442,-37.894167],[-58.26972,-37.894167],[-58.26972,-37.894445],[-58.269997,-37.894445],[-58.269997,-37.894723],[-58.270275,-37.894723],[-58.270275,-37.895001],[-58.270553,-37.895001],[-58.270553,-37.895278],[-58.271109,-37.895278],[-58.271109,-37.895556],[-58.271386,-37.895556],[-58.271386,-37.896112],[-58.271664,-37.896112],[-58.271664,-37.896667],[-58.271942,-37.896667],[-58.271942,-37.896945],[-58.27222,-37.896945],[-58.27222,-37.897501],[-58.272497,-37.897501],[-58.272497,-37.897778],[-58.273053,-37.897778],[-58.273053,-37.898056],[-58.273331,-37.898056],[-58.273331,-37.898334],[-58.273886,-37.898334],[-58.273886,-37.898612],[-58.274164,-37.898612],[-58.274164,-37.89889],[-58.27472,-37.89889],[-58.27472,-37.899167],[-58.274997,-37.899167],[-58.274997,-37.899445],[-58.275275,-37.899445],[-58.275275,-37.899723],[-58.275553,-37.899723],[-58.275553,-37.900001],[-58.275831,-37.900001],[-58.275831,-37.900278],[-58.276108,-37.900278],[-58.276108,-37.900556],[-58.276386,-37.900556],[-58.276386,-37.90139],[-58.275831,-37.90139],[-58.275831,-37.901667],[-58.27472,-37.901667],[-58.27472,-37.901945],[-58.273331,-37.901945],[-58.273331,-37.901667],[-58.273053,-37.901667],[-58.273053,-37.90139],[-58.272775,-37.90139],[-58.272775,-37.901112],[-58.272497,-37.901112],[-58.272497,-37.900834],[-58.27222,-37.900834],[-58.27222,-37.900278],[-58.271942,-37.900278],[-58.271942,-37.900001],[-58.271664,-37.900001],[-58.271664,-37.897501],[-58.271386,-37.897501],[-58.271386,-37.897778],[-58.271109,-37.897778],[-58.271109,-37.897223],[-58.270553,-37.897223],[-58.270553,-37.896945],[-58.270275,-37.896945],[-58.270275,-37.896667],[-58.26972,-37.896667],[-58.26972,-37.896112],[-58.269442,-37.896112],[-58.269442,-37.895834],[-58.269164,-37.895834],[-58.269164,-37.895556],[-58.268886,-37.895556],[-58.268886,-37.894445],[-58.268609,-37.894445],[-58.268609,-37.893612],[-58.268331,-37.893612],[-58.268331,-37.893056],[-58.268609,-37.893056]]]}},{"type":"Feature","properties":{"fid":71,"DN":2},"geometry":{"type":"Polygon","coordinates":[[[-58.264442,-37.871111],[-58.264442,-37.871389],[-58.26472,-37.871389],[-58.26472,-37.871667],[-58.265275,-37.871667],[-58.265275,-37.871389],[-58.265553,-37.871389],[-58.265553,-37.871667],[-58.265831,-37.871667],[-58.265831,-37.871944],[-58.265553,-37.871944],[-58.265553,-37.872222],[-58.265831,-37.872222],[-58.265831,-37.874167],[-58.265553,-37.874167],[-58.265553,-37.874722],[-58.265275,-37.874722],[-58.265275,-37.875],[-58.265553,-37.875],[-58.265553,-37.875556],[-58.265831,-37.875556],[-58.265831,-37.876111],[-58.265553,-37.876111],[-58.265553,-37.876389],[-58.265831,-37.876389],[-58.265831,-37.876945],[-58.265553,-37.876945],[-58.265553,-37.877222],[-58.265831,-37.877222],[-58.265831,-37.8775],[-58.265553,-37.8775],[-58.265553,-37.877778],[-58.265831,-37.877778],[-58.265831,-37.878056],[-58.266109,-37.878056],[-58.266109,-37.879445],[-58.266386,-37.879445],[-58.266386,-37.88],[-58.266109,-37.88],[-58.266109,-37.880278],[-58.266386,-37.880278],[-58.266386,-37.880556],[-58.266942,-37.880556],[-58.266942,-37.880834],[-58.26722,-37.880834],[-58.26722,-37.881111],[-58.267498,-37.881111],[-58.267498,-37.8825],[-58.268053,-37.8825],[-58.268053,-37.883056],[-58.268331,-37.883056],[-58.268331,-37.883611],[-58.268609,-37.883611],[-58.268609,-37.883889],[-58.268886,-37.883889],[-58.268886,-37.884723],[-58.269164,-37.884723],[-58.269164,-37.885278],[-58.269442,-37.885278],[-58.269442,-37.886667],[-58.26972,-37.886667],[-58.26972,-37.886945],[-58.270275,-37.886945],[-58.270275,-37.887778],[-58.270553,-37.887778],[-58.270553,-37.888056],[-58.270831,-37.888056],[-58.270831,-37.888889],[-58.271109,-37.888889],[-58.271109,-37.888612],[-58.271386,-37.888612],[-58.271386,-37.889167],[-58.271109,-37.889167],[-58.271109,-37.889723],[-58.271386,-37.889723],[-58.271386,-37.890278],[-58.272775,-37.890278],[-58.272775,-37.890834],[-58.272497,-37.890834],[-58.272497,-37.891112],[-58.272775,-37.891112],[-58.272775,-37.891389],[-58.273053,-37.891389],[-58.273053,-37.891945],[-58.273331,-37.891945],[-58.273331,-37.892223],[-58.273609,-37.892223],[-58.273609,-37.8925],[-58.273886,-37.8925],[-58.273886,-37.892778],[-58.274164,-37.892778],[-58.274164,-37.893056],[-58.274442,-37.893056],[-58.274442,-37.893889],[-58.274997,-37.893889],[-58.274997,-37.894167],[-58.275275,-37.894167],[-58.275275,-37.894445],[-58.275553,-37.894445],[-58.275553,-37.895001],[-58.275831,-37.895001],[-58.275831,-37.895278],[-58.276108,-37.895278],[-58.276108,-37.895556],[-58.276386,-37.895556],[-58.276386,-37.895834],[-58.276664,-37.895834],[-58.276664,-37.896112],[-58.276942,-37.896112],[-58.276942,-37.896389],[-58.27722,-37.896389],[-58.27722,-37.896667],[-58.277497,-37.896667],[-58.277497,-37.896945],[-58.278053,-37.896945],[-58.278053,-37.897223],[-58.278331,-37.897223],[-58.278331,-37.897501],[-58.278608,-37.897501],[-58.278608,-37.897778],[-58.279164,-37.897778],[-58.279164,-37.898334],[-58.279442,-37.898334],[-58.279442,-37.898612],[-58.27972,-37.898612],[-58.27972,-37.89889],[-58.279997,-37.89889],[-58.279997,-37.899167],[-58.280553,-37.899167],[-58.280553,-37.899723],[-58.280831,-37.899723],[-58.280831,-37.900001],[-58.281108,-37.900001],[-58.281108,-37.900278],[-58.281386,-37.900278],[-58.281386,-37.901112],[-58.281664,-37.901112],[-58.281664,-37.901945],[-58.281942,-37.901945],[-58.281942,-37.902779],[-58.28222,-37.902779],[-58.28222,-37.903056],[-58.281942,-37.903056],[-58.281942,-37.90389],[-58.281664,-37.90389],[-58.281664,-37.904723],[-58.281386,-37.904723],[-58.281386,-37.905279],[-58.281108,-37.905279],[-58.281108,-37.905834],[-58.280831,-37.905834],[-58.280831,-37.905279],[-58.280275,-37.905279],[-58.280275,-37.905556],[-58.27972,-37.905556],[-58.27972,-37.905834],[-58.279442,-37.905834],[-58.279442,-37.905556],[-58.279164,-37.905556],[-58.279164,-37.905834],[-58.278886,-37.905834],[-58.278886,-37.905556],[-58.277775,-37.905556],[-58.277775,-37.905279],[-58.27722,-37.905279],[-58.27722,-37.905001],[-58.276386,-37.905001],[-58.276386,-37.904723],[-58.272497,-37.904723],[-58.272497,-37.904445],[-58.271942,-37.904445],[-58.271942,-37.904167],[-58.271386,-37.904167],[-58.271386,-37.90389],[-58.271109,-37.90389],[-58.271109,-37.904167],[-58.270831,-37.904167],[-58.270831,-37.90389],[-58.270553,-37.90389],[-58.270553,-37.903612],[-58.270275,-37.903612],[-58.270275,-37.903334],[-58.269997,-37.903334],[-58.269997,-37.902779],[-58.269442,-37.902779],[-58.269442,-37.902501],[-58.269164,-37.902501],[-58.269164,-37.902223],[-58.268886,-37.902223],[-58.268886,-37.901667],[-58.268609,-37.901667],[-58.268609,-37.90139],[-58.268331,-37.90139],[-58.268331,-37.901112],[-58.268053,-37.901112],[-58.268053,-37.900834],[-58.267775,-37.900834],[-58.267775,-37.900278],[-58.267498,-37.900278],[-58.267498,-37.899723],[-58.26722,-37.899723],[-58.26722,-37.899445],[-58.266942,-37.899445],[-58.266942,-37.899723],[-58.266386,-37.899723],[-58.266386,-37.899445],[-58.265831,-37.899445],[-58.265831,-37.899167],[-58.265553,-37.899167],[-58.265553,-37.899445],[-58.265275,-37.899445],[-58.265275,-37.899723],[-58.264998,-37.899723],[-58.264998,-37.900278],[-58.26472,-37.900278],[-58.26472,-37.900556],[-58.263886,-37.900556],[-58.263886,-37.900834],[-58.263331,-37.900834],[-58.263331,-37.90139],[-58.263053,-37.90139],[-58.263053,-37.901667],[-58.261386,-37.901667],[-58.261386,-37.90139],[-58.260831,-37.90139],[-58.260831,-37.900834],[-58.260553,-37.900834],[-58.260553,-37.900278],[-58.260275,-37.900278],[-58.260275,-37.899723],[-58.259998,-37.899723],[-58.259998,-37.899167],[-58.25972,-37.899167],[-58.25972,-37.898612],[-58.259164,-37.898612],[-58.259164,-37.898056],[-58.258609,-37.898056],[-58.258609,-37.897778],[-58.258331,-37.897778],[-58.258331,-37.897501],[-58.258053,-37.897501],[-58.258053,-37.897778],[-58.257775,-37.897778],[-58.257775,-37.898056],[-58.257498,-37.898056],[-58.257498,-37.897223],[-58.25722,-37.897223],[-58.25722,-37.896945],[-58.256664,-37.896945],[-58.256664,-37.896667],[-58.255831,-37.896667],[-58.255831,-37.896389],[-58.255275,-37.896389],[-58.255275,-37.896112],[-58.25472,-37.896112],[-58.25472,-37.895834],[-58.254442,-37.895834],[-58.254442,-37.895278],[-58.254164,-37.895278],[-58.254164,-37.895001],[-58.253887,-37.895001],[-58.253887,-37.894723],[-58.253609,-37.894723],[-58.253609,-37.893889],[-58.253331,-37.893889],[-58.253331,-37.893334],[-58.253053,-37.893334],[-58.253053,-37.893056],[-58.252775,-37.893056],[-58.252775,-37.892778],[-58.252498,-37.892778],[-58.252498,-37.8925],[-58.253053,-37.8925],[-58.253053,-37.891945],[-58.253609,-37.891945],[-58.253609,-37.892223],[-58.253887,-37.892223],[-58.253887,-37.891945],[-58.254164,-37.891945],[-58.254164,-37.891389],[-58.254442,-37.891389],[-58.254442,-37.890834],[-58.25472,-37.890834],[-58.25472,-37.89],[-58.254442,-37.89],[-58.254442,-37.889445],[-58.25472,-37.889445],[-58.25472,-37.888889],[-58.254442,-37.888889],[-58.254442,-37.888056],[-58.254164,-37.888056],[-58.254164,-37.887778],[-58.254442,-37.887778],[-58.254442,-37.887223],[-58.25472,-37.887223],[-58.25472,-37.886667],[-58.254442,-37.886667],[-58.254442,-37.885834],[-58.254164,-37.885834],[-58.254164,-37.885556],[-58.254442,-37.885556],[-58.254442,-37.885278],[-58.254998,-37.885278],[-58.254998,-37.885556],[-58.255553,-37.885556],[-58.255553,-37.884723],[-58.255275,-37.884723],[-58.255275,-37.884445],[-58.254998,-37.884445],[-58.254998,-37.883334],[-58.255831,-37.883334],[-58.255831,-37.8825],[-58.256109,-37.8825],[-58.256109,-37.882222],[-58.256387,-37.882222],[-58.256387,-37.881945],[-58.256109,-37.881945],[-58.256109,-37.881667],[-58.256387,-37.881667],[-58.256387,-37.881111],[-58.256109,-37.881111],[-58.256109,-37.880556],[-58.256664,-37.880556],[-58.256664,-37.877778],[-58.256942,-37.877778],[-58.256942,-37.876945],[-58.25722,-37.876945],[-58.25722,-37.875833],[-58.257498,-37.875833],[-58.257498,-37.875278],[-58.257775,-37.875278],[-58.257775,-37.875],[-58.258053,-37.875],[-58.258053,-37.873611],[-58.258331,-37.873611],[-58.258331,-37.873333],[-58.258609,-37.873333],[-58.258609,-37.873055],[-58.258887,-37.873055],[-58.258887,-37.872778],[-58.25972,-37.872778],[-58.25972,-37.8725],[-58.259998,-37.8725],[-58.259998,-37.872222],[-58.260553,-37.872222],[-58.260553,-37.871944],[-58.261109,-37.871944],[-58.261109,-37.871667],[-58.261664,-37.871667],[-58.261664,-37.871389],[-58.26222,-37.871389],[-58.26222,-37.871111],[-58.262498,-37.871111],[-58.262498,-37.871389],[-58.264164,-37.871389],[-58.264164,-37.871111],[-58.264442,-37.871111]],[[-58.262775,-37.873611],[-58.26222,-37.873611],[-58.26222,-37.873889],[-58.261942,-37.873889],[-58.261942,-37.874167],[-58.261664,-37.874167],[-58.261664,-37.874444],[-58.261386,-37.874444],[-58.261386,-37.875],[-58.261109,-37.875],[-58.261109,-37.875278],[-58.261664,-37.875278],[-58.261664,-37.874722],[-58.26222,-37.874722],[-58.26222,-37.874444],[-58.262498,-37.874444],[-58.262498,-37.874167],[-58.262775,-37.874167],[-58.262775,-37.873611]],[[-58.261109,-37.875278],[-58.260831,-37.875278],[-58.260831,-37.875556],[-58.260553,-37.875556],[-58.260553,-37.875833],[-58.260275,-37.875833],[-58.260275,-37.876111],[-58.259998,-37.876111],[-58.259998,-37.8775],[-58.260275,-37.8775],[-58.260275,-37.878333],[-58.260553,-37.878333],[-58.260553,-37.879167],[-58.260275,-37.879167],[-58.260275,-37.879722],[-58.260553,-37.879722],[-58.260553,-37.882222],[-58.260275,-37.882222],[-58.260275,-37.8825],[-58.259998,-37.8825],[-58.259998,-37.882778],[-58.25972,-37.882778],[-58.25972,-37.883056],[-58.259442,-37.883056],[-58.259442,-37.883889],[-58.259164,-37.883889],[-58.259164,-37.884723],[-58.258887,-37.884723],[-58.258887,-37.885278],[-58.258609,-37.885278],[-58.258609,-37.886945],[-58.258331,-37.886945],[-58.258331,-37.891112],[-58.258053,-37.891112],[-58.258053,-37.891945],[-58.257775,-37.891945],[-58.257775,-37.8925],[-58.257498,-37.8925],[-58.257498,-37.893056],[-58.25722,-37.893056],[-58.25722,-37.894167],[-58.257775,-37.894167],[-58.257775,-37.894445],[-58.258053,-37.894445],[-58.258053,-37.894723],[-58.258331,-37.894723],[-58.258331,-37.895001],[-58.258887,-37.895001],[-58.258887,-37.895278],[-58.259442,-37.895278],[-58.259442,-37.895556],[-58.259998,-37.895556],[-58.259998,-37.895834],[-58.260275,-37.895834],[-58.260275,-37.896112],[-58.260553,-37.896112],[-58.260553,-37.896389],[-58.260831,-37.896389],[-58.260831,-37.896667],[-58.261109,-37.896667],[-58.261109,-37.896945],[-58.261386,-37.896945],[-58.261386,-37.897223],[-58.261942,-37.897223],[-58.261942,-37.897501],[-58.262498,-37.897501],[-58.262498,-37.896945],[-58.262775,-37.896945],[-58.262775,-37.893612],[-58.262498,-37.893612],[-58.262498,-37.892778],[-58.26222,-37.892778],[-58.26222,-37.891945],[-58.261942,-37.891945],[-58.261942,-37.891667],[-58.261664,-37.891667],[-58.261664,-37.89],[-58.261942,-37.89],[-58.261942,-37.889723],[-58.26222,-37.889723],[-58.26222,-37.889445],[-58.262498,-37.889445],[-58.262498,-37.889167],[-58.263609,-37.889167],[-58.263609,-37.889445],[-58.263886,-37.889445],[-58.263886,-37.889723],[-58.264442,-37.889723],[-58.264442,-37.89],[-58.264998,-37.89],[-58.264998,-37.890278],[-58.265553,-37.890278],[-58.265553,-37.890556],[-58.266109,-37.890556],[-58.266109,-37.890834],[-58.266386,-37.890834],[-58.266386,-37.891112],[-58.266664,-37.891112],[-58.266664,-37.891389],[-58.266942,-37.891389],[-58.266942,-37.890834],[-58.266664,-37.890834],[-58.266664,-37.890278],[-58.266386,-37.890278],[-58.266386,-37.889723],[-58.266109,-37.889723],[-58.266109,-37.889167],[-58.265831,-37.889167],[-58.265831,-37.885834],[-58.265553,-37.885834],[-58.265553,-37.885278],[-58.265275,-37.885278],[-58.265275,-37.884723],[-58.264998,-37.884723],[-58.264998,-37.884167],[-58.26472,-37.884167],[-58.26472,-37.883611],[-58.264442,-37.883611],[-58.264442,-37.883334],[-58.264164,-37.883334],[-58.264164,-37.882778],[-58.263886,-37.882778],[-58.263886,-37.8825],[-58.263609,-37.8825],[-58.263609,-37.882222],[-58.263331,-37.882222],[-58.263331,-37.881667],[-58.263053,-37.881667],[-58.263053,-37.881111],[-58.262775,-37.881111],[-58.262775,-37.880834],[-58.262498,-37.880834],[-58.262498,-37.880278],[-58.26222,-37.880278],[-58.26222,-37.88],[-58.261942,-37.88],[-58.261942,-37.879445],[-58.261664,-37.879445],[-58.261664,-37.878889],[-58.261386,-37.878889],[-58.261386,-37.878056],[-58.261109,-37.878056],[-58.261109,-37.877778],[-58.260831,-37.877778],[-58.260831,-37.876667],[-58.261109,-37.876667],[-58.261109,-37.875278]],[[-58.253331,-37.8925],[-58.253053,-37.8925],[-58.253053,-37.892778],[-58.253331,-37.892778],[-58.253331,-37.8925]],[[-58.268609,-37.893056],[-58.268331,-37.893056],[-58.268331,-37.893612],[-58.268609,-37.893612],[-58.268609,-37.894445],[-58.268886,-37.894445],[-58.268886,-37.895556],[-58.269164,-37.895556],[-58.269164,-37.895834],[-58.269442,-37.895834],[-58.269442,-37.896112],[-58.26972,-37.896112],[-58.26972,-37.896667],[-58.270275,-37.896667],[-58.270275,-37.896945],[-58.270553,-37.896945],[-58.270553,-37.897223],[-58.271109,-37.897223],[-58.271109,-37.897778],[-58.271386,-37.897778],[-58.271386,-37.897501],[-58.271664,-37.897501],[-58.271664,-37.900001],[-58.271942,-37.900001],[-58.271942,-37.900278],[-58.27222,-37.900278],[-58.27222,-37.900834],[-58.272497,-37.900834],[-58.272497,-37.901112],[-58.272775,-37.901112],[-58.272775,-37.90139],[-58.273053,-37.90139],[-58.273053,-37.901667],[-58.273331,-37.901667],[-58.273331,-37.901945],[-58.27472,-37.901945],[-58.27472,-37.901667],[-58.275831,-37.901667],[-58.275831,-37.90139],[-58.276386,-37.90139],[-58.276386,-37.900556],[-58.276108,-37.900556],[-58.276108,-37.900278],[-58.275831,-37.900278],[-58.275831,-37.900001],[-58.275553,-37.900001],[-58.275553,-37.899723],[-58.275275,-37.899723],[-58.275275,-37.899445],[-58.274997,-37.899445],[-58.274997,-37.899167],[-58.27472,-37.899167],[-58.27472,-37.89889],[-58.274164,-37.89889],[-58.274164,-37.898612],[-58.273886,-37.898612],[-58.273886,-37.898334],[-58.273331,-37.898334],[-58.273331,-37.898056],[-58.273053,-37.898056],[-58.273053,-37.897778],[-58.272497,-37.897778],[-58.272497,-37.897501],[-58.27222,-37.897501],[-58.27222,-37.896945],[-58.271942,-37.896945],[-58.271942,-37.896667],[-58.271664,-37.896667],[-58.271664,-37.896112],[-58.271386,-37.896112],[-58.271386,-37.895556],[-58.271109,-37.895556],[-58.271109,-37.895278],[-58.270553,-37.895278],[-58.270553,-37.895001],[-58.270275,-37.895001],[-58.270275,-37.894723],[-58.269997,-37.894723],[-58.269997,-37.894445],[-58.26972,-37.894445],[-58.26972,-37.894167],[-58.269442,-37.894167],[-58.269442,-37.893889],[-58.269164,-37.893889],[-58.269164,-37.893612],[-58.268886,-37.893612],[-58.268886,-37.893334],[-58.268609,-37.893334],[-58.268609,-37.893056]]]}}]};
+  // Merge DN=3 features into a MultiPolygon display
+  const dnGroups = {};
+  sierraZones.features.forEach(function(f){
+    const dn=f.properties.DN;
+    if(!dnGroups[dn]) dnGroups[dn]=[];
+    dnGroups[dn].push(f);
   });
+  const zoneStyles = {
+    3:{color:'#C8A878',fillOpacity:0.18,weight:2,
+       name:'Cima · >240 m',plants:'Eupatório blanco · Stevia'},
+    2:{color:'#B08840',fillOpacity:0.14,weight:1.5,
+       name:'Ladera · 180–240 m',plants:'Cromolaena · Pilarcito · Senecio gris · Vernonia'},
+  };
+  Object.keys(dnGroups).forEach(function(dn){
+    const st=zoneStyles[dn];
+    if(!st) return;
+    dnGroups[dn].forEach(function(feat){
+      L.geoJSON(feat,{
+        style:{color:st.color,fillColor:st.color,fillOpacity:st.fillOpacity,weight:st.weight,dashArray:'4,3'}
+      }).addTo(map).bindPopup('<b>'+st.name+'</b><br><span style="font-size:11px;">'+st.plants+'</span>');
+    });
+  });
+
+  // Llanura <180m — ~10km buffer around ladera zone
+  const llanuraRing = [[-58.13834, -37.88847], [-58.14274, -37.86066], [-58.15563, -37.83475], [-58.17613, -37.81249], [-58.20285, -37.79542], [-58.23397, -37.78468], [-58.26736, -37.78102], [-58.30075, -37.78468], [-58.33187, -37.79542], [-58.35859, -37.81249], [-58.37909, -37.83475], [-58.39198, -37.86066], [-58.39638, -37.88847], [-58.39198, -37.91628], [-58.37909, -37.9422], [-58.35859, -37.96445], [-58.33187, -37.98153], [-58.30075, -37.99226], [-58.26736, -37.99592], [-58.23397, -37.99226], [-58.20285, -37.98153], [-58.17613, -37.96445], [-58.15563, -37.9422], [-58.14274, -37.91628], [-58.13834, -37.88847]];
+  L.polygon(llanuraRing, {
+    color:'#6A9A40', fillColor:'#6A9A40', fillOpacity:0.10,
+    weight:1.2, dashArray:'6,4'
+  }).addTo(map).bindPopup('<b>Llanura · &lt;180 m</b><br><span style="font-size:11px;">Gomfrena · Senecio pampeano · Verbena · Teyú</span>');
 
   // Garden marker
   const gardenIcon=L.divIcon({className:'',html:
@@ -959,7 +975,6 @@ function initMapa(){
   L.marker([-37.871319,-58.255844],{icon:gardenIcon}).addTo(map)
     .bindPopup('<b>📍 Jardín de Plantas Nativas</b>');
 
-  // Zone legend
   const legend=L.control({position:'bottomleft'});
   legend.onAdd=function(){
     const d=L.DomUtil.create('div');
@@ -1106,19 +1121,21 @@ if(typeof gtag==='function') gtag('event','open_panel',{panel:id});
     document.getElementById('estrat-panel').classList.add('open');
     return;
   }
+  stopRokiMessages();
   if(id==='plantas'){
     document.getElementById('logo-bg').style.opacity='0';
     document.getElementById('main').classList.add('panel-half-open');
     showSpeechBubble('🐸 Conocé las plantas del pastizal pampeano');
     document.getElementById('plantas-panel').classList.add('open');
-    setTimeout(function(){showPlant(0,document.querySelector('.plant-tab'));},80);
+    setTimeout(function(){showPlant(0,document.querySelector('.plant-tab:not(.zone-pill)'));},80);
     return;
   }
-  if(id==='nativas'){
+
+  if(id==='biblio'){
     document.getElementById('logo-bg').style.opacity='0';
     document.getElementById('main').classList.add('panel-half-open');
-    showSpeechBubble('🐸 Las nativas sostienen todo el ecosistema');
-    document.getElementById('nativas-panel').classList.add('open');
+    showSpeechBubble('🐸 Estas son mis lecturas favoritas sobre las nativas');
+    document.getElementById('biblio-panel').classList.add('open');
     return;
   }
   document.getElementById('panel-title').textContent=panels[id].title;
@@ -1303,7 +1320,191 @@ if(typeof gtag==='function') gtag('event','open_ar_photo');
   }catch(e){console.warn('Camera:',e.name);}
   function updateHint(){const h=document.getElementById('ar-rotate-hint');if(h)h.style.display=window.innerWidth>window.innerHeight?'none':'flex';}
   updateHint();window.addEventListener('resize',updateHint);
+  setTimeout(initARGestures,300);
 }
+
+/* ════════════
+   AR — arrastrar/escalar Roki + captura de foto
+════════════ */
+let _arInited=false;
+function initARGestures(){
+  if(_arInited) return; _arInited=true;
+  const wrap=document.getElementById('ar-roki-wrap');
+  if(!wrap) return;
+
+  let dragging=false, pinching=false;
+  let startX=0, startY=0, baseLeft=0, baseTop=0;
+  let startDist=0, baseSize=0;
+
+  function getSize(){ return parseFloat(wrap.style.width)||300; }
+
+  // Use a transparent drag layer over the model-viewer so we capture gestures
+  // (model-viewer captures its own touches for camera rotation, so we add a handle)
+  const handle=document.createElement('div');
+  handle.style.cssText='position:absolute;inset:0;z-index:10;touch-action:none;cursor:move;background:transparent;';
+  wrap.appendChild(handle);
+
+  // Toggle: tap handle = drag mode, double-tap = rotate model
+  let rotateMode=false;
+  handle.addEventListener('dblclick',function(){
+    rotateMode=!rotateMode;
+    handle.style.pointerEvents=rotateMode?'none':'auto';
+    showSpeechBubble(rotateMode?'🐸 Modo girar: deslizá sobre Roki':'🐸 Modo mover: arrastrá a Roki');
+  });
+
+  function pointFromEvent(e){
+    const t=e.touches?e.touches[0]:e;
+    return {x:t.clientX,y:t.clientY};
+  }
+  function dist(e){
+    if(!e.touches||e.touches.length<2) return 0;
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    return Math.hypot(dx,dy);
+  }
+
+  handle.addEventListener('touchstart',function(e){
+    if(e.touches.length===2){
+      pinching=true; startDist=dist(e); baseSize=getSize();
+    } else {
+      dragging=true;
+      const p=pointFromEvent(e);
+      startX=p.x; startY=p.y;
+      const r=wrap.getBoundingClientRect();
+      baseLeft=r.left+r.width/2; baseTop=r.top+r.height/2;
+    }
+    const hint=document.getElementById('ar-drag-hint');
+    if(hint) hint.style.opacity='0';
+    e.preventDefault();
+  },{passive:false});
+
+  handle.addEventListener('touchmove',function(e){
+    if(pinching&&e.touches.length===2){
+      const d=dist(e);
+      if(startDist>0){
+        let newSize=baseSize*(d/startDist);
+        newSize=Math.max(120,Math.min(window.innerWidth*1.2,newSize));
+        wrap.style.width=newSize+'px';
+        wrap.style.height=newSize+'px';
+        wrap.style.maxWidth='none'; wrap.style.maxHeight='none';
+      }
+    } else if(dragging){
+      const p=pointFromEvent(e);
+      const nx=baseLeft+(p.x-startX);
+      const ny=baseTop+(p.y-startY);
+      wrap.style.left=nx+'px';
+      wrap.style.top=ny+'px';
+    }
+    e.preventDefault();
+  },{passive:false});
+
+  handle.addEventListener('touchend',function(e){
+    if(e.touches.length===0){ dragging=false; pinching=false; }
+  });
+
+  // Mouse support (desktop testing)
+  handle.addEventListener('mousedown',function(e){
+    dragging=true; startX=e.clientX; startY=e.clientY;
+    const r=wrap.getBoundingClientRect();
+    baseLeft=r.left+r.width/2; baseTop=r.top+r.height/2;
+    const hint=document.getElementById('ar-drag-hint');
+    if(hint) hint.style.opacity='0';
+  });
+  window.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    wrap.style.left=(baseLeft+(e.clientX-startX))+'px';
+    wrap.style.top=(baseTop+(e.clientY-startY))+'px';
+  });
+  window.addEventListener('mouseup',function(){ dragging=false; });
+}
+
+async function capturePhoto(){
+  const video=document.getElementById('cam-video');
+  const wrap=document.getElementById('ar-roki-wrap');
+  const mv=document.getElementById('ar-model');
+  if(!video){ return; }
+
+  // Flash effect
+  const flash=document.createElement('div');
+  flash.style.cssText='position:fixed;inset:0;background:#fff;z-index:999;opacity:.8;transition:opacity .4s;pointer-events:none;';
+  document.body.appendChild(flash);
+  requestAnimationFrame(()=>{flash.style.opacity='0';});
+  setTimeout(()=>flash.remove(),450);
+
+  // Output canvas at high resolution (2x device pixel ratio)
+  const DPR=Math.min(3,(window.devicePixelRatio||1)*2);
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.round(vw*DPR);
+  canvas.height=Math.round(vh*DPR);
+  const ctx=canvas.getContext('2d');
+  ctx.scale(DPR,DPR);
+
+  // 1. Draw camera video (cover-fit)
+  if(video.videoWidth){
+    const vAR=video.videoWidth/video.videoHeight;
+    const sAR=vw/vh;
+    let dw=vw, dh=vh, dx=0, dy=0;
+    if(vAR>sAR){ dh=vh; dw=vh*vAR; dx=(vw-dw)/2; }
+    else { dw=vw; dh=vw/vAR; dy=(vh-dh)/2; }
+    ctx.drawImage(video,dx,dy,dw,dh);
+  } else {
+    ctx.fillStyle='#222'; ctx.fillRect(0,0,vw,vh);
+  }
+
+  // 2. Draw Roki 3D model on top
+  try{
+    // model-viewer exposes toDataURL via its internal canvas
+    let rokiURL=null;
+    if(mv && typeof mv.toDataURL==='function'){
+      rokiURL=mv.toDataURL('image/png');
+    }
+    if(rokiURL){
+      const rokiImg=new Image();
+      await new Promise((res,rej)=>{ rokiImg.onload=res; rokiImg.onerror=rej; rokiImg.src=rokiURL; });
+      const r=wrap.getBoundingClientRect();
+      ctx.drawImage(rokiImg, r.left, r.top, r.width, r.height);
+    }
+  }catch(e){ console.warn('Roki capture:',e); }
+
+  // 3. Watermark
+  ctx.font='bold '+Math.round(vw*0.035)+'px sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.9)';
+  ctx.textAlign='right';
+  ctx.shadowColor='rgba(0,0,0,.6)'; ctx.shadowBlur=6;
+  ctx.fillText('🐸 Geoparque Pun Antü', vw-16, vh-24);
+  ctx.shadowBlur=0; ctx.textAlign='left';
+
+  // 4. Export & show preview
+  const jpeg=canvas.toDataURL('image/jpeg',0.92);
+  showARPreview(jpeg);
+  if(typeof gtag==='function') gtag('event','ar_photo_captured');
+}
+
+function showARPreview(dataURL){
+  let prev=document.getElementById('ar-preview');
+  if(!prev){
+    prev=document.createElement('div');
+    prev.id='ar-preview';
+    prev.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;';
+    document.body.appendChild(prev);
+  }
+  prev.innerHTML=
+    '<img src="'+dataURL+'" style="max-width:90%;max-height:62vh;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);"/>'+
+    '<div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">'+
+      '<a href="'+dataURL+'" download="roki-puntantu.jpg" '+
+        'style="background:#5A8030;color:#fff;text-decoration:none;padding:12px 24px;border-radius:24px;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:8px;">💾 Guardar foto</a>'+
+      '<button onclick="closeARPreview()" '+
+        'style="background:rgba(255,255,255,.15);color:#fff;border:none;padding:12px 24px;border-radius:24px;font-weight:700;font-size:14px;cursor:pointer;">📷 Otra foto</button>'+
+    '</div>'+
+    '<div style="color:rgba(255,255,255,.6);font-size:12px;text-align:center;max-width:280px;line-height:1.5;">Mantené presionada la imagen para guardarla o compartirla en redes</div>';
+  prev.style.display='flex';
+}
+function closeARPreview(){
+  const prev=document.getElementById('ar-preview');
+  if(prev) prev.style.display='none';
+}
+
 function closeAR(){
   document.getElementById('ar-screen').classList.remove('open');
   if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
@@ -1374,6 +1575,7 @@ function skipFullscreen(){
   dismissSplash();
 }
 function dismissSplash(){
+  startRokiMessages();
   const sp = document.getElementById('fs-splash');
   if(sp){ sp.classList.add('hide'); setTimeout(()=>sp.remove(), 600); }
 }
@@ -2212,6 +2414,8 @@ function showPlant(idx, btn){
   document.querySelectorAll('.plant-tab').forEach(function(b){b.classList.remove('active');});
   if(btn) btn.classList.add('active');
   const p=PLANTS[idx];
+  const detail=document.getElementById('plant-detail');
+  if(detail) detail.style.display='flex';
   document.getElementById('plant-sci').textContent=p.sci;
   document.getElementById('plant-desc').textContent=p.desc;
   const badge=document.getElementById('plant-zone-badge');
@@ -2221,10 +2425,42 @@ function showPlant(idx, btn){
   badge.style.border='1px solid '+zc.border;
   badge.style.color=zc.text;
   const img=document.getElementById('plant-img');
-  if(img){img.src=p.img;img.alt=p.common;img.style.display='block';img.nextElementSibling.style.display='none';}
+  if(img){
+    img.src=p.img; img.alt=p.common;
+    img.style.display='block';
+    if(img.nextElementSibling) img.nextElementSibling.style.display='none';
+  }
+}
+
+/* ════════════
+   ROKI — mensajes rotativos cada 15 segundos
+════════════ */
+const ROKI_MSGS=[
+  "¿Sabías que las plantas que ves acá llevan miles de años viviendo en esta sierra?",
+  "Se llaman plantas nativas porque evolucionaron acá, en el pastizal pampeano. No necesitan riego ni fertilizantes — ya saben cómo vivir en este suelo!",
+  "Cada flor de Verbena que ves es una parada de colectivo para las mariposas nativas. Sin estas plantas, ellas no tienen dónde comer.",
+  "¿Sabías que el pastizal pampeano es uno de los ecosistemas más amenazados del mundo? Más del 90% fue reemplazado por cultivos.",
+  "Este jardín recupera 10 especies nativas. Es una pequeña isla de biodiversidad en el paisaje de Balcarce. Cada planta cuenta!",
+  "Las nativas también retienen el agua de lluvia y evitan que el suelo se erosione. Son ingenieras del ecosistema!",
+  "Si plantás una nativa en tu jardín de casa, estás haciendo geoconservación. Cada jardín suma!"
+];
+let _rokiIdx = 0;
+let _rokiTimer = null;
+
+function startRokiMessages(){
+  if(_rokiTimer) return;
+  showSpeechBubble('🐸 ' + ROKI_MSGS[_rokiIdx]);
+  _rokiTimer = setInterval(function(){
+    _rokiIdx = (_rokiIdx + 1) % ROKI_MSGS.length;
+    showSpeechBubble('🐸 ' + ROKI_MSGS[_rokiIdx]);
+  }, 15000);
+}
+function stopRokiMessages(){
+  if(_rokiTimer){ clearInterval(_rokiTimer); _rokiTimer = null; }
 }
 
 function closeExtraPanel(id){
+  setTimeout(startRokiMessages, 1000);
   const el=document.getElementById(id+'-panel');
   if(el) el.classList.remove('open');
   hideSpeechBubble();
