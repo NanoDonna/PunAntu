@@ -545,7 +545,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       </div>
     </div>
     <!-- photo btn: visible at start, hidden when panel open -->
-    <button class="ar-photo-btn" id="ar-photo-btn" onclick="" style="opacity:.45;cursor:default;">⏳ Próximamente · foto con la mascota</button>
+    <button class="ar-photo-btn" id="ar-photo-btn" onclick="openAR()">📸 Foto con la mascota</button>
     <!-- geositio tag: hidden at start, visible when panel open -->
     <div id="geo-tag" style="display:none;flex-direction:column;align-items:flex-end;gap:1px;">
       <span style="background:#7A1A0A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;">Jardín</span>
@@ -654,7 +654,11 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
   <!-- mascota centrada — ocupa toda la pantalla como fondo 3D -->
   <!-- Roki overlay — draggable & scalable -->
-  <div id="ar-roki-wrap" style="position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);z-index:5;width:55vw;max-width:340px;height:55vw;max-height:340px;touch-action:none;">
+  <div id="ar-roki-wrap" style="position:absolute;left:50%;top:68%;transform:translate(-50%,-50%);z-index:5;width:55vw;max-width:340px;height:55vw;max-height:340px;touch-action:none;">
+    <!-- sombra de suelo bajo la mascota -->
+    <div style="position:absolute;bottom:-6%;left:50%;transform:translateX(-50%);
+      width:62%;height:10%;background:radial-gradient(ellipse,rgba(0,0,0,.45) 0%,transparent 70%);
+      pointer-events:none;z-index:1;"></div>
     <model-viewer id="ar-model"
       src="PunAntuMascot.glb"
       auto-rotate rotation-per-second="12deg"
@@ -1375,6 +1379,8 @@ function ansQ(i){
 let camStream=null;
 async function openAR(){
   document.getElementById('ar-screen').classList.add('open');
+  document.getElementById('main').classList.remove('panel-half-open');
+  document.querySelectorAll('[id$="-panel"]').forEach(p=>p.classList.remove('open'));
 if(typeof gtag==='function') gtag('event','open_ar_photo');
   // Request fullscreen
   const el = document.getElementById('ar-screen');
@@ -1508,32 +1514,50 @@ async function capturePhoto(){
   const ctx=canvas.getContext('2d');
   ctx.scale(DPR,DPR);
 
-  // 1. Draw camera video (cover-fit)
-  if(video.videoWidth){
-    const vAR=video.videoWidth/video.videoHeight;
-    const sAR=vw/vh;
-    let dw=vw, dh=vh, dx=0, dy=0;
-    if(vAR>sAR){ dh=vh; dw=vh*vAR; dx=(vw-dw)/2; }
-    else { dw=vw; dh=vw/vAR; dy=(vh-dh)/2; }
-    ctx.drawImage(video,dx,dy,dw,dh);
+  // 1. Draw camera video — esperar que el stream tenga dimensiones válidas
+  let videoReady = video.videoWidth > 0 && video.readyState >= 2;
+  if(!videoReady){
+    await new Promise(r => setTimeout(r, 300));
+    videoReady = video.videoWidth > 0;
+  }
+  if(videoReady){
+    try{
+      const vAR = video.videoWidth / video.videoHeight;
+      const sAR = vw / vh;
+      let dw=vw, dh=vh, dx=0, dy=0;
+      if(vAR > sAR){ dh=vh; dw=vh*vAR; dx=(vw-dw)/2; }
+      else{ dw=vw; dh=vw/vAR; dy=(vh-dh)/2; }
+      ctx.drawImage(video, dx, dy, dw, dh);
+    }catch(e){
+      ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,vw,vh);
+      console.warn('Video draw error:',e);
+    }
   } else {
-    ctx.fillStyle='#222'; ctx.fillRect(0,0,vw,vh);
+    ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,vw,vh);
   }
 
-  // 2. Draw Roki 3D model on top
+  // 2. Dibujar Roki — usar snapshot pre-capturado al inicio
   try{
-    // model-viewer exposes toDataURL via its internal canvas
-    let rokiURL=null;
-    if(mv && typeof mv.toDataURL==='function'){
-      rokiURL=mv.toDataURL('image/png');
+    const r = wrap.getBoundingClientRect();
+    if(_rokiPng && _rokiPng.complete && _rokiPng.naturalWidth > 0){
+      // Snapshot pre-capturado: confiable
+      ctx.drawImage(_rokiPng, r.left, r.top, r.width, r.height);
+    } else {
+      // Fallback en vivo: intentar ahora
+      await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
+      const arMv = document.getElementById('ar-model');
+      if(arMv && typeof arMv.toBlob === 'function'){
+        const blob = await arMv.toBlob({mimeType:'image/png', idealAspect:false});
+        if(blob && blob.size > 2000){
+          const url = URL.createObjectURL(blob);
+          const img = new Image();
+          await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; img.src=url; });
+          ctx.drawImage(img, r.left, r.top, r.width, r.height);
+          URL.revokeObjectURL(url);
+        }
+      }
     }
-    if(rokiURL){
-      const rokiImg=new Image();
-      await new Promise((res,rej)=>{ rokiImg.onload=res; rokiImg.onerror=rej; rokiImg.src=rokiURL; });
-      const r=wrap.getBoundingClientRect();
-      ctx.drawImage(rokiImg, r.left, r.top, r.width, r.height);
-    }
-  }catch(e){ console.warn('Roki capture:',e); }
+  }catch(e){ console.warn('Roki draw:',e); }
 
   // 3. Watermark
   ctx.font='bold '+Math.round(vw*0.035)+'px sans-serif';
@@ -1572,6 +1596,33 @@ function closeARPreview(){
   const prev=document.getElementById('ar-preview');
   if(prev) prev.style.display='none';
 }
+
+/* ── Pre-captura de Roki cuando el modelo carga ── */
+var _rokiPng = null;
+(function scheduleRokiCapture(){
+  var mv = document.getElementById('mv-idle');
+  if(!mv){ setTimeout(scheduleRokiCapture, 500); return; }
+  mv.addEventListener('load', function(){
+    // Esperar que WebGL haya pintado al menos 2 frames
+    setTimeout(async function(){
+      try{
+        if(typeof mv.toBlob === 'function'){
+          var blob = await mv.toBlob({mimeType:'image/png', idealAspect:false});
+          if(blob && blob.size > 2000){
+            var img = new Image();
+            img.onload = function(){ _rokiPng = img; };
+            img.src = URL.createObjectURL(blob);
+          }
+        }
+        // Fallback: shadowRoot canvas
+        if(!_rokiPng){
+          var ic = mv.shadowRoot && mv.shadowRoot.querySelector('canvas');
+          if(ic){ var img2=new Image(); img2.src=ic.toDataURL('image/png'); _rokiPng=img2; }
+        }
+      }catch(e){ console.warn('Roki pre-capture:',e); }
+    }, 800);
+  });
+})();
 
 function closeAR(){
   document.getElementById('ar-screen').classList.remove('open');
