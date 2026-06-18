@@ -37,8 +37,8 @@
   border:1px solid #7a4a18;padding:4px 10px;border-radius:999px;animation:pa-pulse 1.1s infinite;}
 @keyframes pa-pulse{0%,100%{opacity:.6}50%{opacity:1}}
 .pa-badge.rain{color:#9fd0f0;background:#0c2a3a;border-color:#2a5a7a;}
-.pa-hint{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;
-  text-align:center;padding:0 20px;color:var(--txt-dim);font-size:clamp(11px,1.1vw,13px);pointer-events:none;}
+.pa-hint{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;align-items:center;
+  padding:0 20px;color:var(--txt-dim);font-size:clamp(11px,1.1vw,13px);pointer-events:none;}
 .pa-hint b{color:var(--verde-claro);}
 /* Foot */
 .pa-foot{flex:0 0 auto;padding:8px 16px 11px;border-top:1px solid var(--linea);display:flex;flex-direction:column;gap:5px;}
@@ -105,23 +105,23 @@
 .pa-no-seeds .ns-title{font-family:"Playfair Display",Georgia,serif;font-size:15px;color:var(--txt);margin-bottom:6px;}
 .pa-no-seeds .ns-body{font-size:12px;line-height:1.6;}
 /* ── Toast ficha ── */
-#pa-toast{position:absolute;top:10px;left:50%;
-  transform:translateX(-50%) translateY(-120%);
+#pa-toast{position:absolute;top:10px;left:10px;
+  transform:translateY(-120%);
   transition:transform .4s cubic-bezier(.3,1,.3,1);
   z-index:12;background:#1a2414;border:1px solid #3a4a26;
-  border-radius:16px;display:flex;align-items:center;gap:12px;
-  padding:10px 16px 10px 10px;cursor:pointer;
-  max-width:calc(100% - 32px);min-width:220px;
-  box-shadow:0 8px 24px rgba(0,0,0,.5);-webkit-tap-highlight-color:transparent;}
-#pa-toast.show{transform:translateX(-50%) translateY(0);}
-#toast-img{width:48px;height:48px;border-radius:50%;flex:0 0 48px;overflow:hidden;
+  border-radius:12px;display:flex;align-items:center;gap:9px;
+  padding:8px 12px 8px 8px;cursor:pointer;
+  max-width:calc(60% - 10px);min-width:0;
+  box-shadow:0 6px 18px rgba(0,0,0,.5);-webkit-tap-highlight-color:transparent;}
+#pa-toast.show{transform:translateY(0);}
+#toast-img{width:36px;height:36px;border-radius:50%;flex:0 0 36px;overflow:hidden;
   box-shadow:inset 0 0 0 2px rgba(255,255,255,.12);background-size:cover;background-position:center;}
 #toast-img img{width:100%;height:100%;object-fit:cover;display:block;}
-.toast-tag{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;
-  color:#8FB85A;font-weight:800;margin-bottom:2px;}
-#toast-name{font-family:"Playfair Display",Georgia,serif;font-size:15px;
+.toast-tag{font-size:7.5px;letter-spacing:1.2px;text-transform:uppercase;
+  color:#8FB85A;font-weight:800;margin-bottom:1px;}
+#toast-name{font-family:"Playfair Display",Georgia,serif;font-size:12px;
   color:#e8eadf;font-weight:700;line-height:1.1;}
-.toast-hint{font-size:10px;color:#9aa089;margin-top:3px;}
+.toast-hint{font-size:9px;color:#9aa089;margin-top:2px;}
 </style>
 
 <div class="pa-root">
@@ -129,13 +129,14 @@
     <h2 class="pa-title">Sembrá y cuidá<small>Jardín nativo · Pun Antü</small></h2>
     <div class="pa-head-r">
       <div class="pa-counters">
-        <div class="pa-cnt" id="cnt-seeds" title="Semillas disponibles en el jardín">🌱<span id="c-seeds">—</span></div>
+        <div class="pa-cnt" id="cnt-seeds" title="Semillas disponibles en el jardín">🫘<span id="c-seeds">—</span></div>
         <div class="pa-cnt">🌸<span data-pa="c-fl">0</span></div>
         <div class="pa-cnt">🐝<span data-pa="c-bee">0</span></div>
         <div class="pa-cnt">🦋<span data-pa="c-but">0</span></div>
       </div>
       <div class="pa-col-wrap">
-        <button class="pa-iconbtn" data-pa="col" aria-label="Colección">📖</button>
+        <button class="pa-music-btn" id="bg-music-btn" onclick="bgToggle()" title="Música">♪</button>
+      <button class="pa-iconbtn" data-pa="col" aria-label="Colección">📖</button>
         <div class="pa-prog-row">
           <div class="pa-prog-bg"><div class="pa-prog-fill" data-pa="prog-fill"></div></div>
           <span class="pa-prog-lbl" data-pa="prog-lbl">0/10</span>
@@ -155,7 +156,7 @@
       </div>
     </div>
     <div class="pa-badge" data-pa="badge">☀ ¡Sequía!</div>
-    <div class="pa-hint" data-pa="hint">Tocá una <b>parcela vacía</b> para sembrar.</div>
+    <div class="pa-hint" data-pa="hint"><span>Tocá una <b>parcela vacía</b> para sembrar.</span></div>
   </div>
   <div class="pa-foot">
     <div class="pa-hudlabel" data-pa="hudlabel"></div>
@@ -189,7 +190,7 @@
     <h3 class="pa-title" data-pa="fc-name"></h3>
     <div class="meta" data-pa="fc-meta"></div>
     <p class="dato" data-pa="fc-dato"></p>
-    <button class="pa-close" data-pa="fc-replant" style="display:none;margin-top:18px;background:#2a1f14;color:#e6b07a;border:1px solid #6a4a28">🌱 Replantar aquí</button>
+    <button class="pa-close" data-pa="fc-replant" style="display:none;margin-top:18px;background:#2a1f14;color:#e6b07a;border:1px solid #6a4a28">🫘 Replantar aquí</button>
     <button class="pa-close" data-pa="fc-ok" style="margin-top:10px;background:linear-gradient(180deg,var(--verde-claro),var(--verde));color:#0e120b;border:none">Seguir</button>
   </div>
 
@@ -328,9 +329,9 @@
   }
 
   async function addToGlobal(key,amount){
-    if(!window.storage)return;
-    try{var r=await window.storage.get('pa_'+key,true);var cur=r?parseInt(r.value)||0:0;
-    await window.storage.set('pa_'+key,String(cur+amount),true);}catch(e){}
+    var st=getStorage();if(!st)return;
+    try{var r=await st.get('pa_'+key,true);var cur=r?parseInt(r.value)||0:0;
+    await st.set('pa_'+key,String(cur+amount),true);}catch(e){}
   }
 
   /* ── Estado local ── */
@@ -687,10 +688,54 @@
   function harvestSeeds(i){
     var p=tiles[i],tc=tileCanvasXY(i);
     playHarvest();
-    floats.push({txt:'🌾',x:tc.cx,y:tc.cy-60*tc.sc,life:1.4,big:true});
+    floats.push({txt:'🫘',x:tc.cx,y:tc.cy-60*tc.sc,life:1.4,big:true});
     spawnConfetti(tc,p.sp);
     p.seeding=false;p.harvested=true;
     returnSeeds(2);
+  }
+
+  /* ══ Música de fondo — Folk Pastoral ══ */
+  var _bgStop=null,_bgMuted=false,_bgFirstPlay=false;
+  function bgMakeNote(c,dest,type,freq,start,atk,sus,rel,vol){
+    var o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.value=freq;o.connect(g);g.connect(dest);
+    g.gain.setValueAtTime(0,start);
+    g.gain.linearRampToValueAtTime(vol,start+atk);
+    g.gain.setValueAtTime(vol,start+atk+sus);
+    g.gain.linearRampToValueAtTime(0,start+atk+sus+rel);
+    o.start(start);o.stop(start+atk+sus+rel+0.05);
+  }
+  function bgStart(){
+    if(_bgStop||_bgMuted)return;
+    var c=ac();
+    var master=c.createGain();master.gain.value=0.20;master.connect(c.destination);
+    var filt=c.createBiquadFilter();filt.type='lowpass';filt.frequency.value=2200;filt.connect(master);
+    var Q=60/80,G4=392,A4=440,B4=493.9,D5=587.3,E5=659.3,G5=784,G3=196,D3=146.8,C3=130.8;
+    var mel=[[G4,1],[A4,1],[B4,1],[D5,2],[B4,1],[A4,1],[G4,2],[0,1],
+             [D5,1],[E5,1],[G5,2],[D5,1],[B4,1],[A4,2],[G4,1],[0,2]];
+    var bas=[[G3,4],[D3,4],[C3,4],[D3,4]];
+    var barLen=mel.reduce(function(s,n){return s+n[1];},0)*Q;
+    var t=c.currentTime+0.1,alive=true;
+    function pump(){
+      if(!alive)return;
+      while(t<c.currentTime+barLen*1.5){
+        var mt=t;
+        mel.forEach(function(n){if(n[0]>0)bgMakeNote(c,filt,'triangle',n[0],mt,0.05,n[1]*Q-0.15,0.18,0.14);mt+=n[1]*Q;});
+        var bt=t;
+        bas.forEach(function(n){bgMakeNote(c,filt,'sine',n[0],bt,0.12,n[1]*Q-0.35,0.35,0.08);bt+=n[1]*Q;});
+        t+=barLen;
+      }
+      setTimeout(pump,barLen*500);
+    }
+    pump();
+    _bgStop=function(){alive=false;try{master.disconnect();}catch(e){}};
+  }
+  function bgStop(){if(_bgStop){try{_bgStop();}catch(e){}}_bgStop=null;}
+  function bgToggle(){
+    _bgMuted=!_bgMuted;
+    var btn=document.getElementById('bg-music-btn');
+    if(_bgMuted){bgStop();if(btn)btn.classList.add('muted');}
+    else{bgStart();if(btn)btn.classList.remove('muted');}
   }
 
   /* ══ Sonidos Web Audio API ══ */
@@ -826,7 +871,7 @@
       elCrec.style.width=fp.crec+'%';elCrec.classList.toggle('bloom',fp.crec>=80);
     }else{
       minibars.style.display='none';
-      var seedTxt=_gSeeds>=0?(' · 🌱 <b>'+_gSeeds+'</b>'):'';hudLabel.innerHTML=fp&&fp.dead?('<b>'+fp.sp.nombre+'</b> · 🥀 se secó'):'Parcelas: <b>'+occ+'/9</b>'+seedTxt;
+      var seedTxt=_gSeeds>=0?(' · 🫘 <b>'+_gSeeds+'</b>'):'';hudLabel.innerHTML=fp&&fp.dead?('<b>'+fp.sp.nombre+'</b> · 🥀 se secó'):'Parcelas: <b>'+occ+'/9</b>'+seedTxt;
     }
   }
 
@@ -865,10 +910,10 @@
     var seeds=_gSeeds,zonaTxt='Zona: '+zona+' ('+['< 180 m','180–240 m','> 240 m'][ZONAS.indexOf(zona)]+')';
     if(seeds<=0){
       pickZona.innerHTML=zonaTxt;
-      pickBody.innerHTML='<div class="pa-no-seeds"><div class="ns-icon">🌱</div><div class="ns-title">Sin semillas disponibles</div><div class="ns-body">No quedan semillas en el jardín.<br>Cosechá una planta para aportar <b>2 semillas</b> al jardín colectivo.</div></div>';
+      pickBody.innerHTML='<div class="pa-no-seeds"><div class="ns-icon">🫘</div><div class="ns-title">Sin semillas disponibles</div><div class="ns-body">No quedan semillas en el jardín.<br>Cosechá una planta para aportar <b>2 semillas</b> al jardín colectivo.</div></div>';
       ovPick.classList.add('show');return;
     }
-    pickZona.innerHTML=zonaTxt+' <span style="color:var(--verde-claro);font-weight:700">· 🌱 '+seeds+' disponibles</span>';
+    pickZona.innerHTML=zonaTxt+' <span style="color:var(--verde-claro);font-weight:700">· 🫘 '+seeds+' disponibles</span>';
     var html='<div class="pa-grid">';
     SP.filter(function(s){return s.zona===zona;}).forEach(function(s){html+='<div class="pa-card" data-sow="'+s.id+'">'+dotHtml(s)+'<span class="nm">'+s.nombre+(s.trait?'<small>'+s.trait+'</small>':'')+'</span></div>';});
     html+='</div>';pickBody.innerHTML=html;ovPick.classList.add('show');
@@ -878,7 +923,7 @@
     var ok=await consumeSeed();
     if(!ok){
       pickZona.innerHTML='<span style="color:#e67e51;">¡No quedan semillas!</span>';
-      pickBody.innerHTML='<div class="pa-no-seeds"><div class="ns-icon">🌱</div><div class="ns-title">Sin semillas disponibles</div><div class="ns-body">Cosechá una planta para aportar <b>2 semillas</b> al jardín colectivo.</div></div>';
+      pickBody.innerHTML='<div class="pa-no-seeds"><div class="ns-icon">🫘</div><div class="ns-title">Sin semillas disponibles</div><div class="ns-body">Cosechá una planta para aportar <b>2 semillas</b> al jardín colectivo.</div></div>';
       return;
     }
     if(pickFor>=0){tiles[pickFor]=nuevaPlanta(byId[c.getAttribute('data-sow')]);playPlant();}
@@ -920,7 +965,16 @@
   $('fc-replant').addEventListener('click',function(){if(fichaTile>=0){tiles[fichaTile]=null;if(focus===fichaTile)focus=-1;}ovFicha.classList.remove('show');});
   $('fc-ok').addEventListener('click',function(){ovFicha.classList.remove('show');if(ovCol.classList.contains('show'))abrirColeccion();});
 
-  function arrancar(){fit();syncHUD();loadGlobalSeeds();window.addEventListener('resize',fit);requestAnimationFrame(loop);setInterval(loadGlobalSeeds,30000);}
+  function arrancar(){
+    fit();syncHUD();loadGlobalSeeds();
+    window.addEventListener('resize',fit);
+    requestAnimationFrame(loop);
+    setInterval(loadGlobalSeeds,30000);
+    stageEl.addEventListener('pointerdown',function bgFirst(){
+      if(_bgFirstPlay)return;_bgFirstPlay=true;
+      if(!_bgMuted)bgStart();
+    },{once:true,passive:true});
+  }
   if(stageEl.clientWidth>0&&stageEl.clientHeight>0)arrancar();else setTimeout(arrancar,60);
 })();
 </script>
