@@ -294,32 +294,42 @@
 
   /* ── Almacenamiento global compartido ── */
   /* ══ Semillas globales compartidas ══ */
+  /* Storage: Claude artifact window.storage → parent frame → localStorage */
+  var _lsStore={
+    get:async function(k){var v=localStorage.getItem('pa_s_'+k);return v!==null?{value:v}:null;},
+    set:async function(k,v){localStorage.setItem('pa_s_'+k,String(v));return{key:k,value:v};}
+  };
+  function getStorage(){
+    if(window.storage)return window.storage;
+    try{if(window.parent&&window.parent!==window&&window.parent.storage)return window.parent.storage;}catch(e){}
+    return _lsStore;
+  }
   var _gSeeds=-1;  /* -1 = no cargado aún */
   async function loadGlobalSeeds(){
-    if(!window.storage){_gSeeds=999;return _gSeeds;}
+    var st=getStorage();
     try{
-      var r=await window.storage.get('pa_seeds',true);
-      if(!r){await window.storage.set('pa_seeds','10',true);_gSeeds=10;}
+      var r=await st.get('pa_seeds',true);
+      if(!r){await st.set('pa_seeds','10',true);_gSeeds=10;}
       else{_gSeeds=Math.max(0,parseInt(r.value)||0);}
-    }catch(e){_gSeeds=999;}
+    }catch(e){_gSeeds=10;}
     updateSeedUI();return _gSeeds;
   }
   async function consumeSeed(){
-    if(!window.storage)return true;
+    var st=getStorage();
     try{
-      var r=await window.storage.get('pa_seeds',true);
+      var r=await st.get('pa_seeds',true);
       var cur=r?Math.max(0,parseInt(r.value)||0):0;
       if(cur<=0){_gSeeds=0;updateSeedUI();return false;}
-      await window.storage.set('pa_seeds',String(cur-1),true);
+      await st.set('pa_seeds',String(cur-1),true);
       _gSeeds=cur-1;updateSeedUI();return true;
     }catch(e){return true;}
   }
   async function returnSeeds(n){
-    if(!window.storage)return;
+    var st=getStorage();
     try{
-      var r=await window.storage.get('pa_seeds',true);
+      var r=await st.get('pa_seeds',true);
       var cur=r?Math.max(0,parseInt(r.value)||0):0;
-      await window.storage.set('pa_seeds',String(cur+n),true);
+      await st.set('pa_seeds',String(cur+n),true);
       _gSeeds=cur+n;updateSeedUI();
     }catch(e){}
   }
@@ -329,7 +339,7 @@
   }
 
   async function addToGlobal(key,amount){
-    var st=getStorage();if(!st)return;
+    var st=getStorage();
     try{var r=await st.get('pa_'+key,true);var cur=r?parseInt(r.value)||0:0;
     await st.set('pa_'+key,String(cur+amount),true);}catch(e){}
   }
@@ -705,9 +715,10 @@
     g.gain.linearRampToValueAtTime(0,start+atk+sus+rel);
     o.start(start);o.stop(start+atk+sus+rel+0.05);
   }
-  function bgStart(){
+  async function bgStart(){
     if(_bgStop||_bgMuted)return;
     var c=ac();
+    if(c.state==='suspended'){try{await c.resume();}catch(e){}}
     var master=c.createGain();master.gain.value=0.20;master.connect(c.destination);
     var filt=c.createBiquadFilter();filt.type='lowpass';filt.frequency.value=2200;filt.connect(master);
     var Q=60/80,G4=392,A4=440,B4=493.9,D5=587.3,E5=659.3,G5=784,G3=196,D3=146.8,C3=130.8;
@@ -718,14 +729,14 @@
     var t=c.currentTime+0.1,alive=true;
     function pump(){
       if(!alive)return;
-      while(t<c.currentTime+barLen*1.5){
+      while(t<c.currentTime+barLen*3){
         var mt=t;
         mel.forEach(function(n){if(n[0]>0)bgMakeNote(c,filt,'triangle',n[0],mt,0.05,n[1]*Q-0.15,0.18,0.14);mt+=n[1]*Q;});
         var bt=t;
         bas.forEach(function(n){bgMakeNote(c,filt,'sine',n[0],bt,0.12,n[1]*Q-0.35,0.35,0.08);bt+=n[1]*Q;});
         t+=barLen;
       }
-      setTimeout(pump,barLen*500);
+      setTimeout(pump,2000);
     }
     pump();
     _bgStop=function(){alive=false;try{master.disconnect();}catch(e){}};
