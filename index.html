@@ -430,7 +430,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 
 /* ── Panel responsive fixes ── */
-#edad-panel,#meta-panel{max-height:min(56vh,480px);}
+#edad-panel,#meta-panel{max-height:min(48vh,400px);}
 .ep-body{padding:8px 18px 12px;overflow-y:auto;}
 
 /* ── Afinador triangular (canvas) ── */
@@ -476,6 +476,17 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .gs-marker-wrap{background:transparent!important;border:none!important;box-shadow:none!important;}
 .gs-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.6);line-height:1;}
 .gs-pill{border-radius:10px;padding:3px 8px;font-size:9px;font-weight:700;font-family:sans-serif;white-space:nowrap;max-width:88px;overflow:hidden;text-overflow:ellipsis;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.4);letter-spacing:.2px;margin-top:3px;}
+
+/* ── Trophy bubble dorado ── */
+#trophy-bubble{
+  border:1.5px solid rgba(240,192,112,.85)!important;
+  box-shadow:0 0 18px rgba(240,192,112,.35),0 4px 20px rgba(0,0,0,.5)!important;
+}
+@keyframes goldenPulse{
+  0%,100%{box-shadow:0 0 12px rgba(240,192,112,.3),0 4px 20px rgba(0,0,0,.5);}
+  50%{box-shadow:0 0 24px rgba(240,192,112,.6),0 4px 20px rgba(0,0,0,.5);}
+}
+#trophy-bubble[style*="block"]{animation:goldenPulse 2s ease-in-out infinite;}
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Google Analytics -->
@@ -804,14 +815,14 @@ function dismissSplash(){
 /* ════════════
    MAPA GEOCIRCUITO
 ════════════ */
-/* URLs de cada geositio — actualizar con las rutas reales del deploy */
+/* URLs de los geositios en GitHub Pages */
 const GEOSITIO_URLS = {
-  1: '.',            /* esta página */
-  2: '../geositio2/',
-  3: '../geositio3/',
-  4: '../geositio4/',
-  5: '../geositio5/',
-  6: '../geositio6/',
+  1: 'https://nanodonna.github.io/PunAntu/',
+  2: 'https://nanodonna.github.io/PunAntu/geositio2.html',
+  3: 'https://nanodonna.github.io/PunAntu/geositio3.html',
+  4: 'https://nanodonna.github.io/PunAntu/geositio4.html',
+  5: 'https://nanodonna.github.io/PunAntu/geositio5.html',
+  6: 'https://nanodonna.github.io/PunAntu/geositio6.html',
 };
 const GEOSITIOS = [
   {n:1, name:"Cerro El Triunfo",        lat:-37.86065, lon:-58.2548},
