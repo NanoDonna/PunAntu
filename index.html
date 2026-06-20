@@ -471,7 +471,12 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #decay-handle-btn.stuck{
   animation:handleShake .45s ease;
   background:linear-gradient(180deg,#B0C0D0,#8090A0)!important;
-}</style>
+}
+/* ── Marcadores del mapa ── */
+.gs-marker-wrap{background:transparent!important;border:none!important;box-shadow:none!important;}
+.gs-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.6);line-height:1;}
+.gs-pill{border-radius:10px;padding:3px 8px;font-size:9px;font-weight:700;font-family:sans-serif;white-space:nowrap;max-width:88px;overflow:hidden;text-overflow:ellipsis;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.4);letter-spacing:.2px;margin-top:3px;}
+</style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
@@ -554,8 +559,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   </div>
 
   <!-- Speech bubbles -->
-  <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+  <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:70%;max-width:280px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
+    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
     <div id="trophy-bubble" style="
   position:relative;
   background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
@@ -746,8 +751,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 </div>
 
 <!-- Speech bubbles -->
-<div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:90%;max-width:380px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:10px 18px;color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+<div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:70%;max-width:280px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
+  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
   <div id="trophy-bubble" style="
   position:relative;
   background:linear-gradient(135deg,rgba(200,132,30,.28),rgba(18,6,2,.96));
@@ -884,9 +889,16 @@ function initMapa(){
   L.polyline(CIRCUIT_PATH,{color:'#C8841E',weight:4,opacity:.85,dashArray:'6 4'}).addTo(map);
   GEOSITIOS.forEach(g=>{
     const active=g.n===1;
-    const icon=L.divIcon({className:'',
-      html:`<div style="width:32px;height:32px;border-radius:50%;background:${active?'#C8841E':'rgba(200,132,30,.35)'};border:2px solid ${active?'#F0C070':'rgba(200,132,30,.6)'};color:${active?'#fff':'#F0C070'};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">${g.n}</div>`,
-      iconSize:[32,32],iconAnchor:[16,16]});
+    const bg    = active?'#C8841E':'rgba(14,4,2,.88)';
+    const border= active?'#F0C070':'rgba(200,132,30,.65)';
+    const color = active?'#0E0402':'#F0C070';
+    const icon=L.divIcon({
+      className:'gs-marker-wrap',
+      html:`<div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="gs-circle" style="background:${bg};border:2.5px solid ${border};color:${color};">${g.n}</div>
+        <div class="gs-pill" style="background:${bg};border:1px solid ${border};color:${color};">${g.name}</div>
+      </div>`,
+      iconSize:[96,58],iconAnchor:[48,17]});
     L.marker([g.lat,g.lon],{icon}).addTo(map).on('click',()=>{
       const isCurrent = g.n===1;
       document.getElementById('mapa-popup-num').textContent='Geositio '+g.n;
@@ -1231,7 +1243,7 @@ function updateEdad(ma){
     if(d<dist){dist=d;best=h;}
   });
   const evt=document.getElementById('decay-event');
-  if(evt)evt.textContent=(best&&dist<160)?best.txt:'';
+  if(evt)evt.textContent=(best&&dist<10)?best.txt:'';
   /* ── Afinador triangular ── */
   const dist2200 = Math.abs(ma - 2200);
   const feedback=document.getElementById('tuner-feedback');
