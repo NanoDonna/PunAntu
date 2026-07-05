@@ -387,11 +387,31 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 :fullscreen #fs-exit-btn.visible{display:flex;}
 :-webkit-full-screen #fs-exit-btn.visible{display:flex;}
 
+
+.community-stats{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  margin-bottom:9px;
+}
+.cs-label{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:#5A8030;font-weight:800;
+}
+.cs-row{
+  display:flex;align-items:center;gap:13px;
+  font-size:12.5px;font-weight:700;color:rgba(253,248,238,.85);
+}
+.cs-row b{color:#F0C070;font-weight:800;}
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F6ZCDHTFSN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-F6ZCDHTFSN');
+  </script>
   
 <div id="paleo-panel">
   <div class="ep-handle"></div>
@@ -601,6 +621,15 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 
   <!-- Bottom pills -->
   <div class="bottom-bar">
+    <div class="community-stats">
+      <div class="cs-label">🌱 Logros de la comunidad</div>
+      <div class="cs-row">
+        <span>🫘 <b id="gbl-seed">—</b></span>
+        <span>🌸 <b id="gbl-fl">—</b></span>
+        <span>🐝 <b id="gbl-bee">—</b></span>
+        <span>🦋 <b id="gbl-but">—</b></span>
+      </div>
+    </div>
     <div class="bar-label">¿Qué querés descubrir?</div>
     <div class="pills">
       <button class="pill" onclick="openPanel('plantas',this)"><span class="pi">🌿</span>Plantas Nativas</button>
@@ -1089,6 +1118,8 @@ function removeBlackBg(img){
   }catch(e){}
 }
 document.addEventListener('DOMContentLoaded',()=>{
+  loadGlobalCounters();
+  setInterval(loadGlobalCounters,20000);
   document.querySelectorAll('img[src="logo.png"]').forEach(removeBlackBg);
 });
 
@@ -2635,18 +2666,18 @@ let _rokiIdx = 0;
 let _rokiTimer = null;
 
 async function getRokiGameMsg(){
-  let fl=0,bee=0,but_=0;
-  if(window.storage){try{
-    const[r1,r2,r3]=await Promise.all([
-      window.storage.get('pa_flowers',true),
-      window.storage.get('pa_bees',true),
-      window.storage.get('pa_butterflies',true)
+  let seeds=0,fl=0,bee=0,but_=0;
+  try{
+    const[r0,r1,r2,r3]=await Promise.all([
+      readGlobalStat('pa_seeds'),
+      readGlobalStat('pa_flowers'),
+      readGlobalStat('pa_bees'),
+      readGlobalStat('pa_butterflies')
     ]);
-    fl=r1?parseInt(r1.value)||0:0;
-    bee=r2?parseInt(r2.value)||0:0;
-    but_=r3?parseInt(r3.value)||0:0;
-  }catch(e){}}
-  return '🐸 ¡Entre todos sembramos <b>'+fl+'</b> 🌸, <b>'+bee+'</b> 🐝 y <b>'+but_+'</b> 🦋 en el jardín virtual!';
+    seeds=r0;fl=r1;bee=r2;but_=r3;
+  }catch(e){}
+  var pol=bee+but_;
+  return '🐸 ¡Entre todos acumulamos <b>'+seeds+'</b> 🫘, <b>'+fl+'</b> 🌸 y <b>'+pol+'</b> polinizadores 🐝🦋 en el jardín virtual!';
 }
 
 function startRokiMessages(){
@@ -2721,19 +2752,6 @@ function closeHistoriaPanel(){
     allow="autoplay"
     loading="lazy">
   </iframe>
-
-  <!-- contador global compartido (se carga al abrir) -->
-  <div id="juego-global-bar" style="
-    flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;gap:16px;
-    padding:8px 18px max(10px,env(safe-area-inset-bottom));
-    background:rgba(14,4,2,.98);border-top:1px solid rgba(255,255,255,.05);
-    font-size:12px;font-weight:700;color:rgba(253,248,238,.7);">
-    <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5A8030;">Entre todos hemos</span>
-    <span>🌸 <span id="gbl-fl">—</span></span>
-    <span>🐝 <span id="gbl-bee">—</span></span>
-    <span>🦋 <span id="gbl-but">—</span></span>
-  </div>
 </div>
 
 <script>
@@ -2767,15 +2785,30 @@ function closeJuego(){
   setTimeout(startRokiMessages, 1000);
 }
 
+
+/* Lee un contador global compartido con el juego (mismo origen → misma localStorage).
+   El juego usa 'pa_s_'+key como clave de fallback cuando window.storage no existe. */
+async function readGlobalStat(key){
+  try{
+    if(window.storage){
+      var r = await window.storage.get(key, true);
+      return r ? (parseInt(r.value)||0) : 0;
+    }
+  }catch(e){}
+  try{
+    var v = localStorage.getItem('pa_s_'+key);
+    return v!==null ? (parseInt(v)||0) : 0;
+  }catch(e){}
+  return 0;
+}
 async function loadGlobalCounters(){
-  if(!window.storage) return;
   try {
-    var keys = ['pa_flowers','pa_bees','pa_butterflies'];
-    var ids   = ['gbl-fl','gbl-bee','gbl-but'];
+    var keys = ['pa_seeds','pa_flowers','pa_bees','pa_butterflies'];
+    var ids   = ['gbl-seed','gbl-fl','gbl-bee','gbl-but'];
     for(var i=0; i<keys.length; i++){
-      var r = await window.storage.get(keys[i], true);
+      var val = await readGlobalStat(keys[i]);
       var el = document.getElementById(ids[i]);
-      if(el) el.textContent = r ? (parseInt(r.value)||0) : 0;
+      if(el) el.textContent = val;
     }
   } catch(e){}
 }
