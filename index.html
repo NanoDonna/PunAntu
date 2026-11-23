@@ -37,8 +37,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   min-height:0;
   overflow:hidden;
   transition:height .4s cubic-bezier(.3,1,.3,1);
-  margin-top:6%;
-  margin-bottom:6%;
+  margin-top:calc(14 * var(--u));
+  margin-bottom:calc(14 * var(--u));
 }
 /* when panel open */
 .panel-half-open .bottom-bar{display:none;}
@@ -46,8 +46,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .panel-half-open #geo-tag{display:flex!important;}
 .panel-half-open #geo-title{display:none;}
 .panel-half-open #mv-zone{
-  flex:none;
-  height:34vh;
+  flex:1;
+  height:auto;
   margin-top:0;
   margin-bottom:0;
 }
@@ -536,6 +536,120 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   50%{box-shadow:0 0 24px rgba(240,192,112,.6),0 4px 20px rgba(0,0,0,.5);}
 }
 #trophy-bubble[style*="block"]{animation:goldenPulse 2s ease-in-out infinite;}
+
+/* ═══════════════════════════════════════════════════════════
+   ESCALA RESPONSIVA  (--u ≈ 1px en un celu de 390×760;
+   crece con la pantalla hasta 1.7px y baja hasta .85px)
+═══════════════════════════════════════════════════════════ */
+:root{
+  --u:clamp(.85px,min(calc(100vw / 390),calc(100vh / 760)),1.7px);
+  --panel-h:0px;--panel-w:0px;
+}
+@supports (height:100dvh){
+  :root{--u:clamp(.85px,min(calc(100vw / 390),calc(100dvh / 760)),1.7px);}
+}
+/* #main reserva el lugar del panel abierto: la mascota nunca queda debajo */
+#main{transition:padding .4s cubic-bezier(.3,1,.3,1);}
+.panel-half-open{padding-bottom:var(--panel-h);padding-right:var(--panel-w);}
+
+/* barra superior y píldoras */
+.logo-txt .l1{font-size:max(9px,calc(9 * var(--u)));}
+.logo-txt .l2{font-size:max(18px,calc(18 * var(--u)));}
+.logo-txt .l3{font-size:max(8px,calc(8 * var(--u)));}
+.ar-photo-btn{font-size:max(12px,calc(12 * var(--u)));padding:max(9px,calc(9 * var(--u))) max(14px,calc(14 * var(--u)));}
+#geo-tag span:first-child{font-size:max(8px,calc(8 * var(--u)))!important;}
+#geo-tag span:last-child{font-size:max(11px,calc(11.5 * var(--u)))!important;}
+.bar-label{font-size:max(9px,calc(9.5 * var(--u)));margin-bottom:calc(8 * var(--u));}
+.pills{gap:calc(8 * var(--u));justify-content:safe center;}
+.pill{font-size:max(13px,calc(13.5 * var(--u)));padding:max(11px,calc(11 * var(--u))) max(18px,calc(18 * var(--u)));}
+.pill .pi{font-size:max(18px,calc(18 * var(--u)));}
+.bottom-bar{padding-top:calc(10 * var(--u));}
+#geo-title{top:calc(8 * var(--u))!important;}
+#geo-title .gt-k{font-size:max(9px,calc(9.5 * var(--u)));letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;}
+#geo-title .gt-n{font-family:'Playfair Display',serif;font-size:max(22px,calc(24 * var(--u)));color:#FDF8EE;line-height:1;}
+/* en reposo el visor deja libre la franja del título */
+#main:not(.panel-half-open) #mv-idle{top:calc(50 * var(--u))!important;height:auto!important;}
+
+/* ── Globo de diálogo: en el flujo, escalado, con colita hacia la mascota ── */
+#speech-bubble-wrap{
+  position:relative;flex-shrink:0;z-index:30;pointer-events:none;
+  width:min(92%,calc(420 * var(--u)));margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;
+}
+#speech-bubble,#trophy-bubble{
+  position:relative;width:100%;box-sizing:border-box;
+  font-size:max(12.5px,calc(15 * var(--u)))!important;
+  padding:calc(9 * var(--u)) calc(18 * var(--u))!important;
+  border-radius:calc(20 * var(--u))!important;
+  margin-bottom:calc(10 * var(--u));
+}
+#speech-bubble::after,#trophy-bubble::after{
+  content:'';position:absolute;left:50%;bottom:-7px;width:12px;height:12px;
+  background:inherit;border:inherit;border-top:none;border-left:none;
+  transform:translateX(-50%) rotate(45deg);border-radius:0 0 4px 0;
+}
+#trophy-bubble > div:nth-child(2){font-size:max(11.5px,calc(13 * var(--u)))!important;line-height:1.35;}
+
+/* ── Paneles (bottom-sheet en vertical) ── */
+#edad-panel,#meta-panel{
+  display:flex;flex-direction:column;
+  max-height:min(calc(440 * var(--u)),62vh);
+  padding-bottom:max(calc(10 * var(--u)),env(safe-area-inset-bottom));
+  left:0;right:0;margin:0 auto;
+  width:min(100%,calc(640 * var(--u)));
+  border-radius:calc(24 * var(--u)) calc(24 * var(--u)) 0 0;
+}
+.ep-handle{flex-shrink:0;margin-top:calc(8 * var(--u));}
+.ep-head{flex-shrink:0;padding:calc(6 * var(--u)) calc(18 * var(--u)) calc(4 * var(--u));}
+.ep-head h3{font-size:max(18px,calc(20 * var(--u)));}
+.ep-close{width:max(28px,calc(30 * var(--u)));height:max(28px,calc(30 * var(--u)));font-size:max(14px,calc(15 * var(--u)));}
+.ep-head-float{position:absolute;top:calc(8 * var(--u));right:calc(10 * var(--u));padding:0;z-index:5;}
+.ep-body{flex:0 1 auto;min-height:0;padding:calc(6 * var(--u)) calc(22 * var(--u)) calc(8 * var(--u));overflow-y:auto;}
+
+/* edad */
+.dk-agerow{text-align:center;margin-bottom:calc(4 * var(--u));}
+#decay-age{font-size:max(34px,calc(40 * var(--u)));line-height:1.15;}
+.dk-agerow > span:last-child{font-size:max(12px,calc(13.5 * var(--u)))!important;color:#9B8A6E;}
+#decay-event{text-align:center;font-size:max(13px,calc(14.5 * var(--u)));color:#F0C070;font-weight:700;min-height:calc(20 * var(--u));margin-bottom:calc(4 * var(--u));line-height:1.25;}
+#tuner-wrap{margin:calc(2 * var(--u)) 0 calc(8 * var(--u));}
+#tuner-canvas{width:min(100%,calc(230 * var(--u)));}
+#tuner-feedback{font-size:max(12px,calc(13.5 * var(--u)));min-height:calc(18 * var(--u));}
+.dk-row{display:flex;align-items:center;gap:calc(10 * var(--u));margin-bottom:calc(6 * var(--u));--bar-h:max(24px,calc(26 * var(--u)));}
+.dk-side{text-align:center;flex-shrink:0;min-width:calc(50 * var(--u));}
+.dk-ico{font-size:max(18px,calc(20 * var(--u)));line-height:1.2;}
+.dk-lbl{font-size:max(8px,calc(9 * var(--u)));font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;}
+.dk-pct{font-size:max(11px,calc(12.5 * var(--u)));font-weight:800;margin-top:1px;}
+#decay-bar-inner{height:var(--bar-h);border-radius:calc(var(--bar-h) / 2);overflow:hidden;background:rgba(255,255,255,.08);position:relative;}
+#decay-u,#decay-pb{border-radius:calc(var(--bar-h) / 2);}
+#decay-handle-btn{width:max(48px,calc(54 * var(--u)));height:calc(var(--bar-h) + 6px);border-radius:calc(var(--bar-h) / 2 + 3px);}
+
+/* metamorfismo */
+.meta-vidbox{border-radius:calc(10 * var(--u));overflow:hidden;height:clamp(110px,min(calc(170 * var(--u)),26vh),340px);margin-bottom:calc(10 * var(--u));position:relative;background:rgba(0,0,0,.3);flex-shrink:0;}
+.meta-lbls{display:flex;justify-content:space-between;font-size:max(10px,calc(11.5 * var(--u)));color:#9B8A6E;margin-bottom:calc(6 * var(--u));font-weight:700;}
+#meta-bar{width:100%;height:max(14px,calc(15 * var(--u)));background:rgba(255,255,255,.1);border-radius:99px;position:relative;margin-bottom:calc(6 * var(--u));}
+#meta-prog{border-radius:99px;}
+#meta-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:max(24px,calc(28 * var(--u)));height:max(24px,calc(28 * var(--u)));border-radius:50%;background:#C8841E;border:2px solid rgba(255,255,255,.35);box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none;}
+
+/* ── Pantallas apaisadas (PC, notebook, tablet horizontal, celu acostado):
+      el panel pasa a una columna a la derecha y la mascota usa todo el alto ── */
+@media (min-aspect-ratio:5/4){
+  #edad-panel,#meta-panel{
+    top:0;bottom:0;left:auto;right:0;margin:0;
+    width:min(calc(470 * var(--u)),46vw);
+    max-height:none;justify-content:center;
+    border-radius:calc(24 * var(--u)) 0 0 calc(24 * var(--u));
+    padding-bottom:calc(10 * var(--u));
+    transform:translateX(100%);
+  }
+  #edad-panel.open,#meta-panel.open{transform:translateX(0);}
+  .ep-handle{display:none;}
+  .ep-body{padding:calc(10 * var(--u)) calc(26 * var(--u));}
+  .ep-head{padding:calc(4 * var(--u)) calc(26 * var(--u)) 0;}
+  .ep-head-float{top:calc(14 * var(--u));right:calc(14 * var(--u));}
+  #tuner-canvas{width:min(100%,calc(260 * var(--u)));}
+  .meta-vidbox{height:clamp(110px,min(calc(200 * var(--u)),30vh),360px);}
+  #speech-bubble-wrap{width:min(88%,calc(460 * var(--u)));}
+}
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Google Analytics -->
@@ -586,14 +700,23 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     </div>
   </div>
 
+<!-- Globo de diálogo de la mascota (en el flujo, nunca tapa al sapito) -->
+<div id="speech-bubble-wrap">
+  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
+  <div id="trophy-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(240,192,112,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;">
+  <div style="color:#F0C070;margin-bottom:2px;">🏆 ¡La roca más antigua del país!</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;">Con 2.200 Ma, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
+</div>
+</div>
+
   <!-- 3D viewer -->
   <div id="mv-zone">
     <!-- geositio title: centered above frog, shown at start, hidden when panel open -->
     <div id="geo-title" style="
       position:absolute;top:10px;left:0;right:0;z-index:10;
       text-align:center;pointer-events:none;">
-      <div style="font-size:9px;letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;">Geositio 1</div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#FDF8EE;line-height:1;">Cerro El Triunfo</div>
+      <div class="gt-k">Geositio 1</div>
+      <div class="gt-n">Cerro El Triunfo</div>
     </div>
     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
       <img src="logo.png" id="logo-bg" alt="" style="width:88%;max-width:380px;opacity:0.18;filter:brightness(2) saturate(0.4);">
@@ -605,15 +728,15 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       shadow-intensity="1.2" exposure="1.2"
       camera-orbit="180deg 82deg 7.5m"
       camera-target="0m 0.5m 0m"
-      field-of-view="36deg"
+      field-of-view="36deg" min-field-of-view="6deg" max-field-of-view="60deg" min-camera-orbit="auto auto 2m" max-camera-orbit="auto auto 20m"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
     </model-viewer>
     <model-viewer id="mv-focus"
       src="PunAntuMascot.glb"
       shadow-intensity="1.2" exposure="1.2"
-      camera-orbit="180deg 85deg 10.0m"
+      camera-orbit="180deg 85deg 7.5m"
       camera-target="0m 0.5m 0m"
-      field-of-view="36deg"
+      field-of-view="36deg" min-field-of-view="6deg" max-field-of-view="60deg" min-camera-orbit="auto auto 2m" max-camera-orbit="auto auto 20m"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
     </model-viewer>
   </div>
@@ -713,35 +836,34 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 ════════════ -->
 <div id="edad-panel">
   <div class="ep-handle"></div>
-  <div class="ep-head">
-    <h3>¿Cuántos años tiene?</h3>
-    <button class="ep-close" onclick="closeEdadPanel()">✕</button>
+  <div class="ep-head ep-head-float">
+    <button class="ep-close" onclick="closeEdadPanel()" aria-label="Cerrar">✕</button>
   </div>
   <div class="ep-body">
     <!-- age + event: TOP so thumb never covers it -->
-    <div style="text-align:center;margin-bottom:10px;">
-      <span style="font-family:'Playfair Display',serif;font-size:36px;color:#C8841E;" id="decay-age">0</span>
+    <div class="dk-agerow">
+      <span style="font-family:'Playfair Display',serif;color:#C8841E;" id="decay-age">0</span>
       <span style="font-size:12px;color:#9B8A6E;"> millones de años</span>
     </div>
-    <div id="decay-event" style="text-align:center;font-size:13px;color:#F0C070;font-weight:700;min-height:18px;margin-bottom:10px;"></div>
+    <div id="decay-event"></div>
 
     <!-- ── Afinador triangular ── -->
     <div id="tuner-wrap">
-      <canvas id="tuner-canvas" width="240" height="126"></canvas>
+      <canvas id="tuner-canvas" width="480" height="252"></canvas>
       <div id="tuner-feedback">Mové el deslizador para encontrar la edad</div>
     </div>
 
     <!-- barra unificada uranio/plomo con handle deslizable -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div class="dk-row">
       <!-- Izquierda: ⚛️ Uranio + % -->
-      <div style="text-align:center;flex-shrink:0;min-width:42px;">
-        <div style="font-size:18px;line-height:1.2;">⚛️</div>
-        <div style="font-size:8px;color:#C8841E;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;">Uranio</div>
-        <div style="font-size:11px;color:#C8841E;font-weight:800;margin-top:1px;"><span id="decay-u-pct">100</span>%</div>
+      <div class="dk-side">
+        <div class="dk-ico">⚛️</div>
+        <div class="dk-lbl" style="color:#C8841E;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;">Uranio</div>
+        <div class="dk-pct" style="color:#C8841E;"><span id="decay-u-pct">100</span>%</div>
       </div>
       <!-- Barra con handle encima -->
       <div id="decay-bar-outer" style="flex:1;position:relative;">
-        <div id="decay-bar-inner" style="height:26px;border-radius:13px;overflow:hidden;background:rgba(255,255,255,.08);position:relative;">
+        <div id="decay-bar-inner">
           <div id="decay-u" style="position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#F0C070,#C8841E);border-radius:13px;transition:width .08s;width:100%;"></div>
           <div id="decay-pb" style="position:absolute;right:0;top:0;height:100%;background:linear-gradient(90deg,#7A90A8,#B0B8C8);border-radius:13px;transition:width .08s;width:0%;"></div>
         </div>
@@ -760,10 +882,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
         </div>
       </div>
       <!-- Derecha: 🪨 Plomo + % -->
-      <div style="text-align:center;flex-shrink:0;min-width:42px;">
-        <div style="font-size:18px;line-height:1.2;">🪨</div>
-        <div style="font-size:8px;color:#B0B8C8;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;">Plomo</div>
-        <div style="font-size:11px;color:#B0B8C8;font-weight:800;margin-top:1px;"><span id="decay-pb-pct">0</span>%</div>
+      <div class="dk-side">
+        <div class="dk-ico">🪨</div>
+        <div class="dk-lbl" style="color:#B0B8C8;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;">Plomo</div>
+        <div class="dk-pct" style="color:#B0B8C8;"><span id="decay-pb-pct">0</span>%</div>
       </div>
     </div>
   
@@ -777,33 +899,25 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     <h3>De protolito a Gneis</h3>
     <button class="ep-close" onclick="closeMetaPanel()">✕</button>
   </div>
-  <div class="ep-body" style="padding:8px 18px 12px;">
-    <div style="border-radius:10px;overflow:hidden;height:160px;margin-bottom:14px;position:relative;background:rgba(0,0,0,.3);">
+  <div class="ep-body">
+    <div class="meta-vidbox">
       <div style="position:absolute;inset:-20%;display:flex;align-items:center;justify-content:center;">
         <video id="meta-vid" src="metamorfismo.webm" muted playsinline preload="auto"
           style="width:100%;height:100%;object-fit:contain;display:block;transform:scale(2.2);transform-origin:center center;"></video>
       </div>
       <div id="meta-proxy" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:13px;pointer-events:none;">Cargando...</div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;color:#9B8A6E;margin-bottom:8px;font-weight:700;">
+    <div class="meta-lbls">
       <span>← Protolito</span><span>Gneis foliado →</span>
     </div>
-    <div id="meta-bar" style="width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:7px;cursor:pointer;position:relative;touch-action:none;"
+    <div id="meta-bar" style="cursor:pointer;touch-action:none;"
       onmousedown="startMetaScrub(event)" ontouchstart="startMetaScrub(event)">
       <div id="meta-prog" style="height:100%;width:0%;background:linear-gradient(90deg,#C8841E,#9ABA5A);border-radius:7px;pointer-events:none;"></div>
-      <div id="meta-thumb" style="position:absolute;top:50%;left:0%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#C8841E;border:2px solid rgba(255,255,255,.35);box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none;"></div>
+      <div id="meta-thumb" style="left:0%;"></div>
     </div>
   </div>
 </div>
 
-<!-- Speech bubbles -->
-<div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:70%;max-width:280px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-  <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
-  <div id="trophy-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(240,192,112,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;">
-  <div style="color:#F0C070;margin-bottom:2px;">🏆 ¡La roca más antigua del país!</div>
-  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;">Con 2.200 Ma, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
-</div>
-</div>
 
 <!-- MAPA GEOCIRCUITO -->
 <div id="mapa-screen">
@@ -1016,7 +1130,7 @@ function mascotFocus(){
     if(angle >= 185) dir = -1;
     if(angle <= 175) dir = 1;
     const f = document.getElementById('mv-focus');
-    if(f) f.setAttribute('camera-orbit', angle+'deg 85deg 10.0m');
+    if(f) f.setAttribute('camera-orbit', angle+'deg 85deg 7.5m');
   }, 50);
 }
 function mascotRelax(){
@@ -1026,6 +1140,57 @@ function mascotRelax(){
   if(idle)  { idle.style.opacity='1';  idle.style.pointerEvents='auto'; }
   if(focus) { focus.style.opacity='0'; focus.style.pointerEvents='none'; }
 }
+
+
+/* ════════════════════════════════════════
+   LAYOUT RESPONSIVO: reserva del panel + encuadre de la mascota
+════════════════════════════════════════ */
+const _wideMQ=window.matchMedia('(min-aspect-ratio: 5/4)');
+function syncPanelInset(){
+  const root=document.documentElement;
+  const p=document.querySelector('#edad-panel.open,#meta-panel.open');
+  let h=0,w=0;
+  if(p){ if(_wideMQ.matches) w=p.offsetWidth; else h=p.offsetHeight; }
+  root.style.setProperty('--panel-h',h+'px');
+  root.style.setProperty('--panel-w',w+'px');
+}
+/* Cuánto del mundo (en metros) tiene que entrar en el visor para ver al sapito entero */
+const MASCOT_NEED_H=1.4, MASCOT_NEED_W=1.5, MASCOT_RADIUS=7.5;
+function _fitOne(mv,iter){
+  if(!mv||!mv.loaded||!mv.getFieldOfView) return;
+  const w=mv.clientWidth,h=mv.clientHeight;
+  if(!w||!h) return;
+  const need=Math.max(MASCOT_NEED_H,MASCOT_NEED_W/(w/h));
+  const tgt=need/(2*MASCOT_RADIUS);                       /* tan(fov/2) buscado */
+  const cur=Math.tan(mv.getFieldOfView()*Math.PI/360);   /* tan(fov/2) real ahora */
+  const par=Math.tan((parseFloat(mv.getAttribute('field-of-view'))||30)*Math.PI/360);
+  if(!(cur>0)) return;
+  const err=tgt/cur;
+  if(Math.abs(err-1)<0.025) return;
+  let nt=par*err;
+  nt=Math.max(Math.tan(5*Math.PI/360),Math.min(Math.tan(50*Math.PI/360),nt));
+  mv.setAttribute('field-of-view',(2*Math.atan(nt)*180/Math.PI).toFixed(2)+'deg');
+  if(iter<5) setTimeout(()=>_fitOne(mv,iter+1),160);
+}
+function fitMascotView(){
+  ['mv-idle','mv-focus'].forEach(id=>{
+    const mv=document.getElementById(id);
+    clearTimeout(mv&&mv._fitT);
+    if(mv) mv._fitT=setTimeout(()=>_fitOne(mv,0),60);
+  });
+}
+['mv-idle','mv-focus'].forEach(id=>{const m=document.getElementById(id);if(m)m.addEventListener('load',fitMascotView);});
+(function(){
+  const zone=document.getElementById('mv-zone');
+  if(window.ResizeObserver){
+    new ResizeObserver(fitMascotView).observe(zone);
+    const ro=new ResizeObserver(syncPanelInset);
+    ['edad-panel','meta-panel'].forEach(id=>ro.observe(document.getElementById(id)));
+  }
+  window.addEventListener('resize',()=>{syncPanelInset();fitMascotView();});
+  window.addEventListener('orientationchange',()=>setTimeout(()=>{syncPanelInset();fitMascotView();},250));
+  fitMascotView();
+})();
 
 function showSpeechBubble(txt){
   const sb=document.getElementById('speech-bubble');
@@ -1056,6 +1221,7 @@ function openPanel(id,btn){
     document.getElementById('main').classList.add('panel-half-open');
     showSpeechBubble('🐸 Averiguemos cuántos años<br>tiene esta roca...');
     document.getElementById('edad-panel').classList.add('open');
+    syncPanelInset();
     initEdadPanel();
     return;
   }
@@ -1064,6 +1230,7 @@ function openPanel(id,btn){
     document.getElementById('main').classList.add('panel-half-open');
     showSpeechBubble('🐸 Arrastrá para ver cómo<br>se forma el Gneis');
     document.getElementById('meta-panel').classList.add('open');
+    syncPanelInset();
     setTimeout(initMetaPanel,80);
     return;
   }
@@ -1083,6 +1250,7 @@ function closePanel(){
   hideSpeechBubble();
   document.getElementById('logo-bg').style.opacity='0.18';
   document.getElementById('main').classList.remove('panel-half-open');
+  syncPanelInset();
   document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
   activeBtn=null;
   mascotRelax();
@@ -1162,7 +1330,8 @@ function drawTuner(ma){
   const canvas=document.getElementById('tuner-canvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height;
+  ctx.setTransform(2,0,0,2,0,0);
+  const W=canvas.width/2, H=canvas.height/2;
   const cx=W/2, cy=H-4;
   const R=108, INNER=52;
   const SPREAD=120*Math.PI/180;
@@ -1188,7 +1357,8 @@ function animateTuner(){
   const canvas=document.getElementById('tuner-canvas');
   if(!canvas){_tunerAnimId=null;return;}
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H-4;
+  ctx.setTransform(2,0,0,2,0,0);
+  const W=canvas.width/2,H=canvas.height/2,cx=W/2,cy=H-4;
   const R=108,INNER=52,SPREAD=120*Math.PI/180,MID=-Math.PI/2;
   _drawTunerFrame(ctx,W,H,cx,cy,R,INNER,MID-SPREAD/2,SPREAD,2200,glow);
   if(_tunerExact) _tunerAnimId=requestAnimationFrame(animateTuner);
