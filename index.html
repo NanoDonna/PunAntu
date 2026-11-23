@@ -140,6 +140,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #edad-panel.open{transform:translateY(0);}
 #meta-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
 #meta-panel.open{transform:translateY(0);}
+#quiz-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(14,4,2,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:0 0 max(28px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s cubic-bezier(.3,1,.3,1);max-height:56vh;overflow:hidden;}
+#quiz-panel.open{transform:translateY(0);}
 
 
 
@@ -343,7 +345,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   margin-top:16px;font-size:12px;color:rgba(253,248,238,.35);
   cursor:pointer;text-decoration:underline;text-underline-offset:3px;
 }
-.fs-logos{margin:22px auto 0;opacity:.55;width:min(73vw,220px);max-width:100%;align-self:center;}
+.fs-logos{margin:26px auto 0;opacity:.85;width:min(88vw,340px,calc(34vh * 1.9));max-width:100%;align-self:center;}
 .fs-logos img{width:100%;height:auto;display:block;}
 
 /* ── AR Photo Preview ── */
@@ -479,7 +481,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 
 /* ── Panel responsive fixes ── */
-#edad-panel,#meta-panel{max-height:min(48vh,400px);}
+#edad-panel,#meta-panel,#quiz-panel{max-height:min(48vh,400px);}
 .ep-body{padding:8px 18px 12px;overflow-y:auto;}
 
 /* ── Afinador triangular (canvas) ── */
@@ -526,6 +528,120 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .gs-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.6);line-height:1;}
 .gs-pill{border-radius:10px;padding:3px 8px;font-size:9px;font-weight:700;font-family:sans-serif;white-space:nowrap;max-width:88px;overflow:hidden;text-overflow:ellipsis;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.4);letter-spacing:.2px;margin-top:3px;}
 
+
+/* ═══ Bibliografía y Créditos (pantalla completa) ═══ */
+#biblio-screen{
+  position:fixed;inset:0;z-index:380;display:none;flex-direction:column;
+  background:radial-gradient(circle at 50% 0%,#3a1606 0%,#120502 70%);
+  color:#FDF8EE;
+}
+#biblio-screen.open{display:flex;animation:bbIn .3s ease-out;}
+@keyframes bbIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.bb-head{
+  flex-shrink:0;display:flex;align-items:center;gap:12px;
+  padding:max(14px,env(safe-area-inset-top)) 18px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.bb-head h2{flex:1;font-family:'Playfair Display',serif;font-size:max(20px,calc(22 * var(--u)));font-weight:600;text-align:center;}
+.bb-close,.bb-back{
+  background:rgba(255,255,255,.1);border:none;color:#FDF8EE;cursor:pointer;
+  width:36px;height:36px;border-radius:50%;font-size:17px;line-height:1;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.bb-back{font-size:24px;padding-bottom:3px;visibility:hidden;}
+#biblio-screen.in-credits .bb-back{visibility:visible;}
+.bb-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 20px max(32px,env(safe-area-inset-bottom));}
+.bb-wrap{width:min(100%,calc(560 * var(--u)));margin:0 auto;}
+.bb-intro{font-size:max(13px,calc(14 * var(--u)));line-height:1.55;color:rgba(255,255,255,.62);margin:0 0 16px;text-align:center;}
+.bb-ref{
+  border-left:3px solid #C8841E;border-radius:0 12px 12px 0;
+  background:rgba(255,255,255,.05);padding:14px 16px;margin-bottom:14px;
+}
+.bb-badge{
+  display:inline-block;font-size:max(10px,calc(10.5 * var(--u)));font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  color:#F0C070;background:rgba(200,132,30,.18);border:1px solid rgba(200,132,30,.35);
+  border-radius:20px;padding:3px 10px;margin-bottom:9px;
+}
+.bb-cite{font-size:max(14px,calc(15 * var(--u)));line-height:1.6;color:rgba(253,248,238,.92);margin:0 0 8px;}
+.bb-link{display:inline-block;font-size:max(13px,calc(13.5 * var(--u)));font-weight:700;color:#F0C070;text-decoration:none;word-break:break-all;padding:4px 0;}
+.bb-link:active{opacity:.6;}
+.bb-note{font-size:max(12px,calc(12.5 * var(--u)));line-height:1.5;color:rgba(255,255,255,.5);margin:6px 0 0;}
+.bb-credits-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;margin:26px auto 4px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:22px;
+  padding:10px 20px;color:rgba(253,248,238,.75);font-family:inherit;font-size:max(13px,calc(13.5 * var(--u)));font-weight:700;
+  letter-spacing:.4px;cursor:pointer;opacity:.78;
+}
+.bb-credits-btn span{filter:grayscale(1);}
+.bb-credits-btn:active{opacity:1;background:rgba(255,255,255,.1);}
+/* cartel */
+.bb-cartel-btn{
+  display:flex;align-items:center;gap:12px;width:100%;margin:0 0 4px;padding:10px 14px 10px 10px;text-align:left;
+  background:rgba(200,132,30,.12);border:1px solid rgba(200,132,30,.35);border-radius:16px;
+  color:#FDF8EE;font-family:inherit;cursor:pointer;
+}
+.bb-cartel-btn:active{background:rgba(200,132,30,.22);}
+.bb-cartel-btn img{width:calc(78 * var(--u));min-width:64px;max-width:110px;aspect-ratio:5/4;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:#222;flex-shrink:0;}
+.bb-cartel-btn .t{font-size:max(14px,calc(15 * var(--u)));font-weight:800;color:#F0C070;display:block;margin-bottom:2px;}
+.bb-cartel-btn .s{font-size:max(12px,calc(12.5 * var(--u)));line-height:1.4;color:rgba(255,255,255,.6);display:block;}
+.bb-cartel-btn .go{margin-left:auto;font-size:22px;color:#F0C070;padding-left:4px;}
+#bb-view-cartel{flex:1;min-height:0;display:none;flex-direction:column;}
+.ct-stage{flex:1;min-height:0;position:relative;overflow:hidden;background:#0d0d0d;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;}
+.ct-stage.drag{cursor:grabbing;}
+.ct-stage img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;will-change:transform;-webkit-user-drag:none;pointer-events:none;}
+.ct-zoom{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;}
+.ct-zoom button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(20,20,20,.72);color:#FDF8EE;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.ct-zoom button:active{background:rgba(200,132,30,.5);}
+.ct-hint{position:absolute;left:50%;top:10px;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.75);background:rgba(20,20,20,.7);padding:5px 12px;border-radius:14px;pointer-events:none;transition:opacity .6s;white-space:nowrap;}
+.ct-bar{flex-shrink:0;padding:12px 18px max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;border-top:1px solid rgba(255,255,255,.07);}
+.ct-dl{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:26px;background:#C8841E;color:#1a1208;font-weight:800;font-size:max(14px,calc(15 * var(--u)));text-decoration:none;letter-spacing:.3px;}
+.ct-dl:active{opacity:.8;}
+/* créditos */
+.bb-center{text-align:center;}
+.bb-sec{margin-bottom:6px;}
+.bb-label{font-size:max(10px,calc(10.5 * var(--u)));letter-spacing:2px;text-transform:uppercase;color:#C8841E;font-weight:800;margin-bottom:12px;}
+.bb-inst{font-size:max(11.5px,calc(12 * var(--u)));letter-spacing:.3px;color:rgba(255,255,255,.45);margin:12px 0 5px;}
+.bb-label + .bb-name{margin-top:0;}
+.bb-name{font-size:max(15px,calc(16 * var(--u)));line-height:1.75;color:rgba(253,248,238,.9);}
+.bb-sep{width:min(60%,240px);border-top:1px solid rgba(255,255,255,.09);margin:22px auto;}
+.bb-card{width:min(100%,320px);margin:26px auto 0;padding:14px 16px;background:rgba(200,132,30,.10);border:1px solid rgba(200,132,30,.24);border-radius:14px;}
+.bb-card-t{font-family:'Playfair Display',serif;font-size:max(17px,calc(18 * var(--u)));color:#F0C070;margin-bottom:3px;}
+.bb-card-s{font-size:max(11.5px,calc(12 * var(--u)));color:rgba(255,255,255,.5);line-height:1.5;}
+
+
+/* ── Quiz ── */
+#qwrap{min-height:calc(262 * var(--u));}
+.qz-top{display:flex;align-items:center;gap:calc(10 * var(--u));margin:calc(2 * var(--u)) 0 calc(10 * var(--u));padding-right:calc(40 * var(--u));}
+.qz-dots{display:flex;gap:calc(6 * var(--u));}
+.qz-dot{width:calc(26 * var(--u));height:calc(5 * var(--u));border-radius:3px;background:rgba(255,255,255,.14);transition:background .25s;}
+.qz-dot.on{background:#C8841E;}
+.qz-dot.ok{background:#6FB04A;}
+.qz-dot.bad{background:#C85A4A;}
+.qz-count{font-size:max(10px,calc(10.5 * var(--u)));letter-spacing:1.4px;color:#C8841E;text-transform:uppercase;font-weight:800;}
+.qz-q{font-family:'Playfair Display',serif;font-size:max(17px,calc(19 * var(--u)));line-height:1.3;color:#FDF8EE;margin:0 0 calc(12 * var(--u));}
+.qz-opt{
+  display:block;width:100%;text-align:left;font-family:inherit;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:calc(13 * var(--u));
+  padding:max(11px,calc(12 * var(--u))) calc(14 * var(--u));margin-bottom:calc(8 * var(--u));
+  color:#FDF8EE;font-size:max(14px,calc(15 * var(--u)));font-weight:600;line-height:1.3;
+  transition:background .2s,border-color .2s,transform .12s;
+}
+.qz-opt:active:not(:disabled){transform:scale(.985);background:rgba(200,132,30,.22);}
+.qz-opt:disabled{cursor:default;}
+.qz-opt.ok{background:rgba(78,138,42,.34);border-color:#6FB04A;}
+.qz-opt.bad{background:rgba(196,58,58,.30);border-color:#C85A4A;}
+.qz-opt.dim{opacity:.45;}
+.qz-next{
+  display:block;margin:calc(4 * var(--u)) auto 0;border:none;cursor:pointer;font-family:inherit;
+  background:#C8841E;color:#FDF8EE;font-weight:800;font-size:max(14px,calc(15 * var(--u)));
+  padding:max(11px,calc(12 * var(--u))) calc(30 * var(--u));border-radius:30px;
+  box-shadow:0 2px 12px rgba(200,132,30,.4);animation:fadeUp .3s ease-out;
+}
+.qz-next:active{background:#A86A10;}
+.qz-end{text-align:center;padding:calc(6 * var(--u)) 0 0;}
+.qz-end .big{font-size:max(44px,calc(52 * var(--u)));line-height:1.1;}
+.qz-end .sc{font-family:'Playfair Display',serif;font-size:max(24px,calc(28 * var(--u)));color:#F0C070;margin:calc(4 * var(--u)) 0 calc(14 * var(--u));}
+
 /* ── Trophy bubble dorado ── */
 #trophy-bubble{
   border:1.5px solid rgba(240,192,112,.85)!important;
@@ -560,9 +676,19 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #geo-tag span:first-child{font-size:max(8px,calc(8 * var(--u)))!important;}
 #geo-tag span:last-child{font-size:max(11px,calc(11.5 * var(--u)))!important;}
 .bar-label{font-size:max(9px,calc(9.5 * var(--u)));margin-bottom:calc(8 * var(--u));}
-.pills{gap:calc(8 * var(--u));justify-content:safe center;}
-.pill{font-size:max(13px,calc(13.5 * var(--u)));padding:max(11px,calc(11 * var(--u))) max(18px,calc(18 * var(--u)));}
-.pill .pi{font-size:max(18px,calc(18 * var(--u)));}
+.pills{gap:calc(8 * var(--u));justify-content:safe center;flex-wrap:nowrap;}
+.pills.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent);}
+.pill{font-size:clamp(13px,calc(13.5 * var(--u)),15.5px);padding:clamp(11px,calc(11 * var(--u)),13px) clamp(18px,calc(18 * var(--u)),22px);}
+.pill .pi{font-size:clamp(18px,calc(18 * var(--u)),21px);}
+@media (max-width:430px){
+  .pills{gap:4px;}
+  .pill{flex:1 1 auto;flex-direction:column;justify-content:center;gap:2px;padding:7px 5px 8px;font-size:11.5px;border-radius:16px;line-height:1.15;}
+  .pill .pi{font-size:18px;line-height:1;}
+}
+@media (max-width:370px){
+  .pill{padding:7px 4px 8px;font-size:10.5px;}
+  .pills{gap:3px;}
+}
 .bottom-bar{padding-top:calc(10 * var(--u));}
 #geo-title{top:calc(8 * var(--u))!important;}
 #geo-title .gt-k{font-size:max(9px,calc(9.5 * var(--u)));letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;}
@@ -600,7 +726,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #trophy-bubble > div:nth-child(2){font-size:max(11.5px,calc(13 * var(--u)))!important;line-height:1.35;}
 
 /* ── Paneles (bottom-sheet en vertical) ── */
-#edad-panel,#meta-panel{
+#edad-panel,#meta-panel,#quiz-panel{
   display:flex;flex-direction:column;
   max-height:min(calc(440 * var(--u)),62vh);
   padding-bottom:max(calc(10 * var(--u)),env(safe-area-inset-bottom));
@@ -642,7 +768,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 /* ── Pantallas apaisadas (PC, notebook, tablet horizontal, celu acostado):
       el panel pasa a una columna a la derecha y la mascota usa todo el alto ── */
 @media (min-aspect-ratio:5/4){
-  #edad-panel,#meta-panel{
+  #edad-panel,#meta-panel,#quiz-panel{
     top:0;bottom:0;left:auto;right:0;margin:0;
     width:min(calc(470 * var(--u)),46vw);
     max-height:none;justify-content:center;
@@ -650,7 +776,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     padding-bottom:calc(10 * var(--u));
     transform:translateX(100%);
   }
-  #edad-panel.open,#meta-panel.open{transform:translateX(0);}
+  #edad-panel.open,#meta-panel.open,#quiz-panel.open{transform:translateX(0);}
   .ep-handle{display:none;}
   .ep-body{padding:calc(10 * var(--u)) calc(26 * var(--u));}
   .ep-head{padding:calc(4 * var(--u)) calc(26 * var(--u)) 0;}
@@ -754,9 +880,11 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <div class="bottom-bar">
     <div class="bar-label">¿Qué querés descubrir?</div>
     <div class="pills">
+      <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Geocircuito</button>
       <button class="pill" onclick="openPanel('edad',this)"><span class="pi">⏳</span>Su edad</button>
       <button class="pill" onclick="openPanel('meta',this)"><span class="pi">🪨</span>Metamorfismo</button>
-      <button class="pill" onclick="openMapa()"><span class="pi">🗺️</span>Geocircuito</button>
+      <button class="pill" onclick="openPanel('quiz',this)"><span class="pi">🧠</span>Quiz</button>
+      <button class="pill" onclick="openBiblio()"><span class="pi">📚</span>Bibliografía</button>
     </div>
   </div>
 
@@ -901,6 +1029,15 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   </div>
 </div>
 
+<!-- QUIZ PANEL -->
+<div id="quiz-panel">
+  <div class="ep-handle"></div>
+  <div class="ep-head ep-head-float">
+    <button class="ep-close" onclick="closePanel()" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="ep-body" id="qwrap"></div>
+</div>
+
 <!-- META PANEL -->
 <div id="meta-panel">
   <div class="ep-handle"></div>
@@ -926,6 +1063,92 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   </div>
 </div>
 
+
+<!-- ════════════════════════════
+     BIBLIOGRAFÍA + CRÉDITOS (pantalla completa)
+════════════════════════════ -->
+<div id="biblio-screen" role="dialog" aria-modal="true" aria-labelledby="bb-title">
+  <div class="bb-head">
+    <button class="bb-back" id="bb-back" onclick="showBiblioView('biblio')" aria-label="Volver a bibliografía">‹</button>
+    <h2 id="bb-title">Bibliografía</h2>
+    <button class="bb-close" onclick="closeBiblio()" aria-label="Cerrar">✕</button>
+  </div>
+
+  <!-- Vista: bibliografía -->
+  <div class="bb-scroll" id="bb-view-biblio">
+    <div class="bb-wrap">
+      <p class="bb-intro">Fuentes científicas en las que se basan los contenidos de este geositio.</p>
+
+      <div class="bb-ref">
+        <span class="bb-badge">📄 Artículo científico</span>
+        <p class="bb-cite">
+          Camino, M., Gómez, R., Donna, R. E. y Bó, M. J. (2022). Pun Antü, un Geoparque del Sistema de Tandilia. Provincia de Buenos Aires.
+          <em>Serie Correlación Geológica</em>, 38 (2): 47–64. Tucumán.
+        </p>
+        <a class="bb-link" href="https://doi.org/10.5281/zenodo.7738250" target="_blank" rel="noopener">doi.org/10.5281/zenodo.7738250 ↗</a>
+        <p class="bb-note">Descripción del Geocircuito La Barrosa, del Complejo Buenos Aires y del Cratón del Río de la Plata.</p>
+      </div>
+
+      <button class="bb-cartel-btn" onclick="showBiblioView('cartel')" aria-label="Ver y descargar el cartel del geositio">
+        <img src="cartel-geositio1.jpg" alt="" loading="lazy">
+        <span><span class="t">🪧 Cartel del geositio</span><span class="s">Ver en pantalla completa y descargar la imagen del cartel.</span></span>
+        <span class="go">›</span>
+      </button>
+
+      <button class="bb-credits-btn" onclick="showBiblioView('creditos')"><span>✨</span>Créditos</button>
+    </div>
+  </div>
+
+  <!-- Vista: cartel -->
+  <div id="bb-view-cartel">
+    <div class="ct-stage" id="ct-stage">
+      <img id="ct-img" alt="Cartel del Geositio 1 Cerro El Triunfo — Geoparque Pun Antü" draggable="false">
+      <div class="ct-hint" id="ct-hint">Pellizcá o tocá dos veces para acercar</div>
+      <div class="ct-zoom">
+        <button onclick="ctZoomBy(1.5)" aria-label="Acercar">+</button>
+        <button onclick="ctZoomBy(1/1.5)" aria-label="Alejar">−</button>
+        <button onclick="ctReset()" aria-label="Ajustar a pantalla" style="font-size:15px">⤢</button>
+      </div>
+    </div>
+    <div class="ct-bar">
+      <a class="ct-dl" id="ct-dl" href="cartel-geositio1.jpg" download="Cartel-Geositio1-Cerro-El-Triunfo.jpg" onclick="try{gtag('event','download_cartel',{geositio:1});}catch(e){}">⬇ Descargar cartel</a>
+    </div>
+  </div>
+
+  <!-- Vista: créditos -->
+  <div class="bb-scroll" id="bb-view-creditos" style="display:none;">
+    <div class="bb-wrap bb-center">
+      <div class="bb-sec">
+        <div class="bb-label">Desarrollo y concepto</div>
+        <div class="bb-name">Roberto Donna</div>
+        <div class="bb-inst">Universidad Nacional de Mar del Plata · UNMdP</div>
+      </div>
+      <div class="bb-sep"></div>
+
+      <div class="bb-sec">
+        <div class="bb-label">Colaboradores</div>
+        <div class="bb-inst">Municipalidad de Balcarce</div>
+        <div class="bb-name">Cristina Cufré<br>Santiago Garrido</div>
+        <div class="bb-inst">Universidad Nacional de Mar del Plata · UNMdP</div>
+        <div class="bb-name">Mariana Fernández Honaine<br>Fernanda Alvarez<br>Natalia Borrelli<br>Laura Abud</div>
+        <div class="bb-inst">UFASTA</div>
+        <div class="bb-name">Lucas Busalmen</div>
+      </div>
+      <div class="bb-sep"></div>
+
+      <div class="bb-sec">
+        <div class="bb-label">Colaboradores estudiantes</div>
+        <div class="bb-inst">Universidad Nacional de Mar del Plata · UNMdP</div>
+        <div class="bb-name">Marco Vitale<br>Facundo García<br>Tomás Buonzerio<br>Lucía Pereyra<br>Juana Teruel<br>Juliana Salaberry</div>
+      </div>
+
+      <div class="bb-card">
+        <div class="bb-card-t">Geoparque Pun Antü</div>
+        <div class="bb-card-s">Geocircuito La Barrosa · Balcarce · Buenos Aires</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MAPA GEOCIRCUITO -->
 <div id="mapa-screen">
@@ -1010,6 +1233,135 @@ const GEOSITIOS = [
 ];
 const CIRCUIT_PATH = [[-37.86019, -58.25577], [-37.86057, -58.25486], [-37.86042, -58.25563], [-37.86075, -58.2556], [-37.86109, -58.25553], [-37.86157, -58.2556], [-37.86202, -58.25531], [-37.86226, -58.25493], [-37.86254, -58.25448], [-37.86274, -58.25424], [-37.8632, -58.25428], [-37.86365, -58.2543], [-37.86527, -58.25628], [-37.8661, -58.25729], [-37.86808, -58.25976], [-37.86955, -58.26159], [-37.87034, -58.26257], [-37.8712, -58.2636], [-37.87161, -58.26375], [-37.87283, -58.26539], [-37.87373, -58.26388], [-37.87467, -58.26253], [-37.87516, -58.26142], [-37.87463, -58.25982], [-37.87354, -58.25873], [-37.87339, -58.25839], [-37.87365, -58.2578], [-37.87319, -58.25746], [-37.87268, -58.25767], [-37.87209, -58.25722], [-37.87093, -58.25522], [-37.87092, -58.25485], [-37.87191, -58.25491]];
 let _mapaInited=false,_mapaMap=null,_mapaWatch=null,_mapaUserMarker=null;
+
+
+/* ════════════
+   BIBLIOGRAFÍA + CRÉDITOS
+════════════ */
+/* aviso de "hay más píldoras": difuminado a la derecha cuando la fila se desborda */
+(function(){
+  const bar=document.querySelector('.pills');
+  if(!bar) return;
+  const upd=()=>bar.classList.toggle('more',bar.scrollWidth>bar.clientWidth+bar.scrollLeft+4);
+  bar.addEventListener('scroll',upd,{passive:true});
+  window.addEventListener('resize',upd);
+  if(window.ResizeObserver) new ResizeObserver(upd).observe(bar);
+  setTimeout(upd,300);
+})();
+
+function showBiblioView(v){
+  const sc=document.getElementById('biblio-screen');
+  const cr=(v==='creditos'), ct=(v==='cartel');
+  document.getElementById('bb-view-biblio').style.display=(cr||ct)?'none':'';
+  document.getElementById('bb-view-creditos').style.display=cr?'':'none';
+  document.getElementById('bb-view-cartel').style.display=ct?'flex':'none';
+  document.getElementById('bb-title').textContent=cr?'Créditos':ct?'Cartel':'Bibliografía';
+  sc.classList.toggle('in-credits',cr||ct);
+  const act=document.getElementById(cr?'bb-view-creditos':ct?'bb-view-cartel':'bb-view-biblio');
+  if(act) act.scrollTop=0;
+  if(ct) ctInit();
+  try{gtag('event','open_panel',{panel:cr?'creditos':ct?'cartel':'biblio'});}catch(e){}
+}
+/* ── Visor del cartel (zoom + arrastre) ── */
+const CT={s:1,x:0,y:0,min:1,max:6,nw:0,nh:0,ready:false,ptrs:new Map(),d0:0,s0:1,last:0,moved:false};
+function ctApply(){
+  const im=document.getElementById('ct-img');
+  im.style.transform='translate('+CT.x+'px,'+CT.y+'px) scale('+CT.s+')';
+}
+function ctClamp(){
+  const st=document.getElementById('ct-stage');
+  const W=st.clientWidth,H=st.clientHeight,w=CT.nw*CT.s,h=CT.nh*CT.s;
+  CT.x = w<=W ? (W-w)/2 : Math.min(0,Math.max(W-w,CT.x));
+  CT.y = h<=H ? (H-h)/2 : Math.min(0,Math.max(H-h,CT.y));
+}
+function ctFit(){
+  const st=document.getElementById('ct-stage');
+  if(!CT.nw||!st.clientWidth) return;
+  CT.min=Math.min(st.clientWidth/CT.nw,st.clientHeight/CT.nh);
+  CT.max=Math.max(CT.min*6,1);
+  CT.s=CT.min;CT.x=0;CT.y=0;ctClamp();ctApply();
+}
+function ctReset(){ctFit();}
+function ctZoomAt(f,cx,cy){
+  const ns=Math.min(CT.max,Math.max(CT.min,CT.s*f));
+  const k=ns/CT.s;
+  CT.x=cx-(cx-CT.x)*k;CT.y=cy-(cy-CT.y)*k;CT.s=ns;
+  ctClamp();ctApply();
+}
+function ctZoomBy(f){
+  const st=document.getElementById('ct-stage');
+  ctZoomAt(f,st.clientWidth/2,st.clientHeight/2);
+}
+function ctInit(){
+  const im=document.getElementById('ct-img'),st=document.getElementById('ct-stage');
+  const hint=document.getElementById('ct-hint');
+  hint.style.opacity=1;
+  clearTimeout(ctInit._t);ctInit._t=setTimeout(()=>{hint.style.opacity=0;},3500);
+  const go=()=>{CT.nw=im.naturalWidth;CT.nh=im.naturalHeight;im.style.width=CT.nw+'px';im.style.height=CT.nh+'px';CT.ready=true;requestAnimationFrame(ctFit);};
+  if(!im.getAttribute('src')){
+    im.onload=go;
+    im.src='cartel-geositio1.jpg';
+  } else if(im.complete&&im.naturalWidth){go();}
+  if(!ctInit._b){
+    ctInit._b=true;
+    st.addEventListener('pointerdown',e=>{
+      if(e.target.closest('.ct-zoom')) return;
+      st.setPointerCapture(e.pointerId);
+      CT.ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      CT.moved=false;
+      if(CT.ptrs.size===2){const a=[...CT.ptrs.values()];CT.d0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1;CT.s0=CT.s;}
+      st.classList.add('drag');
+    });
+    st.addEventListener('pointermove',e=>{
+      const p=CT.ptrs.get(e.pointerId); if(!p) return;
+      const r=st.getBoundingClientRect();
+      if(CT.ptrs.size===1){
+        CT.x+=e.clientX-p.x;CT.y+=e.clientY-p.y;
+        if(Math.abs(e.clientX-p.x)+Math.abs(e.clientY-p.y)>1) CT.moved=true;
+        p.x=e.clientX;p.y=e.clientY;ctClamp();ctApply();
+      } else if(CT.ptrs.size===2){
+        p.x=e.clientX;p.y=e.clientY;
+        const a=[...CT.ptrs.values()];
+        const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1;
+        const cx=(a[0].x+a[1].x)/2-r.left,cy=(a[0].y+a[1].y)/2-r.top;
+        ctZoomAt(Math.min(CT.max,Math.max(CT.min,CT.s0*d/CT.d0))/CT.s,cx,cy);
+        CT.moved=true;
+      }
+    });
+    const up=e=>{
+      const had=CT.ptrs.delete(e.pointerId);
+      if(!CT.ptrs.size) st.classList.remove('drag');
+      if(had&&e.type==='pointerup'&&!CT.moved&&CT.ptrs.size===0){
+        const now=Date.now();
+        if(now-CT.last<320){
+          const r=st.getBoundingClientRect();
+          if(CT.s>CT.min*1.05) ctFit(); else ctZoomAt(2.5,e.clientX-r.left,e.clientY-r.top);
+          CT.last=0;
+        } else CT.last=now;
+      }
+      if(CT.ptrs.size===1){const q=[...CT.ptrs.values()][0];}
+    };
+    st.addEventListener('pointerup',up);
+    st.addEventListener('pointercancel',up);
+    st.addEventListener('wheel',e=>{
+      e.preventDefault();
+      const r=st.getBoundingClientRect();
+      ctZoomAt(Math.exp(-e.deltaY*0.0015),e.clientX-r.left,e.clientY-r.top);
+    },{passive:false});
+    window.addEventListener('resize',()=>{if(CT.ready&&document.getElementById('bb-view-cartel').style.display!=='none'){const z=CT.s/CT.min;ctFit();if(z>1.02) ctZoomBy(z);}});
+  }
+}
+function openBiblio(){
+  closePanel();
+  showBiblioView('biblio');
+  document.getElementById('biblio-screen').classList.add('open');
+}
+function closeBiblio(){
+  document.getElementById('biblio-screen').classList.remove('open');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('biblio-screen').classList.contains('open')) closeBiblio();
+});
 
 function openMapa(){
   document.getElementById('mapa-screen').classList.add('open');
@@ -1119,9 +1471,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 /* ════════════
    PANELS
 ════════════ */
-const panels={
-  quiz:{title:'¡Poné a prueba tu saber!',html:'<div id="qwrap"></div>'}
-};
+const panels={};
 let activeBtn=null;
 
 let _swayTimer = null;
@@ -1156,7 +1506,7 @@ function mascotRelax(){
 const _wideMQ=window.matchMedia('(min-aspect-ratio: 5/4)');
 function syncPanelInset(){
   const root=document.documentElement;
-  const p=document.querySelector('#edad-panel.open,#meta-panel.open');
+  const p=document.querySelector('#edad-panel.open,#meta-panel.open,#quiz-panel.open');
   let h=0,w=0;
   if(p){ if(_wideMQ.matches) w=p.offsetWidth; else h=p.offsetHeight; }
   root.style.setProperty('--panel-h',h+'px');
@@ -1193,7 +1543,7 @@ function fitMascotView(){
   if(window.ResizeObserver){
     new ResizeObserver(fitMascotView).observe(zone);
     const ro=new ResizeObserver(syncPanelInset);
-    ['edad-panel','meta-panel'].forEach(id=>ro.observe(document.getElementById(id)));
+    ['edad-panel','meta-panel','quiz-panel'].forEach(id=>ro.observe(document.getElementById(id)));
   }
   window.addEventListener('resize',()=>{syncPanelInset();fitMascotView();});
   window.addEventListener('orientationchange',()=>setTimeout(()=>{syncPanelInset();fitMascotView();},250));
@@ -1230,6 +1580,7 @@ function hideSpeechBubble(){
 function openPanel(id,btn){
   document.getElementById('edad-panel').classList.remove('open');
   document.getElementById('meta-panel').classList.remove('open');
+  document.getElementById('quiz-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
   document.getElementById('logo-bg').style.opacity='0.18';
@@ -1258,10 +1609,17 @@ function openPanel(id,btn){
     setTimeout(initMetaPanel,80);
     return;
   }
+  if(id==='quiz'){
+    document.getElementById('logo-bg').style.opacity='0';
+    document.getElementById('main').classList.add('panel-half-open');
+    document.getElementById('quiz-panel').classList.add('open');
+    syncPanelInset();
+    initQuiz();
+    return;
+  }
   document.getElementById('panel-title').textContent=panels[id].title;
   document.getElementById('panel-body').innerHTML=panels[id].html;
   document.getElementById('info-panel').classList.add('open');
-  if(id==='quiz')initQuiz();
 }
 
 function closeEdadPanel(){closePanel();}
@@ -1270,6 +1628,7 @@ function closePanel(){
   stopTuner();
   document.getElementById('edad-panel').classList.remove('open');
   document.getElementById('meta-panel').classList.remove('open');
+  document.getElementById('quiz-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
   hideSpeechBubble();
   document.getElementById('logo-bg').style.opacity='0.18';
@@ -1527,40 +1886,77 @@ function doMetaScrub(e){
 }
 
 /* ════════════
-   QUIZ
+   QUIZ  (opción múltiple — la mascota comenta cada respuesta)
 ════════════ */
 const QUIZ=[
-  {q:'¿A qué tipo de roca pertenece el Gneis?',opts:['Ígnea','Metamórfica','Sedimentaria'],ok:1},
-  {q:'¿Cuántos millones de años tiene esta roca?',opts:['500 Ma','1.100 Ma','2.200 Ma'],ok:2},
-  {q:'¿Cómo se llama el proceso que formó estas rocas?',opts:['Erosión','Metamorfismo','Vulcanismo'],ok:1},
+  {q:'¿Cuántos años tiene la roca del Cerro El Triunfo?',
+   opts:['480 millones','2.200 millones','4.500 millones'],ok:1,
+   exp:'¡Es la más antigua del país! Los 4.500 millones son la edad de la Tierra.'},
+  {q:'¿Qué tipo de roca es el gneis?',
+   opts:['Ígnea','Metamórfica','Sedimentaria'],ok:1,
+   exp:'Se forma en las profundidades, por calor y presión, a partir de una roca previa: el protolito.'},
+  {q:'¿Qué elementos se miden para calcular la edad de la roca?',
+   opts:['Uranio y plomo','Carbono y oxígeno','Hierro y cobre'],ok:0,
+   exp:'El uranio se transforma en plomo a un ritmo constante: midiendo ambos se calcula la edad.'},
+  {q:'¿De qué bloque antiguo forma parte esta roca?',
+   opts:['Cratón del Río de la Plata','Cordillera de los Andes','Meseta Patagónica'],ok:0,
+   exp:'El Cratón del Río de la Plata es uno de los cimientos de Sudamérica.'},
+  {q:'¿Para qué se extraían las rocas de esta cantera?',
+   opts:['Fabricar vidrio','Material de construcción','Hacer joyas'],ok:1,
+   exp:'Desde el siglo XIX se extrajo gneis para construir, ¡hasta para los adoquines de Plaza de Mayo!'},
 ];
-let qIdx=0,qScore=0,qAns=[];
-function initQuiz(){qIdx=0;qScore=0;qAns=[false,false,false];renderQ();}
+let qIdx=0,qScore=0,qRes=[],qLocked=false;
+function initQuiz(){
+  qIdx=0;qScore=0;qRes=[];qLocked=false;
+  try{gtag('event','quiz_start',{geositio:1});}catch(e){}
+  showSpeechBubble('🐸 ¿Cuánto aprendiste?<br>¡Probá el quiz!');
+  renderQ();
+}
+function _qDots(){
+  return QUIZ.map((_,i)=>`<span class="qz-dot ${qRes[i]===true?'ok':qRes[i]===false?'bad':i===qIdx?'on':''}"></span>`).join('');
+}
 function renderQ(){
   const w=document.getElementById('qwrap');
   if(!w)return;
+  qLocked=false;
   if(qIdx>=QUIZ.length){
-    w.innerHTML=`<div style="text-align:center;padding:20px;">
-      <div style="font-size:40px;margin-bottom:10px;">${qScore===3?'🏆':qScore>=2?'⭐':'🌱'}</div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#F0C070;margin-bottom:8px;">${qScore}/3 correctas</div>
-      <button onclick="initQuiz()" style="background:#C8841E;border:none;color:#fff;padding:12px 28px;border-radius:22px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;">Intentar de nuevo</button>
-    </div>`;return;
+    const n=QUIZ.length;
+    const em=qScore===n?'🏆':qScore>=n-2?'⭐':'🌱';
+    const msg=qScore===n?'🏆 ¡Perfecto! Ya conocés a fondo<br>el Cerro El Triunfo':qScore>=n-2?'⭐ ¡Muy bien! Casi lo sabés todo<br>sobre esta roca':'🌱 ¡Buen comienzo! Probá de nuevo<br>y descubrí más';
+    try{gtag('event','quiz_complete',{geositio:1,score:qScore,total:n,perfect:qScore===n?1:0});}catch(e){}
+    w.innerHTML=`<div class="qz-end"><div class="big">${em}</div><div class="sc">${qScore} de ${n} correctas</div><button class="qz-next" onclick="initQuiz()">Intentar de nuevo</button></div>`;
+    showSpeechBubble(msg);
+    return;
   }
   const q=QUIZ[qIdx];
-  w.innerHTML=`<div style="font-size:10px;letter-spacing:1.5px;color:#C8841E;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Pregunta ${qIdx+1} de ${QUIZ.length}</div>
-  <div style="font-size:15px;color:#FDF8EE;line-height:1.5;margin-bottom:16px;font-weight:600;">${q.q}</div>
-  ${q.opts.map((o,i)=>`<button onclick="ansQ(${i})" style="display:block;width:100%;text-align:left;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-bottom:8px;color:#FDF8EE;font-size:13px;cursor:pointer;">${o}</button>`).join('')}`;
+  w.innerHTML=`<div class="qz-top"><div class="qz-dots">${_qDots()}</div><div class="qz-count">${qIdx+1} / ${QUIZ.length}</div></div>
+  <div class="qz-q">${q.q}</div>
+  ${q.opts.map((o,i)=>`<button class="qz-opt" onclick="ansQ(${i})">${o}</button>`).join('')}`;
+  w.scrollTop=0;
 }
 function ansQ(i){
+  if(qLocked)return;
+  qLocked=true;
   const q=QUIZ[qIdx];
-  const btns=document.getElementById('qwrap').querySelectorAll('button');
-  btns.forEach((b,idx)=>{
+  const good=(i===q.ok);
+  qRes[qIdx]=good;
+  if(good)qScore++;
+  const w=document.getElementById('qwrap');
+  w.querySelectorAll('.qz-opt').forEach((b,idx)=>{
     b.disabled=true;
-    if(idx===q.ok)b.style.background='rgba(78,138,42,.35)';
-    if(idx===i&&i!==q.ok)b.style.background='rgba(196,58,58,.3)';
+    if(idx===q.ok)b.classList.add('ok');
+    else if(idx===i)b.classList.add('bad');
+    else b.classList.add('dim');
   });
-  if(i===q.ok)qScore++;
-  setTimeout(()=>{qIdx++;renderQ();},800);
+  w.querySelector('.qz-dots').innerHTML=_qDots();
+  const last=(qIdx===QUIZ.length-1);
+  const nb=document.createElement('button');
+  nb.className='qz-next';
+  nb.textContent=last?'Ver resultado':'Siguiente →';
+  nb.onclick=()=>{qIdx++;renderQ();};
+  w.appendChild(nb);
+  showSpeechBubble((good?'🎉 ¡Correcto! ':'🤔 ¡Casi! ')+q.exp);
+  try{gtag('event','quiz_answer',{geositio:1,question_number:qIdx+1,question_text:q.q.slice(0,90),option_number:i+1,option_text:q.opts[i],correct:good?1:0});}catch(e){}
 }
 
 /* ════════════
