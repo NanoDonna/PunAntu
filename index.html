@@ -588,6 +588,17 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   background:inherit;border:inherit;border-top:none;border-left:none;
   transform:translateX(-50%) rotate(45deg);border-radius:0 0 4px 0;
 }
+@keyframes bubbleRise{
+  0%{opacity:0;transform:translateY(var(--rise,120px)) scale(.15);}
+  45%{opacity:1;}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+@keyframes bubbleFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(calc(-5 * var(--u)));}
+}
+#speech-bubble,#trophy-bubble{transform-origin:50% 100%;will-change:transform;}
+@media (prefers-reduced-motion:reduce){#speech-bubble,#trophy-bubble{animation:none!important;}}
 #trophy-bubble > div:nth-child(2){font-size:max(11.5px,calc(13 * var(--u)))!important;line-height:1.35;}
 
 /* ── Paneles (bottom-sheet en vertical) ── */
@@ -895,9 +906,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 <!-- META PANEL -->
 <div id="meta-panel">
   <div class="ep-handle"></div>
-  <div class="ep-head">
-    <h3>De protolito a Gneis</h3>
-    <button class="ep-close" onclick="closeMetaPanel()">✕</button>
+  <div class="ep-head ep-head-float">
+    <button class="ep-close" onclick="closeMetaPanel()" aria-label="Cerrar">✕</button>
   </div>
   <div class="ep-body">
     <div class="meta-vidbox">
@@ -1192,9 +1202,25 @@ function fitMascotView(){
   fitMascotView();
 })();
 
+/* El globo sale de la mascota, sube hasta su lugar y después flota suave */
+function popBubble(el,gold){
+  if(!el) return;
+  el.style.animation='none';
+  void el.offsetWidth;
+  const b=el.getBoundingClientRect();
+  const ph=parseFloat(document.documentElement.style.getPropertyValue('--panel-h'))||0;
+  const zoneBottom=innerHeight-ph;
+  const mid=b.bottom+0.42*Math.max(70,zoneBottom-b.bottom);   /* a la altura de la cabeza del sapito */
+  el.style.setProperty('--rise',Math.round(mid-b.bottom)+'px');
+  el.style.visibility='';
+  el.style.animation='bubbleRise .85s cubic-bezier(.22,1,.36,1) both, bubbleFloat 3.6s ease-in-out .85s infinite'+(gold?', goldenPulse 2s ease-in-out .85s infinite':'');
+}
 function showSpeechBubble(txt){
   const sb=document.getElementById('speech-bubble');
-  if(sb){sb.innerHTML=txt;sb.style.display='block';}
+  if(sb){
+    sb.innerHTML=txt;sb.style.visibility='hidden';sb.style.display='block';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>popBubble(sb)));
+  }
 }
 function hideSpeechBubble(){
   const sb=document.getElementById('speech-bubble');
@@ -1228,7 +1254,7 @@ function openPanel(id,btn){
   if(id==='meta'){
     document.getElementById('logo-bg').style.opacity='0';
     document.getElementById('main').classList.add('panel-half-open');
-    showSpeechBubble('🐸 Arrastrá para ver cómo<br>se forma el Gneis');
+    showSpeechBubble('🐸 Arrastrá para ver cómo el protolito<br>se transforma en gneis');
     document.getElementById('meta-panel').classList.add('open');
     syncPanelInset();
     setTimeout(initMetaPanel,80);
@@ -1453,11 +1479,11 @@ function updateEdad(ma){
     if(!_trophyShown){
       _trophyShown=true;
       if(sb)sb.style.display='none';
-      if(tb){tb.style.display='block';tb.style.animation='none';requestAnimationFrame(()=>{tb.style.animation='fadeUp .5s ease, goldenPulse 2s ease-in-out .5s infinite';});}
+      if(tb){tb.style.visibility='hidden';tb.style.display='block';requestAnimationFrame(()=>popBubble(tb,true));}
     }
   } else {
     if(tb)tb.style.display='none';
-    if(sb&&_trophyShown)sb.style.display='block';
+    if(sb&&_trophyShown){sb.style.visibility='hidden';sb.style.display='block';requestAnimationFrame(()=>popBubble(sb));}
     _trophyShown=false;
   }
 }
