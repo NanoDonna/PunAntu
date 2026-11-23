@@ -590,7 +590,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 }
 @keyframes bubbleRise{
   0%{opacity:0;transform:translateY(var(--rise,120px)) scale(.15);}
-  45%{opacity:1;}
+  22%{opacity:1;}
   100%{opacity:1;transform:translateY(0) scale(1);}
 }
 @keyframes bubbleFloat{
@@ -738,7 +738,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       camera-controls touch-action="pan-y"
       shadow-intensity="1.2" exposure="1.2"
       camera-orbit="180deg 82deg 7.5m"
-      camera-target="0m 0.5m 0m"
+      camera-target="0m 0.27m 0m"
       field-of-view="36deg" min-field-of-view="6deg" max-field-of-view="60deg" min-camera-orbit="auto auto 2m" max-camera-orbit="auto auto 20m"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
     </model-viewer>
@@ -746,7 +746,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       src="PunAntuMascot.glb"
       shadow-intensity="1.2" exposure="1.2"
       camera-orbit="180deg 85deg 7.5m"
-      camera-target="0m 0.5m 0m"
+      camera-target="0m 0.27m 0m"
       field-of-view="36deg" min-field-of-view="6deg" max-field-of-view="60deg" min-camera-orbit="auto auto 2m" max-camera-orbit="auto auto 20m"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;pointer-events:none;transition:opacity .3s;">
     </model-viewer>
@@ -1165,12 +1165,12 @@ function syncPanelInset(){
   root.style.setProperty('--panel-w',w+'px');
 }
 /* Cuánto del mundo (en metros) tiene que entrar en el visor para ver al sapito entero */
-const MASCOT_NEED_H=1.4, MASCOT_NEED_W=1.5, MASCOT_RADIUS=7.5;
+const MASCOT_NEED_H=0.95, MASCOT_NEED_W=1.55, MASCOT_NEED_W_FOCUS=1.05, MASCOT_RADIUS=7.5;
 function _fitOne(mv,iter){
   if(!mv||!mv.loaded||!mv.getFieldOfView) return;
   const w=mv.clientWidth,h=mv.clientHeight;
   if(!w||!h) return;
-  const need=Math.max(MASCOT_NEED_H,MASCOT_NEED_W/(w/h));
+  const need=Math.max(MASCOT_NEED_H,(mv.id==='mv-idle'?MASCOT_NEED_W:MASCOT_NEED_W_FOCUS)/(w/h));
   const tgt=need/(2*MASCOT_RADIUS);                       /* tan(fov/2) buscado */
   const cur=Math.tan(mv.getFieldOfView()*Math.PI/360);   /* tan(fov/2) real ahora */
   const par=Math.tan((parseFloat(mv.getAttribute('field-of-view'))||30)*Math.PI/360);
@@ -1213,7 +1213,7 @@ function popBubble(el,gold){
   const mid=b.bottom+0.42*Math.max(70,zoneBottom-b.bottom);   /* a la altura de la cabeza del sapito */
   el.style.setProperty('--rise',Math.round(mid-b.bottom)+'px');
   el.style.visibility='';
-  el.style.animation='bubbleRise .85s cubic-bezier(.22,1,.36,1) both, bubbleFloat 3.6s ease-in-out .85s infinite'+(gold?', goldenPulse 2s ease-in-out .85s infinite':'');
+  el.style.animation='bubbleRise 2.1s cubic-bezier(.3,.65,.25,1) both, bubbleFloat 3.8s ease-in-out 2.1s infinite'+(gold?', goldenPulse 2s ease-in-out 2.1s infinite':'');
 }
 function showSpeechBubble(txt){
   const sb=document.getElementById('speech-bubble');
