@@ -37,8 +37,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   min-height:0;
   overflow:hidden;
   transition:height .4s cubic-bezier(.3,1,.3,1);
-  margin-top:calc(14 * var(--u));
-  margin-bottom:calc(14 * var(--u));
+  margin-top:6%;
+  margin-bottom:6%;
 }
 /* when panel open */
 .panel-half-open .bottom-bar{display:none;}
@@ -567,8 +567,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 #geo-title{top:calc(8 * var(--u))!important;}
 #geo-title .gt-k{font-size:max(9px,calc(9.5 * var(--u)));letter-spacing:2.5px;color:#C8841E;text-transform:uppercase;font-weight:800;margin-bottom:2px;}
 #geo-title .gt-n{font-family:'Playfair Display',serif;font-size:max(22px,calc(24 * var(--u)));color:#FDF8EE;line-height:1;}
-/* en reposo el visor deja libre la franja del título */
-#main:not(.panel-half-open) #mv-idle{top:calc(50 * var(--u))!important;height:auto!important;}
 
 /* ── Globo de diálogo: en el flujo, escalado, con colita hacia la mascota ── */
 #speech-bubble-wrap{
@@ -738,8 +736,8 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       camera-controls touch-action="pan-y"
       shadow-intensity="1.2" exposure="1.2"
       camera-orbit="180deg 82deg 7.5m"
-      camera-target="0m 0.27m 0m"
-      field-of-view="36deg" min-field-of-view="6deg" max-field-of-view="60deg" min-camera-orbit="auto auto 2m" max-camera-orbit="auto auto 20m"
+      camera-target="0m 0.5m 0m"
+      field-of-view="36deg"
       style="position:absolute;inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;transition:opacity .3s;">
     </model-viewer>
     <model-viewer id="mv-focus"
@@ -1183,13 +1181,13 @@ function _fitOne(mv,iter){
   if(iter<5) setTimeout(()=>_fitOne(mv,iter+1),160);
 }
 function fitMascotView(){
-  ['mv-idle','mv-focus'].forEach(id=>{
+  ['mv-focus'].forEach(id=>{
     const mv=document.getElementById(id);
     clearTimeout(mv&&mv._fitT);
     if(mv) mv._fitT=setTimeout(()=>_fitOne(mv,0),60);
   });
 }
-['mv-idle','mv-focus'].forEach(id=>{const m=document.getElementById(id);if(m)m.addEventListener('load',fitMascotView);});
+['mv-focus'].forEach(id=>{const m=document.getElementById(id);if(m)m.addEventListener('load',fitMascotView);});
 (function(){
   const zone=document.getElementById('mv-zone');
   if(window.ResizeObserver){
