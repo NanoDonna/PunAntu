@@ -306,14 +306,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   position:absolute;inset:0;
   width:100%;height:100%;object-fit:cover;z-index:0;
 }
-#ar-model{
-  position:absolute;inset:0;z-index:5;
-  width:100%;height:100%;
-  background:transparent;
-  --poster-color:transparent;
-  /* model sits in bottom half */
-  top:30%;
-}
 /* photo booth — no camera needed */
 
 /* ── Logos institucionales ── */
@@ -355,18 +347,75 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
 .fs-logos img{width:100%;height:auto;display:block;}
 
 /* ── AR Photo Preview ── */
+#ar-screen{touch-action:none;overflow:hidden;}
+#cam-video{background:#000;}
 #ar-roki-wrap{
-  position:absolute;left:50%;top:68%;
-  transform:translate(-50%,-50%);
-  z-index:5;width:55vw;max-width:340px;
-  height:55vw;max-height:340px;touch-action:none;
+  position:absolute;left:0;top:0;z-index:5;
+  width:200px;height:200px;
+  visibility:hidden;pointer-events:none;will-change:transform;
 }
 #ar-roki-wrap .ground-shadow{
-  position:absolute;bottom:-6%;left:50%;transform:translateX(-50%);
-  width:62%;height:10%;
-  background:radial-gradient(ellipse,rgba(0,0,0,.45) 0%,transparent 70%);
+  position:absolute;left:50%;top:86%;
+  transform:translate(-50%,-50%);
+  width:62%;height:12%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.5) 0%,transparent 70%);
   pointer-events:none;z-index:1;
 }
+@keyframes rokiPop{
+  0%{transform:scale(.55);opacity:0;}
+  70%{transform:scale(1.06);opacity:1;}
+  100%{transform:scale(1);opacity:1;}
+}
+#ar-model{transform-origin:50% 86%;}
+#ar-model.pop{animation:rokiPop .35s ease-out;}
+#ar-stage{position:absolute;inset:0;z-index:10;touch-action:none;}
+.ar-ctl{
+  position:absolute;z-index:30;
+  width:42px;height:42px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.5);color:#fff;font-size:17px;cursor:pointer;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+}
+#ar-close{top:max(16px,env(safe-area-inset-top));left:16px;}
+.ar-side{
+  position:absolute;z-index:30;
+  top:max(16px,env(safe-area-inset-top));right:16px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.ar-side .ar-ctl{position:static;}
+#ar-timer.on{background:#C8841E;font-size:12px;font-weight:800;}
+#ar-hint,#ar-toast{
+  position:absolute;left:50%;transform:translateX(-50%);z-index:25;
+  max-width:80%;text-align:center;
+  background:rgba(18,6,2,.82);border:1.5px solid rgba(200,132,30,.6);
+  color:#FDF8EE;font-size:13px;font-weight:700;line-height:1.4;
+  padding:8px 16px;border-radius:20px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  pointer-events:none;opacity:0;transition:opacity .25s;
+}
+#ar-hint{bottom:calc(max(24px,env(safe-area-inset-bottom)) + 104px);}
+#ar-toast{top:calc(max(16px,env(safe-area-inset-top)) + 58px);}
+#ar-hint.show,#ar-toast.show{opacity:1;}
+#ar-count{
+  position:absolute;inset:0;z-index:40;display:none;
+  align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:min(34vw,200px);color:#fff;
+  text-shadow:0 4px 30px rgba(0,0,0,.6);pointer-events:none;
+}
+#ar-error{
+  position:absolute;inset:0;z-index:45;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(14,4,2,.92);padding:24px;
+}
+#ar-error.show{display:flex;}
+.ar-error-box{text-align:center;max-width:320px;color:#FDF8EE;font-size:14px;line-height:1.5;}
+.ar-error-btns{display:flex;gap:12px;justify-content:center;margin-top:18px;}
+#ar-guide{
+  position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;
+  border-radius:50%;border:2px solid #00ff66;z-index:26;pointer-events:none;display:none;
+}
+#ar-shutter-btn:disabled{opacity:.35;cursor:default;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 #ar-shutter-btn{
   position:absolute;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 12px);
   left:50%;transform:translateX(-50%);
@@ -569,15 +618,6 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
     </model-viewer>
   </div>
 
-  <!-- Speech bubbles -->
-  <div id="speech-bubble-wrap" style="position:fixed;top:90px;left:50%;transform:translateX(-50%);width:70%;max-width:280px;pointer-events:none;z-index:500;display:flex;flex-direction:column;gap:6px;align-items:center;">
-    <div id="speech-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(200,132,30,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;"></div>
-    <div id="trophy-bubble" style="background:rgba(18,6,2,.93);border:1.5px solid rgba(240,192,112,.6);border-radius:22px;padding:7px 14px;color:#FDF8EE;font-size:12px;font-weight:700;line-height:1.4;backdrop-filter:blur(12px);display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;width:100%;">
-  <div style="color:#F0C070;margin-bottom:2px;">🏆 ¡La roca más antigua del país!</div>
-  <div style="font-size:11px;color:rgba(255,255,255,.75);font-weight:600;">Con 2.200 Ma, el Gneis del Cerro El Triunfo es una de las rocas más antiguas de Argentina.</div>
-</div>
-  </div>
-
   <!-- Bottom pills -->
   <div class="bottom-bar">
     <div class="bar-label">¿Qué querés descubrir?</div>
@@ -609,41 +649,55 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
      mascota centrada, texto abajo
 ════════════════════════════ -->
 <div id="ar-screen">
-  <video id="cam-video" autoplay playsinline muted
-    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
+  <video id="cam-video" autoplay playsinline muted></video>
 
-  <!-- Mascota en wrap posicionable -->
+  <!-- Roki, anclado en el mundo: JS lo posiciona con transform -->
   <div id="ar-roki-wrap">
-    <div class="ground-shadow"></div>
+    <div class="ground-shadow" id="ar-shadow"></div>
     <model-viewer id="ar-model"
       src="PunAntuMascot.glb"
-      auto-rotate rotation-per-second="10deg"
-      camera-controls touch-action="none"
-      shadow-intensity="0.8" exposure="1.4"
+      loading="eager"
+      interaction-prompt="none"
+      shadow-intensity="0.8" exposure="1.3"
       camera-orbit="180deg 82deg 2.8m"
       camera-target="0m 0.5m 0m"
       style="position:absolute;inset:0;width:100%;height:100%;
-             background:transparent;--poster-color:transparent;z-index:2;">
+             background:transparent;--poster-color:transparent;z-index:2;pointer-events:none;">
     </model-viewer>
   </div>
+  <div id="ar-guide"></div>
 
-  <!-- Botón cerrar -->
-  <button onclick="closeAR()"
-    style="position:absolute;top:16px;left:16px;z-index:30;
-      background:rgba(0,0,0,.5);border:none;color:#fff;
-      width:40px;height:40px;border-radius:50%;font-size:17px;
-      cursor:pointer;backdrop-filter:blur(8px);
-      display:flex;align-items:center;justify-content:center;">✕</button>
+  <!-- Capa de gestos: tocar para colocar, arrastrar, pellizcar, girar -->
+  <div id="ar-stage"></div>
 
-  <!-- Botón shutter -->
-  <button id="ar-shutter-btn" onclick="capturePhoto()"></button>
+  <button id="ar-close" class="ar-ctl" onclick="closeAR()" aria-label="Cerrar">✕</button>
+  <div class="ar-side">
+    <button id="ar-flip" class="ar-ctl" onclick="flipCamera()" aria-label="Cambiar de cámara">🔄</button>
+    <button id="ar-timer" class="ar-ctl" onclick="toggleTimer()" aria-label="Temporizador">⏱</button>
+  </div>
 
-  <!-- Flash -->
+  <div id="ar-hint"></div>
+  <div id="ar-toast"></div>
+  <div id="ar-count"></div>
+
+  <button id="ar-shutter-btn" onclick="onShutter()" disabled aria-label="Sacar foto"></button>
   <div id="ar-flash"></div>
+
+  <!-- Error de cámara -->
+  <div id="ar-error">
+    <div class="ar-error-box">
+      <div style="font-size:34px;margin-bottom:8px;">📷</div>
+      <div id="ar-error-msg"></div>
+      <div class="ar-error-btns">
+        <button class="ar-share-btn" onclick="retryCamera()">Reintentar</button>
+        <button class="ar-other-btn" onclick="closeAR()">Cerrar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Preview de la foto -->
   <div id="ar-preview">
-    <img id="ar-preview-img" style="width:100%;height:100%;object-fit:cover;display:block;" />
+    <img id="ar-preview-img" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Foto con Roki" />
     <div class="ar-preview-btns">
       <div style="display:flex;justify-content:center;gap:14px;">
         <button class="ar-other-btn" onclick="discardPhoto()">↺ Otra</button>
@@ -921,7 +975,8 @@ function mapaGPS(){
    LOGO — remove black bg via canvas
 ════════════ */
 function removeBlackBg(img){
-  if(!img.complete||img.naturalWidth===0){img.onload=()=>removeBlackBg(img);return;}
+  if(img.dataset.clean==='1')return;
+  if(!img.complete||img.naturalWidth===0){img.onload=()=>{img.onload=null;removeBlackBg(img);};return;}
   try{
     const c=document.createElement('canvas');
     c.width=img.naturalWidth;c.height=img.naturalHeight;
@@ -930,7 +985,9 @@ function removeBlackBg(img){
     for(let i=0;i<d.data.length;i+=4){
       if(d.data[i]<50&&d.data[i+1]<50&&d.data[i+2]<50)d.data[i+3]=0;
     }
-    ctx.putImageData(d,0,0);img.src=c.toDataURL('image/png');
+    ctx.putImageData(d,0,0);
+    img.dataset.clean='1';
+    img.src=c.toDataURL('image/png');
   }catch(e){}
 }
 document.addEventListener('DOMContentLoaded',()=>{
@@ -1016,25 +1073,10 @@ function openPanel(id,btn){
   if(id==='quiz')initQuiz();
 }
 
-function closeEdadPanel(){
-  document.getElementById('edad-panel').classList.remove('open');
-  hideSpeechBubble();
-  document.getElementById('logo-bg').style.opacity='0.18';
-  document.getElementById('main').classList.remove('panel-half-open');
-  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
-  activeBtn=null;
-  mascotRelax();
-}
-function closeMetaPanel(){
-  document.getElementById('meta-panel').classList.remove('open');
-  hideSpeechBubble();
-  document.getElementById('logo-bg').style.opacity='0.18';
-  document.getElementById('main').classList.remove('panel-half-open');
-  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
-  activeBtn=null;
-  mascotRelax();
-}
+function closeEdadPanel(){closePanel();}
+function closeMetaPanel(){closePanel();}
 function closePanel(){
+  stopTuner();
   document.getElementById('edad-panel').classList.remove('open');
   document.getElementById('meta-panel').classList.remove('open');
   document.getElementById('info-panel').classList.remove('open');
@@ -1067,10 +1109,13 @@ function initEdadPanel(){
 }
 
 var _decayDragging=false,_decayBarRect=null,_decayStuckShown=false;
+var _decayInited=false;
 function initDecayDrag(){
+  if(_decayInited)return;
   const btn=document.getElementById('decay-handle-btn');
   const inner=document.getElementById('decay-bar-inner');
   if(!btn||!inner)return;
+  _decayInited=true;
   function getRect(){return inner.getBoundingClientRect();}
   function calcMa(clientX){
     const r=_decayBarRect||getRect();
@@ -1109,6 +1154,10 @@ function initDecayDrag(){
 ════════════ */
 var _tunerGlowT=0, _tunerAnimId=null, _tunerExact=false;
 
+function stopTuner(){
+  _tunerExact=false;
+  if(_tunerAnimId){cancelAnimationFrame(_tunerAnimId);_tunerAnimId=null;}
+}
 function drawTuner(ma){
   const canvas=document.getElementById('tuner-canvas');
   if(!canvas)return;
@@ -1234,7 +1283,7 @@ function updateEdad(ma){
     if(!_trophyShown){
       _trophyShown=true;
       if(sb)sb.style.display='none';
-      if(tb){tb.style.display='block';tb.style.animation='none';requestAnimationFrame(()=>{tb.style.animation='fadeUp .5s ease';});}
+      if(tb){tb.style.display='block';tb.style.animation='none';requestAnimationFrame(()=>{tb.style.animation='fadeUp .5s ease, goldenPulse 2s ease-in-out .5s infinite';});}
     }
   } else {
     if(tb)tb.style.display='none';
@@ -1321,125 +1370,480 @@ function ansQ(i){
 }
 
 /* ════════════
-   AR PHOTO
+   AR PHOTO — Roki anclado al mundo (giroscopio)
 ════════════ */
-let camStream=null;
 
-/* Pre-captura de Roki para compositing de foto */
-var _rokiPng=null;
-(function scheduleRokiCapture(){
-  const mv=document.getElementById('mv-idle');
-  if(!mv){setTimeout(scheduleRokiCapture,500);return;}
-  mv.addEventListener('load',function(){
-    setTimeout(async function(){
-      try{
-        if(typeof mv.toBlob==='function'){
-          const blob=await mv.toBlob({mimeType:'image/png',idealAspect:false});
-          if(blob&&blob.size>2000){
-            const img=new Image();
-            img.onload=function(){_rokiPng=img;};
-            img.src=URL.createObjectURL(blob);
-          }
-        }
-        if(!_rokiPng){
-          const ic=mv.shadowRoot&&mv.shadowRoot.querySelector('canvas');
-          if(ic){const img2=new Image();img2.src=ic.toDataURL('image/png');_rokiPng=img2;}
-        }
-      }catch(e){}
-    },800);
-  });
-})();
+/* Parámetros a calibrar en el terreno */
+const AR_FEET_Y    = 0.86;  /* altura (0–1) dentro del cuadro de Roki donde apoyan sus patas */
+const AR_FOV_LONG  = 65;    /* grados de campo visual a lo largo del lado largo de la cámara trasera */
+const AR_BASE_YAW  = 180;   /* orientación inicial de Roki (theta de camera-orbit) */
+const AR_MIN_SCALE = 0.45;
+const AR_MAX_SCALE = 2.4;
 
-async function openAR(){
-  document.getElementById('ar-screen').classList.add('open');
-  document.getElementById('ar-preview').style.display='none';
-  gtag('event','open_ar_photo');
-  const el=document.getElementById('ar-screen');
-  if(el.requestFullscreen)el.requestFullscreen().catch(()=>{});
-  else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
-  const video=document.getElementById('cam-video');
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
+const _ar = {
+  open:false, token:0, stream:null, facing:'environment',
+  w:0, h:0, focal:600, base:240, scale:1, yaw:AR_BASE_YAW,
+  placed:false, dir:null, pos:null, cur:null,
+  R:null, ori:null, gyro:false, raf:0,
+  timer:false, counting:false, cancelCount:false,
+  lumT:0, lumCv:null, lumCtx:null, exposure:1.3, shadowOp:1,
+  wrapSize:0, photoBlob:null, photoURL:null
+};
+const arEl = id => document.getElementById(id);
+
+/*MATH_START*/
+/* Matriz de rotación dispositivo→mundo según la especificación W3C: R = Rz(alpha)·Rx(beta)·Ry(gamma) */
+function arMatFromEuler(aDeg,bDeg,gDeg){
+  const r=Math.PI/180,a=aDeg*r,b=bDeg*r,g=gDeg*r;
+  const ca=Math.cos(a),sa=Math.sin(a),cb=Math.cos(b),sb=Math.sin(b),cg=Math.cos(g),sg=Math.sin(g);
+  return [
+    ca*cg-sa*sb*sg, -sa*cb, ca*sg+sa*sb*cg,
+    sa*cg+ca*sb*sg,  ca*cb, sa*sg-ca*sb*cg,
+    -cb*sg,          sb,    cb*cg
+  ];
+}
+function arMulMV(m,v){
+  return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2], m[3]*v[0]+m[4]*v[1]+m[5]*v[2], m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];
+}
+function arMulMTV(m,v){
+  return [m[0]*v[0]+m[3]*v[1]+m[6]*v[2], m[1]*v[0]+m[4]*v[1]+m[7]*v[2], m[2]*v[0]+m[5]*v[1]+m[8]*v[2]];
+}
+function arNorm(v){
+  const l=Math.hypot(v[0],v[1],v[2])||1;
+  return [v[0]/l,v[1]/l,v[2]/l];
+}
+/* Punto de pantalla (px) → dirección fija en el mundo. La cámara trasera mira hacia -Z del dispositivo.
+   th = ángulo de la pantalla (rad) para soportar modo horizontal. */
+function arScreenToDir(x,y,R,f,w,h,th){
+  const ds=[(x-w/2)/f, -(y-h/2)/f, -1];
+  const c=Math.cos(th),s=Math.sin(th);
+  const dd=[c*ds[0]+s*ds[1], -s*ds[0]+c*ds[1], ds[2]];
+  return arNorm(arMulMV(R,dd));
+}
+/* Dirección del mundo → punto de pantalla (px). Devuelve null si queda detrás de la cámara. */
+function arDirToScreen(dw,R,f,w,h,th){
+  const dd=arMulMTV(R,dw);
+  const c=Math.cos(th),s=Math.sin(th);
+  const ds=[c*dd[0]-s*dd[1], s*dd[0]+c*dd[1], dd[2]];
+  if(ds[2]>-0.08)return null;
+  const k=f/(-ds[2]);
+  return {x:w/2+ds[0]*k, y:h/2-ds[1]*k};
+}
+/*MATH_END*/
+
+function arScreenAngle(){
+  const a=(screen.orientation&&typeof screen.orientation.angle==='number')?screen.orientation.angle:(typeof window.orientation==='number'?window.orientation:0);
+  return (((a%360)+360)%360)*Math.PI/180;
+}
+function arUseGyro(){return _ar.facing==='environment'&&_ar.gyro&&!!_ar.R;}
+
+/* ── Avisos ── */
+let _arToastT=null,_arHintTxt='';
+function arToast(msg,ms){
+  const t=arEl('ar-toast');if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_arToastT);
+  _arToastT=setTimeout(()=>t.classList.remove('show'),ms||2600);
+}
+function arSetHint(txt){
+  if(txt===_arHintTxt)return;
+  _arHintTxt=txt;
+  const h=arEl('ar-hint');if(!h)return;
+  if(txt){h.textContent=txt;h.classList.add('show');}else h.classList.remove('show');
+}
+
+/* ── Geometría ── */
+function arUpdateGeometry(){
+  const scr=arEl('ar-screen');if(!scr)return;
+  const sr=scr.getBoundingClientRect();
+  if(!sr.width||!sr.height)return;
+  _ar.w=sr.width;_ar.h=sr.height;
+  const v=arEl('cam-video');
+  const vw=v?v.videoWidth:0,vh=v?v.videoHeight:0;
+  const tanH=Math.tan(AR_FOV_LONG*Math.PI/360);
+  if(vw>0&&vh>0){
+    /* object-fit:cover → px de pantalla por px de video */
+    const s=Math.max(_ar.w/vw,_ar.h/vh);
+    _ar.focal=(Math.max(vw,vh)/2/tanH)*s;
+  }else{
+    _ar.focal=Math.max(_ar.w,_ar.h)/2/tanH;
+  }
+  _ar.base=Math.max(150,Math.min(380,Math.min(_ar.w,_ar.h)*0.62));
+  arRender();
+}
+
+/* ── Colocación de Roki ── */
+function arApplyYaw(){
+  const m=arEl('ar-model');
+  if(m)m.setAttribute('camera-orbit',_ar.yaw+'deg 82deg 2.8m');
+}
+function arResetPlacement(){
+  _ar.placed=false;_ar.dir=null;_ar.pos=null;_ar.cur=null;
+  _ar.scale=1;_ar.yaw=AR_BASE_YAW;_ar.wrapSize=0;
+  arApplyYaw();
+  const wrap=arEl('ar-roki-wrap');
+  if(wrap)wrap.style.visibility='hidden';
+  const sh=arEl('ar-shutter-btn');
+  if(sh)sh.disabled=true;
+  _arHintTxt='';
+  arSetHint('Apuntá al suelo y tocá para colocar a Roki');
+}
+function arSetAnchor(x,y){
+  _ar.pos={x:x,y:y};
+  if(arUseGyro())_ar.dir=arScreenToDir(x,y,_ar.R,_ar.focal,_ar.w,_ar.h,arScreenAngle());
+}
+function arPlaceAt(x,y){
+  const first=!_ar.placed;
+  _ar.placed=true;
+  arSetAnchor(x,y);
+  arEl('ar-shutter-btn').disabled=false;
+  arSetHint('');
+  if(first){
+    arToast('Arrastrá para mover · pellizcá para agrandar · girá con dos dedos',4200);
+    gtag('event','ar_place_roki',{gyro:arUseGyro()});
+  }
+  const m=arEl('ar-model');
+  if(m){m.classList.remove('pop');void m.offsetWidth;m.classList.add('pop');}
+  arRender();
+}
+
+function arRender(){
+  if(!_ar.placed)return;
+  const wrap=arEl('ar-roki-wrap');if(!wrap)return;
+  let p=_ar.pos;
+  if(arUseGyro()&&_ar.dir)p=arDirToScreen(_ar.dir,_ar.R,_ar.focal,_ar.w,_ar.h,arScreenAngle());
+  if(!p){
+    wrap.style.visibility='hidden';_ar.cur=null;
+    arSetHint('Roki quedó anclado en otra dirección: girá el teléfono para encontrarlo');
+    return;
+  }
+  const S=Math.round(_ar.base*_ar.scale);
+  if(S!==_ar.wrapSize){wrap.style.width=S+'px';wrap.style.height=S+'px';_ar.wrapSize=S;}
+  const x=Math.max(-4000,Math.min(_ar.w+4000,p.x));
+  const y=Math.max(-4000,Math.min(_ar.h+4000,p.y));
+  wrap.style.transform='translate3d('+(x-S/2).toFixed(1)+'px,'+(y-S*AR_FEET_Y).toFixed(1)+'px,0)';
+  wrap.style.visibility='visible';
+  _ar.cur={x:x,y:y};
+  const off=x<-S*0.35||x>_ar.w+S*0.35||y<-S*0.1||y>_ar.h+S*0.9;
+  arSetHint(off?'Roki quedó fuera de cuadro: girá el teléfono para encontrarlo':'');
+  const gd=arEl('ar-guide');
+  if(gd&&gd.dataset.on==='1'){gd.style.display='block';gd.style.left=x+'px';gd.style.top=y+'px';}
+}
+
+/* ── Sensores ── */
+function arOnOri(e){
+  if(e.alpha==null||e.beta==null||e.gamma==null)return;
+  _ar.ori=[e.alpha,e.beta,e.gamma];_ar.gyro=true;
+}
+function arUpdateRot(){
+  if(!_ar.ori)return;
+  const t=arMatFromEuler(_ar.ori[0],_ar.ori[1],_ar.ori[2]);
+  if(!_ar.R){_ar.R=t;return;}
+  const R=_ar.R;
+  for(let i=0;i<9;i++)R[i]+=(t[i]-R[i])*0.75;   /* filtro leve contra el temblor */
+}
+async function arStartSensors(ask){
+  let ok=true;
+  if(ask){try{ok=(await ask)==='granted';}catch(e){ok=false;}}
+  if(!_ar.open)return;
+  if(!ok){arToast('Sin permiso de sensores: Roki quedará fijo en la pantalla',3600);return;}
+  window.removeEventListener('deviceorientation',arOnOri);
+  window.addEventListener('deviceorientation',arOnOri);
+}
+
+/* ── Luz: ajusta la exposición de Roki al brillo de la escena ── */
+function arSampleLight(now){
+  if(now-_ar.lumT<600)return;
+  _ar.lumT=now;
+  const v=arEl('cam-video');
+  if(!v||v.readyState<2||!v.videoWidth)return;
   try{
-    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
-    video.srcObject=camStream;await video.play();
-  }catch(e){console.warn('Camera:',e.name);}
+    if(!_ar.lumCv){
+      _ar.lumCv=document.createElement('canvas');_ar.lumCv.width=8;_ar.lumCv.height=8;
+      _ar.lumCtx=_ar.lumCv.getContext('2d',{willReadFrequently:true});
+    }
+    _ar.lumCtx.drawImage(v,0,0,8,8);
+    const d=_ar.lumCtx.getImageData(0,0,8,8).data;
+    let s=0;
+    for(let i=0;i<d.length;i+=4)s+=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+    const L=s/(64*255);
+    const target=Math.max(0.85,Math.min(1.8,0.55+1.6*L));
+    _ar.exposure+=(target-_ar.exposure)*0.35;
+    const m=arEl('ar-model');if(m)m.exposure=_ar.exposure;
+    _ar.shadowOp=Math.max(0.5,Math.min(1,0.4+L));
+    const sh=arEl('ar-shadow');if(sh)sh.style.opacity=String(_ar.shadowOp);
+  }catch(e){}
+}
+
+function arLoop(t){
+  if(!_ar.open)return;
+  _ar.raf=requestAnimationFrame(arLoop);
+  arUpdateRot();
+  arRender();
+  arSampleLight(t||performance.now());
+}
+
+/* ── Cámara ── */
+function arStopCamera(){
+  if(_ar.stream){_ar.stream.getTracks().forEach(t=>t.stop());_ar.stream=null;}
+  const v=arEl('cam-video');if(v)v.srcObject=null;
+}
+function arCamError(e){
+  const n=(e&&e.name)||'';
+  let msg='No pudimos abrir la cámara.';
+  if(n==='NotAllowedError'||n==='SecurityError')msg='Necesitamos permiso para usar la cámara. Habilitalo en los ajustes del navegador y tocá «Reintentar».';
+  else if(n==='NotFoundError'||n==='OverconstrainedError')msg='No encontramos una cámara en este dispositivo.';
+  else if(n==='NotReadableError')msg='La cámara está siendo usada por otra aplicación. Cerrala y tocá «Reintentar».';
+  else if(n==='NotSupportedError')msg='Este navegador no permite usar la cámara. Probá abrir la página en Chrome o Safari.';
+  arEl('ar-error-msg').textContent=msg;
+  arEl('ar-error').classList.add('show');
+  console.warn('Camera:',n,e);
+}
+async function arStartCamera(facing){
+  const token=++_ar.token;
+  arStopCamera();
+  arEl('ar-error').classList.remove('show');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){arCamError({name:'NotSupportedError'});return;}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:facing},width:{ideal:1920},height:{ideal:1080}},audio:false
+    });
+    /* si cerraron la pantalla (o cambiaron de cámara) mientras esperábamos, no dejamos la cámara prendida */
+    if(token!==_ar.token||!_ar.open){stream.getTracks().forEach(t=>t.stop());return;}
+    const video=arEl('cam-video');
+    _ar.stream=stream;_ar.facing=facing;
+    video.style.transform=(facing==='user')?'scaleX(-1)':'none';
+    video.srcObject=stream;
+    await video.play().catch(()=>{});
+    arUpdateGeometry();
+  }catch(e){
+    if(token===_ar.token&&_ar.open)arCamError(e);
+  }
+}
+function retryCamera(){arStartCamera(_ar.facing);}
+function flipCamera(){
+  const next=_ar.facing==='environment'?'user':'environment';
+  arResetPlacement();
+  arStartCamera(next);
+}
+function toggleTimer(){
+  _ar.timer=!_ar.timer;
+  const b=arEl('ar-timer');
+  if(b){b.textContent=_ar.timer?'3s':'⏱';b.classList.toggle('on',_ar.timer);}
+  arToast(_ar.timer?'Temporizador de 3 segundos activado':'Temporizador desactivado',1800);
+}
+
+/* ── Abrir / cerrar ── */
+async function openAR(){
+  if(_ar.open)return;
+  _ar.open=true;_ar.counting=false;_ar.cancelCount=false;
+  const scr=arEl('ar-screen');
+  scr.classList.add('open');
+  arEl('ar-preview').style.display='none';
+  arEl('ar-error').classList.remove('show');
+  arEl('main').style.display='none';   /* pausa los otros visores 3D mientras dura la cámara */
+  gtag('event','open_ar_photo');
+  if(scr.requestFullscreen)scr.requestFullscreen().catch(()=>{});
+  else if(scr.webkitRequestFullscreen)scr.webkitRequestFullscreen();
+  /* iOS exige pedir el permiso de sensores dentro del gesto del usuario: antes de cualquier await */
+  let ask=null;
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    try{ask=DeviceOrientationEvent.requestPermission();}catch(e){ask=null;}
+  }
+  _ar.facing='environment';_ar.ori=null;_ar.R=null;_ar.gyro=false;
+  const tb=arEl('ar-timer');
+  if(tb){tb.textContent=_ar.timer?'3s':'⏱';tb.classList.toggle('on',_ar.timer);}
+  const gd=arEl('ar-guide');
+  if(gd)gd.dataset.on=(location.search.indexOf('arguide')>=0)?'1':'0';
+  arResetPlacement();
+  arUpdateGeometry();
+  cancelAnimationFrame(_ar.raf);
+  _ar.raf=requestAnimationFrame(arLoop);
+  arStartSensors(ask);
+  await arStartCamera(_ar.facing);
 }
 
 function closeAR(){
-  document.getElementById('ar-screen').classList.remove('open');
-  document.getElementById('ar-preview').style.display='none';
-  if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});
-  else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
-  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
-  const video=document.getElementById('cam-video');
-  if(video)video.srcObject=null;
+  _ar.open=false;_ar.token++;_ar.counting=false;_ar.cancelCount=false;
+  cancelAnimationFrame(_ar.raf);
+  window.removeEventListener('deviceorientation',arOnOri);
+  arStopCamera();
+  arEl('ar-screen').classList.remove('open');
+  arEl('ar-preview').style.display='none';
+  arEl('ar-error').classList.remove('show');
+  arEl('ar-count').style.display='none';
+  const gd=arEl('ar-guide');if(gd)gd.style.display='none';
+  arEl('main').style.display='';
+  if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+  else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen();
+  arReleasePhoto();
 }
 
+/* ── Gestos: tocar = colocar/reubicar · arrastrar a Roki = mover · dos dedos = escala y giro ── */
+(function arInitGestures(){
+  const stage=arEl('ar-stage');if(!stage)return;
+  const ptrs=new Map();
+  let g={mode:null};
+  const loc=e=>{const r=arEl('ar-screen').getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+  const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+  const ang=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x);
+  const wrapAng=d=>Math.atan2(Math.sin(d),Math.cos(d));
+  function hit(p){
+    if(!_ar.placed||!_ar.cur)return false;
+    const S=_ar.base*_ar.scale;
+    return Math.hypot(p.x-_ar.cur.x,p.y-(_ar.cur.y-S*AR_FEET_Y+S/2))<S*0.5;
+  }
+  stage.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    try{stage.setPointerCapture(e.pointerId);}catch(_){}
+    const p=loc(e);ptrs.set(e.pointerId,p);
+    if(ptrs.size===1){
+      g={mode:'tap',sx:p.x,sy:p.y,t:performance.now()};
+      if(hit(p)){g.mode='drag';g.dx=_ar.cur.x-p.x;g.dy=_ar.cur.y-p.y;}
+    }else if(ptrs.size===2&&_ar.placed){
+      const v=[...ptrs.values()];
+      g={mode:'pinch',d0:dist(v[0],v[1])||1,s0:_ar.scale,aPrev:ang(v[0],v[1])};
+    }else{
+      g={mode:'none'};
+    }
+  });
+  stage.addEventListener('pointermove',e=>{
+    if(!ptrs.has(e.pointerId))return;
+    const p=loc(e);ptrs.set(e.pointerId,p);
+    if(g.mode==='tap'){
+      if(Math.hypot(p.x-g.sx,p.y-g.sy)>12)g.mode='none';
+    }else if(g.mode==='drag'){
+      arSetAnchor(p.x+g.dx,p.y+g.dy);
+    }else if(g.mode==='pinch'&&ptrs.size>=2){
+      const v=[...ptrs.values()];
+      _ar.scale=Math.max(AR_MIN_SCALE,Math.min(AR_MAX_SCALE,g.s0*dist(v[0],v[1])/g.d0));
+      const a=ang(v[0],v[1]);
+      _ar.yaw+=wrapAng(a-g.aPrev)*180/Math.PI;
+      g.aPrev=a;
+      arApplyYaw();
+    }
+  });
+  const end=e=>{
+    if(!ptrs.has(e.pointerId))return;
+    const p=ptrs.get(e.pointerId);
+    ptrs.delete(e.pointerId);
+    if(g.mode==='tap'&&e.type==='pointerup'&&performance.now()-g.t<600)arPlaceAt(p.x,p.y);
+    if(ptrs.size===0)g={mode:null};
+    else if(g.mode==='pinch'&&ptrs.size===1)g={mode:'none'};
+  };
+  stage.addEventListener('pointerup',end);
+  stage.addEventListener('pointercancel',end);
+})();
+
+window.addEventListener('resize',()=>{if(_ar.open)arUpdateGeometry();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden||!_ar.open)return;
+  const dead=!_ar.stream||_ar.stream.getTracks().every(t=>t.readyState==='ended');
+  if(dead&&!arEl('ar-error').classList.contains('show'))arStartCamera(_ar.facing);
+});
+(function(){
+  const v=arEl('cam-video');
+  if(v)v.addEventListener('loadedmetadata',arUpdateGeometry);
+})();
+
+/* ── Disparo (con temporizador opcional) ── */
+async function onShutter(){
+  if(_ar.counting){_ar.cancelCount=true;return;}
+  if(!_ar.placed)return;
+  if(!_ar.cur){arToast('Roki no está en cuadro: girá el teléfono hacia él');return;}
+  if(_ar.timer){
+    _ar.counting=true;_ar.cancelCount=false;
+    const c=arEl('ar-count');c.style.display='flex';
+    for(let n=3;n>=1;n--){
+      c.textContent=n;
+      await new Promise(r=>setTimeout(r,1000));
+      if(!_ar.open||_ar.cancelCount)break;
+    }
+    c.style.display='none';
+    const abort=!_ar.open||_ar.cancelCount;
+    _ar.counting=false;_ar.cancelCount=false;
+    if(abort)return;
+    if(!_ar.cur){arToast('Roki quedó fuera de cuadro: probá de nuevo');return;}
+  }
+  await capturePhoto();
+}
+
+/* ── Captura a la resolución nativa de la cámara ── */
 async function capturePhoto(){
-  const video=document.getElementById('cam-video');
-  const wrap=document.getElementById('ar-roki-wrap');
-  const mv=document.getElementById('ar-model');
-  if(!video)return;
+  const video=arEl('cam-video'),scr=arEl('ar-screen'),wrap=arEl('ar-roki-wrap'),mv=arEl('ar-model');
+  const sr=scr.getBoundingClientRect(),vw=sr.width,vh=sr.height;
+  const flash=arEl('ar-flash');
+  if(flash){flash.style.opacity='1';setTimeout(()=>{flash.style.opacity='0';},120);}
 
-  /* Flash */
-  const flash=document.getElementById('ar-flash');
-  if(flash){flash.style.opacity='1';setTimeout(()=>flash.style.opacity='0',120);}
-
-  const DPR=Math.min(4,(window.devicePixelRatio||1)*2.5);
-  const vw=window.innerWidth,vh=window.innerHeight;
+  /* Recorte del video tal como se ve en pantalla (object-fit:cover), a resolución nativa */
+  const vidW=video.videoWidth,vidH=video.videoHeight;
+  const haveVideo=vidW>0&&video.readyState>=2;
+  let k=2,sx=0,sy=0,sw=0,sh=0;
+  if(haveVideo){
+    const s=Math.max(vw/vidW,vh/vidH);
+    k=1/s;sw=vw*k;sh=vh*k;sx=(vidW-sw)/2;sy=(vidH-sh)/2;
+  }
+  k=Math.min(Math.max(k,1),2600/Math.max(vw,vh));
+  const W=Math.round(vw*k),H=Math.round(vh*k);
   const canvas=document.createElement('canvas');
-  canvas.width=Math.round(vw*DPR);canvas.height=Math.round(vh*DPR);
+  canvas.width=W;canvas.height=H;
   const ctx=canvas.getContext('2d');
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
-  ctx.scale(DPR,DPR);
 
-  /* 1. Video frame */
-  let videoReady=video.videoWidth>0&&video.readyState>=2;
-  if(!videoReady){await new Promise(r=>setTimeout(r,300));videoReady=video.videoWidth>0;}
-  if(videoReady){
+  /* 1. Video (espejado si es cámara frontal, igual que en la vista previa) */
+  if(haveVideo){
+    ctx.save();
+    if(_ar.facing==='user'){ctx.translate(W,0);ctx.scale(-1,1);}
+    try{ctx.drawImage(video,sx,sy,sw,sh,0,0,W,H);}
+    catch(e){ctx.fillStyle='#1a1208';ctx.fillRect(0,0,W,H);}
+    ctx.restore();
+  }else{
+    ctx.fillStyle='#1a1208';ctx.fillRect(0,0,W,H);
+  }
+  ctx.setTransform(W/vw,0,0,H/vh,0,0);   /* de acá en adelante se dibuja en px de pantalla */
+
+  /* 2. Sombra de contacto + Roki */
+  let painted=false;
+  const r=wrap.getBoundingClientRect();
+  const rx=r.left-sr.left,ry=r.top-sr.top;
+  if(r.width>0){
+    ctx.save();
+    ctx.translate(rx+r.width/2,ry+r.width*AR_FEET_Y);
+    ctx.scale(r.width*0.31,r.width*0.06);
+    const gr=ctx.createRadialGradient(0,0,0,0,0,1);
+    gr.addColorStop(0,'rgba(0,0,0,'+(0.5*_ar.shadowOp).toFixed(2)+')');
+    gr.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(0,0,1,0,Math.PI*2);ctx.fill();
+    ctx.restore();
     try{
-      const vAR=video.videoWidth/video.videoHeight,sAR=vw/vh;
-      let dw=vw,dh=vh,dx=0,dy=0;
-      if(vAR>sAR){dh=vh;dw=vh*vAR;dx=(vw-dw)/2;}
-      else{dw=vw;dh=vw/vAR;dy=(vh-dh)/2;}
-      ctx.drawImage(video,dx,dy,dw,dh);
-    }catch(e){ctx.fillStyle='#1a1a1a';ctx.fillRect(0,0,vw,vh);}
-  }else{ctx.fillStyle='#1a1a1a';ctx.fillRect(0,0,vw,vh);}
-
-  /* 2. Roki */
-  try{
-    const r=wrap.getBoundingClientRect();
-    let painted=false;
-    if(mv&&typeof mv.toBlob==='function'){
-      await new Promise(res=>requestAnimationFrame(()=>requestAnimationFrame(res)));
-      try{
+      if(typeof mv.toBlob==='function'){
         const blob=await mv.toBlob({mimeType:'image/png',idealAspect:false});
-        if(blob&&blob.size>2000){
+        if(blob&&blob.size>1000){
           const url=URL.createObjectURL(blob);
           const img=new Image();
           await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url;});
-          ctx.drawImage(img,r.left,r.top,r.width,r.height);
+          ctx.drawImage(img,rx,ry,r.width,r.height);
           URL.revokeObjectURL(url);painted=true;
         }
+      }
+    }catch(e){console.warn('toBlob:',e);}
+    if(!painted){
+      try{
+        const ic=mv.shadowRoot&&mv.shadowRoot.querySelector('canvas');
+        if(ic&&ic.width>0){ctx.drawImage(ic,rx,ry,r.width,r.height);painted=true;}
       }catch(e){}
     }
-    if(!painted&&mv){
-      const ic=mv.shadowRoot&&mv.shadowRoot.querySelector('canvas');
-      if(ic&&ic.width>0){ctx.drawImage(ic,r.left,r.top,r.width,r.height);painted=true;}
-    }
-    if(!painted&&_rokiPng&&_rokiPng.complete&&_rokiPng.naturalWidth>0){
-      ctx.drawImage(_rokiPng,r.left,r.top,r.width,r.height);
-    }
-  }catch(e){}
+  }
+  if(!painted){arToast('No se pudo capturar a Roki. Probá de nuevo.',3200);return;}
 
-  /* 3. Frame — bandas superior e inferior con marca */
+  /* 3. Marco: bandas superior e inferior con la marca */
   const topH=Math.round(vh*0.16);
   const topG=ctx.createLinearGradient(0,0,0,topH);
   topG.addColorStop(0,'rgba(0,0,0,.72)');topG.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=topG;ctx.fillRect(0,0,vw,topH);
   ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=10;
   ctx.textAlign='left';
-  const fsBig=Math.round(vw*0.065);
+  const fsBig=Math.round(Math.min(vw,vh)*0.065);
   ctx.fillStyle='#F0C070';
   ctx.font='700 '+fsBig+'px "Playfair Display",Georgia,serif';
   ctx.fillText('Pun Antü',18,Math.round(topH*0.52));
@@ -1450,38 +1854,49 @@ async function capturePhoto(){
   const botG=ctx.createLinearGradient(0,vh-botH,0,vh);
   botG.addColorStop(0,'rgba(0,0,0,0)');botG.addColorStop(1,'rgba(0,0,0,.68)');
   ctx.fillStyle=botG;ctx.fillRect(0,vh-botH,vw,botH);
-  ctx.font='600 '+Math.round(vw*0.032)+'px sans-serif';
+  const fsSm=Math.round(Math.min(vw,vh)*0.032);
+  ctx.font='600 '+fsSm+'px sans-serif';
   ctx.fillStyle='rgba(255,255,255,.82)';ctx.textAlign='center';
   ctx.fillText('Geositio 1 · Cerro El Triunfo',vw/2,vh-Math.round(botH*0.30));
-  ctx.font='400 '+Math.round(vw*0.025)+'px sans-serif';
+  ctx.font='400 '+Math.round(fsSm*0.78)+'px sans-serif';
   ctx.fillStyle='rgba(255,255,255,.5)';
   ctx.fillText('Sistema de Tandilia · Buenos Aires',vw/2,vh-Math.round(botH*0.10));
   ctx.shadowBlur=0;ctx.textAlign='left';
 
   /* 4. Exportar */
-  const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.95));
-  window._lastPhotoBlob=blob;
-  const jpeg=URL.createObjectURL(blob);
-  showARPreview(jpeg);
+  const out=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.93));
+  if(!out){arToast('No se pudo generar la foto. Probá de nuevo.',3200);return;}
+  arReleasePhoto();
+  _ar.photoBlob=out;
+  _ar.photoURL=URL.createObjectURL(out);
+  gtag('event','ar_photo_taken',{facing:_ar.facing,gyro:arUseGyro()});
+  showARPreview(_ar.photoURL);
 }
 
-function showARPreview(dataURL){
-  const prev=document.getElementById('ar-preview');
-  const img=document.getElementById('ar-preview-img');
-  const link=document.getElementById('ar-download-link');
+/* ── Vista previa / compartir ── */
+function arReleasePhoto(){
+  if(_ar.photoURL){URL.revokeObjectURL(_ar.photoURL);_ar.photoURL=null;}
+  _ar.photoBlob=null;
+}
+function showARPreview(url){
+  const prev=arEl('ar-preview'),img=arEl('ar-preview-img'),link=arEl('ar-download-link');
   if(!prev||!img)return;
-  img.src=dataURL;
-  if(link)link.href=dataURL;
+  img.src=url;
+  if(link){
+    link.href=url;
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    link.download='punantu-roki-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())+'.jpg';
+  }
   prev.style.display='block';
 }
 function closeARPreview(){
-  const prev=document.getElementById('ar-preview');
+  const prev=arEl('ar-preview');
   if(prev)prev.style.display='none';
 }
-function discardPhoto(){closeARPreview();}
+function discardPhoto(){closeARPreview();arReleasePhoto();}
 
 async function sharePhoto(){
-  const blob=window._lastPhotoBlob;
+  const blob=_ar.photoBlob;
   if(!blob)return;
   try{
     const file=new File([blob],'punantu-roki.jpg',{type:'image/jpeg'});
@@ -1490,9 +1905,10 @@ async function sharePhoto(){
       return;
     }
   }catch(e){if(e&&e.name==='AbortError')return;}
-  const link=document.getElementById('ar-download-link');
+  const link=arEl('ar-download-link');
   if(link)link.click();
 }
+
 </script>
 </body>
 </html>
