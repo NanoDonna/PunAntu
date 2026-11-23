@@ -792,8 +792,10 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    /* N° de geositio: cambiar SOLO este valor en cada web (1 a 6). Se envía en TODOS los eventos, incluido page_view. */
+    const GEOSITIO = 1;
     gtag('js', new Date());
-    gtag('config', 'G-F6ZCDHTFSN');
+    gtag('config', 'G-F6ZCDHTFSN', {geositio: GEOSITIO});
   </script>
 </head>
 <body>
@@ -1111,7 +1113,7 @@ body{font-family:'Nunito',sans-serif;color:#FDF8EE;}
       </div>
     </div>
     <div class="ct-bar">
-      <a class="ct-dl" id="ct-dl" href="cartel-geositio1.jpg" download="Cartel-Geositio1-Cerro-El-Triunfo.jpg" onclick="try{gtag('event','download_cartel',{geositio:1});}catch(e){}">⬇ Descargar cartel</a>
+      <a class="ct-dl" id="ct-dl" href="cartel-geositio1.jpg" download="Cartel-Geositio1-Cerro-El-Triunfo.jpg" onclick="try{gtag('event','download_cartel',{geositio:GEOSITIO});}catch(e){}">⬇ Descargar cartel</a>
     </div>
   </div>
 
@@ -1908,7 +1910,7 @@ const QUIZ=[
 let qIdx=0,qScore=0,qRes=[],qLocked=false;
 function initQuiz(){
   qIdx=0;qScore=0;qRes=[];qLocked=false;
-  try{gtag('event','quiz_start',{geositio:1});}catch(e){}
+  try{gtag('event','quiz_start',{geositio:GEOSITIO});}catch(e){}
   showSpeechBubble('🐸 ¿Cuánto aprendiste?<br>¡Probá el quiz!');
   renderQ();
 }
@@ -1923,7 +1925,7 @@ function renderQ(){
     const n=QUIZ.length;
     const em=qScore===n?'🏆':qScore>=n-2?'⭐':'🌱';
     const msg=qScore===n?'🏆 ¡Perfecto! Ya conocés a fondo<br>el Cerro El Triunfo':qScore>=n-2?'⭐ ¡Muy bien! Casi lo sabés todo<br>sobre esta roca':'🌱 ¡Buen comienzo! Probá de nuevo<br>y descubrí más';
-    try{gtag('event','quiz_complete',{geositio:1,score:qScore,total:n,perfect:qScore===n?1:0});}catch(e){}
+    try{gtag('event','quiz_complete',{geositio:GEOSITIO,score:qScore,total:n,perfect:qScore===n?1:0});}catch(e){}
     w.innerHTML=`<div class="qz-end"><div class="big">${em}</div><div class="sc">${qScore} de ${n} correctas</div><button class="qz-next" onclick="initQuiz()">Intentar de nuevo</button></div>`;
     showSpeechBubble(msg);
     return;
@@ -1956,7 +1958,7 @@ function ansQ(i){
   nb.onclick=()=>{qIdx++;renderQ();};
   w.appendChild(nb);
   showSpeechBubble((good?'🎉 ¡Correcto! ':'🤔 ¡Casi! ')+q.exp);
-  try{gtag('event','quiz_answer',{geositio:1,question_number:qIdx+1,question_text:q.q.slice(0,90),option_number:i+1,option_text:q.opts[i],correct:good?1:0});}catch(e){}
+  try{gtag('event','quiz_answer',{geositio:GEOSITIO,question_number:qIdx+1,question_text:q.q.slice(0,90),option_number:i+1,option_text:q.opts[i],correct:good?1:0});}catch(e){}
 }
 
 /* ════════════
